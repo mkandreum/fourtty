@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.env.local
+uploads/*
+!uploads/.gitkeep
+*.log
+.DS_Store
+dev.db
+dev.db-journal
+prisma/migrations

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/prisma:/app/prisma
+      # Persist SQLite database
+      - ./backend/dev.db:/app/dev.db
+    environment:
+      - DATABASE_URL=file:./dev.db
+      - JWT_SECRET=${JWT_SECRET:-supersecretkey}
+      - PORT=5000
+      - FRONTEND_URL=http://localhost:80
+      - NODE_ENV=production
+
+  frontend:
+    build: .
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

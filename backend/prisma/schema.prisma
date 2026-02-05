@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int            @id @default(autoincrement())
+  email              String         @unique
+  password           String
+  name               String
+  avatar             String?
+  bio                String?        @default("")
+  gender             String?        @default("Hombre")
+  age                Int?           @default(22)
+  relationshipStatus String?        @default("Soltero")
+  location           String?        @default("")
+  occupation         String?        @default("")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  // Relations
+  posts              Post[]
+  comments           Comment[]
+  photos             Photo[]
+  
+  // Friendships - user is the requester
+  friendships        Friendship[]   @relation("UserFriendships")
+  // Friendships - user is the friend
+  friendOf           Friendship[]   @relation("FriendOfUser")
+  
+  // Messages
+  sentMessages       Message[]      @relation("SentMessages")
+  receivedMessages   Message[]      @relation("ReceivedMessages")
+  
+  // Notifications
+  notifications      Notification[]
+
+  @@map("users")
+}
+
+model Post {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  content       String
+  type          String    @default("status") // status, photo, comment
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments      Comment[]
+
+  @@map("posts")
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Comment {
+  id            Int       @id @default(autoincrement())
+  postId        Int
+  userId        Int
+  content       String
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+  @@index([postId])
+  @@index([userId])
+}
+
+model Friendship {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  friendId      Int
+  status        String    @default("pending") // pending, accepted, rejected
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user          User      @relation("UserFriendships", fields: [userId], references: [id], onDelete: Cascade)
+  friend        User      @relation("FriendOfUser", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
+  @@map("friendships")
+  @@index([userId])
+  @@index([friendId])
+  @@index([status])
+}
+
+model Message {
+  id            Int       @id @default(autoincrement())
+  senderId      Int
+  receiverId    Int
+  content       String
+  read          Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  sender        User      @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver      User      @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
+
+model Photo {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  url           String
+  caption       String?
+  tags          String?   // JSON array of user IDs
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("photos")
+  @@index([userId])
+}
+
+model Notification {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  type          String    // comment, friendship, message, tag, like
+  content       String
+  read          Boolean   @default(false)
+  relatedId     Int?      // ID of related entity (post, comment, friendship, etc.)
+  relatedUserId Int?      // ID of user who triggered the notification
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
