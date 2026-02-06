@@ -6,6 +6,7 @@ interface PhotoModalContextType {
     playlist: Photo[];
     isOpen: boolean;
     openPhoto: (photo: Photo, playlist?: Photo[]) => void;
+    updateActivePhoto: (photo: Photo) => void;
     closePhoto: () => void;
 }
 
@@ -22,6 +23,12 @@ export const PhotoModalProvider: React.FC<{ children: ReactNode }> = ({ children
         setIsOpen(true);
     };
 
+    const updateActivePhoto = (photo: Photo) => {
+        setActivePhoto(photo);
+        // Also update in playlist to keep navigation consistent
+        setPlaylist(prev => prev.map(p => p.id === photo.id ? photo : p));
+    };
+
     const closePhoto = () => {
         setActivePhoto(null);
         setPlaylist([]);
@@ -29,7 +36,7 @@ export const PhotoModalProvider: React.FC<{ children: ReactNode }> = ({ children
     };
 
     return (
-        <PhotoModalContext.Provider value={{ activePhoto, playlist, isOpen, openPhoto, closePhoto }}>
+        <PhotoModalContext.Provider value={{ activePhoto, playlist, isOpen, openPhoto, updateActivePhoto, closePhoto }}>
             {children}
         </PhotoModalContext.Provider>
     );

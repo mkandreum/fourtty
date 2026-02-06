@@ -29,7 +29,11 @@ const Gallery: React.FC = () => {
                 api.get(`/photos/user/${targetUserId}`),
                 api.get(`/users/${targetUserId}`)
             ]);
-            setPhotos(photosRes.data.photos);
+            const photosWithUser = photosRes.data.photos.map((p: any) => ({
+                ...p,
+                user: userRes.data.user
+            }));
+            setPhotos(photosWithUser);
             setUserName(userRes.data.user.name);
         } catch (e) { console.error(e); }
         finally { setIsLoading(false); }

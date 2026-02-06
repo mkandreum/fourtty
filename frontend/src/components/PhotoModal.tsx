@@ -8,7 +8,7 @@ import CommentSection from './CommentSection';
 import { Photo } from '../types';
 
 const PhotoModal: React.FC = () => {
-    const { activePhoto, playlist, isOpen, closePhoto, openPhoto } = usePhotoModal();
+    const { activePhoto, playlist, isOpen, closePhoto, openPhoto, updateActivePhoto } = usePhotoModal();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [isTagging, setIsTagging] = useState(false);
@@ -37,18 +37,18 @@ const PhotoModal: React.FC = () => {
     };
 
     const handleToggleLike = async () => {
-        if (!localPhoto) return;
+        if (!activePhoto) return;
         try {
-            const res = await api.post(`/photos/${localPhoto.id}/like`);
+            const res = await api.post(`/photos/${activePhoto.id}/like`);
             const { liked } = res.data;
-            setLocalPhoto(prev => prev ? ({
-                ...prev,
+            updateActivePhoto({
+                ...activePhoto,
                 likedByMe: liked,
                 _count: {
-                    ...prev._count,
-                    likes: liked ? (prev._count?.likes || 0) + 1 : Math.max(0, (prev._count?.likes || 0) - 1)
+                    ...activePhoto._count,
+                    likes: liked ? (activePhoto._count?.likes || 0) + 1 : Math.max(0, (activePhoto._count?.likes || 0) - 1)
                 }
-            }) : null);
+            });
         } catch (e) {
             console.error(e);
         }
@@ -63,17 +63,17 @@ const PhotoModal: React.FC = () => {
     };
 
     const handleAddTag = async (friendId: number) => {
-        if (!localPhoto || !showFriendList) return;
+        if (!activePhoto || !showFriendList) return;
         try {
-            const res = await api.post(`/photos/${localPhoto.id}/tag`, {
+            const res = await api.post(`/photos/${activePhoto.id}/tag`, {
                 userId: friendId,
                 x: showFriendList.x,
                 y: showFriendList.y
             });
-            setLocalPhoto(prev => prev ? ({
-                ...prev,
-                photoTags: [...(prev.photoTags || []), res.data.tag]
-            }) : null);
+            updateActivePhoto({
+                ...activePhoto,
+                photoTags: [...(activePhoto.photoTags || []), res.data.tag]
+            });
             setShowFriendList(null);
             setIsTagging(false);
         } catch (e) {
@@ -83,15 +83,15 @@ const PhotoModal: React.FC = () => {
     };
 
     const goToPrev = () => {
-        if (playlist.length <= 1 || !localPhoto) return;
-        const idx = playlist.findIndex(p => p.id === localPhoto.id);
+        if (playlist.length <= 1 || !activePhoto) return;
+        const idx = playlist.findIndex(p => p.id === activePhoto.id);
         const prevIdx = idx > 0 ? idx - 1 : playlist.length - 1;
         openPhoto(playlist[prevIdx], playlist);
     };
 
     const goToNext = () => {
-        if (playlist.length <= 1 || !localPhoto) return;
-        const idx = playlist.findIndex(p => p.id === localPhoto.id);
+        if (playlist.length <= 1 || !activePhoto) return;
+        const idx = playlist.findIndex(p => p.id === activePhoto.id);
         const nextIdx = idx < playlist.length - 1 ? idx + 1 : 0;
         openPhoto(playlist[nextIdx], playlist);
     };
@@ -135,7 +135,7 @@ const PhotoModal: React.FC = () => {
                             ref={imgRef}
                             src={getPhotoUrl(activePhoto.url)}
                             onClick={handleImageClick}
-                            className={`max-w-full max-h-[70vh] md:max-h-[85vh] object-contain shadow-2xl ${isTagging ? 'cursor-crosshair' : ''}`}
+                            className={`max-w-full max-h-[50vh] md:max-h-[80vh] object-contain shadow-2xl ${isTagging ? 'cursor-crosshair' : ''}`}
                             alt="Selected"
                         />
                         {/* Tags */}
@@ -178,15 +178,19 @@ const PhotoModal: React.FC = () => {
                     )}
                 </div>
 
-                {/* Sidebar */}
-                <div className="w-full md:w-[350px] bg-[#f2f6f9] border-l border-[#ddd] flex flex-col overflow-y-auto">
+                {/* Sidebar - Comments & Info */}
+                <div className="w-full md:w-[380px] bg-white border-l border-[#ddd] flex flex-col md:h-full overflow-y-auto">
                     <div className="p-4 border-b border-[#ddd] bg-white">
                         <div className="flex items-center gap-3 mb-4">
                             <img src={activePhoto.user?.avatar || `/api/proxy/avatar?name=${encodeURIComponent(userName)}`}
-                                className="w-10 h-10 rounded-[2px] border border-[#ccc]" />
+                                className="w-12 h-12 rounded-[2px] border border-[#ccc] shadow-sm" />
                             <div>
-                                <h4 className="text-[13px] font-bold text-[#005599]">{userName}</h4>
-                                <p className="text-[10px] text-gray-500">Subida el {new Date(activePhoto.createdAt).toLocaleDateString()}</p>
+                                <h4 className="text-[14px] font-bold text-[#005599] hover:underline cursor-pointer">
+                                    <Link to={`/profile/${activePhoto.userId}`} onClick={closePhoto}>{userName}</Link>
+                                </h4>
+                                <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+                                    Subida el {new Date(activePhoto.createdAt).toLocaleDateString()}
+                                </p>
                             </div>
                         </div>
 
@@ -226,9 +230,14 @@ const PhotoModal: React.FC = () => {
                         )}
                     </div>
 
-                    <div className="p-4 flex-1">
-                        <h5 className="text-[11px] font-bold text-[#333] mb-4 flex items-center gap-1"><MessageSquare size={14} className="text-[#59B200]" /> Comentarios</h5>
-                        <CommentSection photoId={activePhoto.id} isPhoto={true} initialCommentsCount={activePhoto._count?.comments || 0} />
+                    <div className="p-4 bg-[#f8f9fb] flex-1 border-t border-[#eee]">
+                        <h5 className="text-[12px] font-bold text-[#333] mb-4 flex items-center gap-2">
+                            <MessageSquare size={16} className="text-[#59B200] fill-[#59B200]" />
+                            Comentarios e interacción
+                        </h5>
+                        <div className="bg-white rounded-[3px] border border-[#e1e9f0] p-3 shadow-sm">
+                            <CommentSection photoId={activePhoto.id} isPhoto={true} initialCommentsCount={activePhoto._count?.comments || 0} />
+                        </div>
                     </div>
                 </div>
 
