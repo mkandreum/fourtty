@@ -28,7 +28,10 @@ transporter.verify((error, success) => {
 
 export const sendInvitationEmail = async (to: string, inviterName: string, inviteCode: string): Promise<{ success: boolean; error?: any }> => {
     const mailOptions = {
-        from: process.env.SMTP_FROM || `"Twenty" <${process.env.SMTP_USER}>`,
+        from: {
+            name: "Twenty",
+            address: process.env.SMTP_USER || ""
+        },
         to,
         subject: `¡${inviterName} te ha invitado a Twenty!`,
         text: `Hola,\n\n${inviterName} te ha invitado a unirte a Twenty, la red social privada.\n\nTu código de invitación es: ${inviteCode}\n\nRegístrate en: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/login\n\n¡Te esperamos!`,
