@@ -18,6 +18,8 @@ const Profile: React.FC = () => {
    const [wallInput, setWallInput] = useState('');
    const [isLoading, setIsLoading] = useState(true);
    const [isUploading, setIsUploading] = useState(false);
+   const [isEditing, setIsEditing] = useState(false);
+   const [editData, setEditData] = useState<Partial<User>>({});
 
    const isOwnProfile = !id || (user && user.id === Number(id));
 
@@ -35,6 +37,7 @@ const Profile: React.FC = () => {
                userData = userRes.data.user;
             }
             setProfileUser(userData || null);
+            setEditData(userData || {});
 
             // Fetch Friendship Status
             if (targetUserId !== user?.id) {
@@ -63,6 +66,19 @@ const Profile: React.FC = () => {
 
       fetchProfile();
    }, [id, user]);
+
+   const handleUpdateProfile = async () => {
+      if (!profileUser) return;
+      try {
+         const response = await api.put(`/users/${profileUser.id}`, editData);
+         updateUser(response.data.user);
+         setProfileUser(response.data.user);
+         setIsEditing(false);
+      } catch (error) {
+         console.error("Error updating profile:", error);
+         alert("Error al actualizar el perfil");
+      }
+   };
 
    const handlePostToWall = async () => {
       if (!wallInput.trim() || !profileUser) return;
@@ -155,7 +171,16 @@ const Profile: React.FC = () => {
 
    // Render buttons helper
    const renderActionButtons = () => {
-      if (friendStatus === 'self') return null;
+      if (friendStatus === 'self') {
+         return (
+            <button
+               onClick={() => setIsEditing(!isEditing)}
+               className="flex items-center gap-1 bg-[#f2f6f9] border border-[#ccc] px-2 py-1 rounded-[3px] text-[11px] text-[#333] font-bold hover:bg-[#e1e9f0]"
+            >
+               <Edit3 size={12} /> {isEditing ? 'Cancelar' : 'Editar mi perfil'}
+            </button>
+         );
+      }
 
       switch (friendStatus) {
          case 'none':
@@ -258,25 +283,104 @@ const Profile: React.FC = () => {
                   )}
                </div>
 
-               {/* Info Box */}
-               <div className="bg-[#f9fbfd] border-t border-b border-[#e1e9f0] p-2 text-[11px] text-[#333]">
-                  <div className="flex items-center gap-2 mb-1.5">
-                     <UserIcon size={12} className="text-[#888]" />
-                     <span>{profileUser.gender || 'No especificado'}, {profileUser.age || '?'} años</span>
+               {/* Info Box / Edit Mode */}
+               {isEditing ? (
+                  <div className="bg-[#f2f6f9] border border-[#dce5ed] p-3 text-[11px] flex flex-col gap-2">
+                     <div>
+                        <label className="block font-bold text-[#666] mb-1">Nombre</label>
+                        <input
+                           type="text"
+                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           value={editData.name || ''}
+                           onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                        />
+                     </div>
+                     <div>
+                        <label className="block font-bold text-[#666] mb-1">Estado / Bio</label>
+                        <textarea
+                           className="w-full border border-[#ccc] rounded-[2px] p-1 h-12 resize-none"
+                           value={editData.bio || ''}
+                           onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
+                        />
+                     </div>
+                     <div className="flex gap-2">
+                        <div className="flex-1">
+                           <label className="block font-bold text-[#666] mb-1">Sexo</label>
+                           <select
+                              className="w-full border border-[#ccc] rounded-[2px] p-1"
+                              value={editData.gender || ''}
+                              onChange={(e) => setEditData({ ...editData, gender: e.target.value })}
+                           >
+                              <option value="">Selecciona</option>
+                              <option value="Hombre">Hombre</option>
+                              <option value="Mujer">Mujer</option>
+                           </select>
+                        </div>
+                        <div className="w-16">
+                           <label className="block font-bold text-[#666] mb-1">Edad</label>
+                           <input
+                              type="number"
+                              className="w-full border border-[#ccc] rounded-[2px] p-1"
+                              value={editData.age || ''}
+                              onChange={(e) => setEditData({ ...editData, age: Number(e.target.value) })}
+                           />
+                        </div>
+                     </div>
+                     <div>
+                        <label className="block font-bold text-[#666] mb-1">Situación sentimental</label>
+                        <input
+                           type="text"
+                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           value={editData.relationshipStatus || ''}
+                           onChange={(e) => setEditData({ ...editData, relationshipStatus: e.target.value })}
+                           placeholder="Soltero, Casado..."
+                        />
+                     </div>
+                     <div>
+                        <label className="block font-bold text-[#666] mb-1">Localidad</label>
+                        <input
+                           type="text"
+                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           value={editData.location || ''}
+                           onChange={(e) => setEditData({ ...editData, location: e.target.value })}
+                        />
+                     </div>
+                     <div>
+                        <label className="block font-bold text-[#666] mb-1">Ocupación</label>
+                        <input
+                           type="text"
+                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           value={editData.occupation || ''}
+                           onChange={(e) => setEditData({ ...editData, occupation: e.target.value })}
+                        />
+                     </div>
+                     <button
+                        onClick={handleUpdateProfile}
+                        className="bg-[#59B200] text-white font-bold py-1.5 rounded-[2px] border border-[#4a9600] mt-1"
+                     >
+                        Guardar cambios
+                     </button>
                   </div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                     <Heart size={12} className="text-[#888]" />
-                     <span>{profileUser.relationshipStatus || 'No especificado'}</span>
+               ) : (
+                  <div className="bg-[#f9fbfd] border-t border-b border-[#e1e9f0] p-2 text-[11px] text-[#333]">
+                     <div className="flex items-center gap-2 mb-1.5">
+                        <UserIcon size={12} className="text-[#888]" />
+                        <span>{profileUser.gender || 'No especificado'}, {profileUser.age || '?'} años</span>
+                     </div>
+                     <div className="flex items-center gap-2 mb-1.5">
+                        <Heart size={12} className="text-[#888]" />
+                        <span>{profileUser.relationshipStatus || 'No especificado'}</span>
+                     </div>
+                     <div className="flex items-center gap-2 mb-1.5">
+                        <MapPin size={12} className="text-[#888]" />
+                        <span>{profileUser.location || 'No especificado'}</span>
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <Briefcase size={12} className="text-[#888]" />
+                        <span>{profileUser.occupation || 'No especificado'}</span>
+                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                     <MapPin size={12} className="text-[#888]" />
-                     <span>{profileUser.location || 'No especificado'}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                     <Briefcase size={12} className="text-[#888]" />
-                     <span>{profileUser.occupation || 'No especificado'}</span>
-                  </div>
-               </div>
+               )}
 
                {/* Friends Grid */}
                <div>
@@ -312,7 +416,7 @@ const Profile: React.FC = () => {
                {/* Wall Input - Only if own profile (for now) */}
                {isOwnProfile && (
                   <div className="bg-[#f2f6f9] p-3 rounded-[4px] border border-[#e1e9f0] mb-4">
-                     <div className="text-[#005599] font-bold text-[12px] mb-1">Escribe algo...</div>
+                     <div className="text-[#005599] font-bold text-[12px] mb-1">Escribe algo en tu tablón...</div>
                      <textarea
                         className="w-full h-16 border border-[#b2c2d1] rounded-[2px] p-1 text-[12px] resize-none focus:border-[#5C95C4] outline-none"
                         value={wallInput}
@@ -370,5 +474,7 @@ const Profile: React.FC = () => {
       </div>
    );
 };
+
+export default Profile;
 
 export default Profile;

@@ -140,9 +140,25 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
               }
             </button>
 
-            <button className={`${navLinkClass} hidden sm:block`}>Gente</button>
-            <button className={`${navLinkClass} hidden md:block`}>Vídeos</button>
-            <button className={`${navLinkClass} hidden md:block`}>Juegos</button>
+            <button
+              className={`${navLinkClass} hidden sm:block`}
+              onClick={() => {
+                const searchInput = document.querySelector('input[placeholder="Buscar..."]') as HTMLInputElement;
+                if (searchInput) {
+                  searchInput.focus();
+                  setSearchQuery(' '); // Trigger search show
+                  setShowResults(true);
+                }
+              }}
+            >
+              Gente
+            </button>
+            <button
+              className={`${navLinkClass} hidden md:block`}
+              onClick={() => alert("La sección de Vídeos estará disponible muy pronto para compartir tus mejores momentos.")}
+            >
+              Vídeos
+            </button>
 
             {/* Search Bar - More compact like original */}
             <div className="relative mx-1 md:mx-2 shrink-0">
