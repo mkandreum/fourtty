@@ -355,38 +355,56 @@ const Feed: React.FC = () => {
             </div>
          </div>
 
-         {/* Feed List */}
          <div className="flex items-center justify-between mb-2 border-b border-[#EEE] pb-1">
             <h3 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1">
-               <div className="bg-[#59B200] text-white p-0.5 rounded-[3px] shadow-sm">
+               <motion.div
+                  initial={{ rotate: -20, scale: 0.8 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  className="bg-[#59B200] text-white p-0.5 rounded-[3px] shadow-sm"
+               >
                   <MessageSquare size={14} fill="white" strokeWidth={0} />
-               </div>
+               </motion.div>
                Novedades
             </h3>
             <div className="text-[11px] flex gap-2">
-               <span className="font-bold text-[#333]">Amigos</span>
-               <span className="text-[#005599] hover:underline cursor-pointer">Páginas</span>
+               <span className="font-bold text-[#333] hover:text-[#005599] cursor-pointer transition-colors">Amigos</span>
+               <span className="text-[#005599] hover:underline cursor-pointer transition-colors">Páginas</span>
             </div>
          </div>
 
          {isLoading ? (
             <div className="p-4 text-center text-gray-500 text-xs">Cargando novedades...</div>
          ) : (
-            <div className="flex flex-col gap-4">
+            <motion.div
+               variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                     opacity: 1,
+                     transition: {
+                        staggerChildren: 0.08
+                     }
+                  }
+               }}
+               initial="hidden"
+               animate="show"
+               className="flex flex-col gap-4"
+            >
                {posts.length === 0 && (
                   <div className="p-4 text-center text-gray-500 text-xs">
                      No hay novedades recientes. ¡Agrega amigos para ver sus posts!
                   </div>
                )}
 
-               <AnimatePresence initial={false}>
-                  {posts.map((post, idx) => (
+               <AnimatePresence mode="popLayout">
+                  {posts.map((post) => (
                      <motion.div
                         key={post.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx % 10 * 0.05 }}
-                        className="flex gap-2 group"
+                        variants={{
+                           hidden: { opacity: 0, y: 20, scale: 0.98 },
+                           show: { opacity: 1, y: 0, scale: 1 }
+                        }}
+                        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                        className="flex gap-2 group hover-lift p-1 rounded-sm"
                      >
                         {/* Avatar */}
                         <div className="w-[50px] shrink-0">
@@ -512,7 +530,7 @@ const Feed: React.FC = () => {
                      </motion.div>
                   ))}
                </AnimatePresence>
-            </div>
+            </motion.div>
          )}
 
          {hasMore && (

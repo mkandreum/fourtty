@@ -588,15 +588,31 @@ const Profile: React.FC = () => {
                )}
 
                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-                  <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1">
-                     Amigos <span className="text-[#888] font-normal">({friends.length})</span>
+                  <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1 flex items-center justify-between">
+                     <span>Amigos <span className="text-[#888] font-normal">({friends.length})</span></span>
+                     <span className="text-[10px] text-[#005599] hover:underline cursor-pointer font-normal">Ver todos</span>
                   </h3>
-                  <div className="grid grid-cols-3 gap-1">
+                  <motion.div
+                     variants={{
+                        hidden: { opacity: 0 },
+                        show: {
+                           opacity: 1,
+                           transition: { staggerChildren: 0.05 }
+                        }
+                     }}
+                     initial="hidden"
+                     animate="show"
+                     className="grid grid-cols-3 gap-1"
+                  >
                      {friends.slice(0, 9).map(friend => (
                         <motion.div
                            key={friend.id}
-                           whileHover={{ scale: 1.05 }}
-                           className="cursor-pointer group"
+                           variants={{
+                              hidden: { opacity: 0, scale: 0.8 },
+                              show: { opacity: 1, scale: 1 }
+                           }}
+                           whileHover={{ scale: 1.05, y: -2 }}
+                           className="cursor-pointer group relative"
                            onClick={() => navigate(`/profile/${friend.id}`)}
                         >
                            <img
@@ -609,7 +625,7 @@ const Profile: React.FC = () => {
                            </div>
                         </motion.div>
                      ))}
-                  </div>
+                  </motion.div>
                </motion.div>
 
                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
@@ -676,10 +692,11 @@ const Profile: React.FC = () => {
                         {wallPosts.map((post, idx) => (
                            <motion.div
                               key={post.id}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: idx * 0.05 }}
-                              className={`flex gap-3 p-3 border-b border-[#eee] ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f9fbfd]'} hover:bg-[#f0f5f9] transition-colors`}
+                              variants={{
+                                 hidden: { opacity: 0, x: -10 },
+                                 show: { opacity: 1, x: 0 }
+                              }}
+                              className={`flex gap-3 p-3 border-b border-[#eee] ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f9fbfd]'} hover:bg-[#f0f5f9] transition-smooth cursor-default group`}
                            >
                               <div className="w-10 flex-shrink-0">
                                  <img

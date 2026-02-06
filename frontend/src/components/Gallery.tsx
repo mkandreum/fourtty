@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { usePhotoModal } from '../contexts/PhotoModalContext';
 import CommentSection from './CommentSection';
 import { Photo } from '../types';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Gallery: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -68,10 +69,28 @@ const Gallery: React.FC = () => {
                             Este usuario aún no ha subido ninguna foto a su galería.
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
+                        <motion.div
+                            variants={{
+                                hidden: { opacity: 0 },
+                                show: {
+                                    opacity: 1,
+                                    transition: {
+                                        staggerChildren: 0.05
+                                    }
+                                }
+                            }}
+                            initial="hidden"
+                            animate="show"
+                            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4"
+                        >
                             {photos.map((photo, index) => (
-                                <div
+                                <motion.div
                                     key={photo.id}
+                                    variants={{
+                                        hidden: { opacity: 0, scale: 0.9 },
+                                        show: { opacity: 1, scale: 1 }
+                                    }}
+                                    whileHover={{ y: -5, transition: { type: 'spring', stiffness: 300 } }}
                                     className="flex flex-col gap-1 group"
                                 >
                                     <div className="p-1 bg-white border border-[#ccc] shadow-sm hover:shadow-md transition-shadow cursor-pointer">
@@ -90,9 +109,9 @@ const Gallery: React.FC = () => {
                                             </div>
                                         )}
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
                     )}
                 </div>
             </div>
