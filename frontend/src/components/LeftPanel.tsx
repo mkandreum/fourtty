@@ -54,21 +54,66 @@ const LeftPanel: React.FC = () => {
          </div>
 
          {/* Menu Links */}
-         <div>
+         <div className="mb-4">
             {stats.messages > 0 && <MenuItem icon={Mail} count={stats.messages} text="mensajes privados" />}
-            {stats.requests > 0 && <MenuItem icon={UserPlus} count={stats.requests} text="peticiones de amistad" />}
 
-            {/* Show these always or conditional? Keeping commonly used ones */}
+            {/* Friend request mock logic based on stats.requests */}
+            <div className="flex items-center gap-2 mb-1 cursor-pointer group">
+               <UserPlus size={14} className="text-[#59B200] fill-[#59B200]" strokeWidth={2} />
+               <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
+                  {stats.requests > 0 ? `${stats.requests} petición de amistad` : '0 peticiones'}
+               </span>
+            </div>
+
             <MenuItem icon={MessageSquare} count={stats.statusComments} text="estado con comentarios" />
             <MenuItem icon={BarChart2} count={stats.visits} text="visitas nuevas" />
          </div>
 
-         {/* Invite Friends - Functional placeholder */}
-         <div className="border-t border-[#ddd] pt-3">
+         {/* Invite Friends */}
+         <div className="mb-6">
             <h4 className="font-bold text-[#333] text-[11px] mb-2">Invita a tus amigos</h4>
+            <div className="text-[10px] text-[#999] mb-1">7 invitaciones</div>
             <div className="flex gap-1">
-               <input type="text" placeholder="Email" className="w-full border border-[#ccc] rounded-[2px] px-1 py-0.5 text-[11px]" />
+               <input type="text" placeholder="Email" className="w-[110px] border border-[#ccc] rounded-[2px] px-1 py-0.5 text-[11px]" />
                <button className="bg-[#2B7BB9] text-white font-bold text-[11px] px-2 py-0.5 rounded-[2px] border border-[#1e5a8c] hover:bg-[#256ca3]">Invitar</button>
+            </div>
+         </div>
+
+         {/* Sponsored Events */}
+         <div className="mb-6">
+            <h4 className="font-bold text-[#333] text-[11px] mb-2 border-b border-[#eee] pb-1">Eventos patrocinados</h4>
+            <div className="flex flex-col gap-3">
+               <div className="flex gap-2">
+                  <div className="w-8 h-8 bg-gray-200 rounded-sm shrink-0 flex items-center justify-center text-[8px] font-bold text-gray-500">PROMO</div>
+                  <div>
+                     <div className="text-[10px] text-[#005599] font-bold hover:underline cursor-pointer leading-tight">Sumérgete en cuatro mundos únicos con Spiderman</div>
+                     <div className="text-[9px] text-[#999]">23 Sep (142)</div>
+                  </div>
+               </div>
+               <div className="flex gap-2">
+                  <div className="w-8 h-8 bg-gray-200 rounded-sm shrink-0 flex items-center justify-center text-[8px] font-bold text-gray-500">EVENT</div>
+                  <div>
+                     <div className="text-[10px] text-[#005599] font-bold hover:underline cursor-pointer leading-tight">Ven al GP A-Style de MotoGP de Aragón</div>
+                     <div className="text-[9px] text-[#999]">19 Sep (344)</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {/* Calendar */}
+         <div className="mb-4">
+            <h4 className="font-bold text-[#333] text-[11px] mb-2 border-b border-[#eee] pb-1 flex justify-between items-center">
+               <span>Calendario</span>
+               <span className="text-[#005599] text-[9px] font-normal hover:underline cursor-pointer">Crear evento</span>
+            </h4>
+            <div className="text-[10px] text-[#333] mb-1">
+               <span className="font-bold">Hoy</span> no tienes ningún evento.
+            </div>
+            <div className="text-[10px] text-[#333]">
+               <span className="font-bold">Mañana</span> no tienes ningún evento.
+            </div>
+            <div className="mt-2">
+               <span className="text-[#005599] text-[10px] hover:underline cursor-pointer">Ver todos</span>
             </div>
          </div>
 

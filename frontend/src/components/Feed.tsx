@@ -88,31 +88,39 @@ const Feed: React.FC = () => {
    return (
       <div className="bg-white min-h-[500px]">
 
-         {/* Status Box */}
-         <div className="mb-4">
-            <div className="relative border-b border-[#eee] pb-4 mb-4">
-               <div className="flex items-center gap-2 mb-1 text-[#ccc] text-[16px]">
-                  <Edit3 size={16} />
-                  <span className="font-bold text-[#ccc] text-[14px]">Actualiza tu estado</span>
-               </div>
+         {/* Status Box - Speech Bubble Style */}
+         <div className="mb-6 relative pt-2">
+            <div className="bg-white border-2 border-[#b2c2d1] rounded-[8px] p-2 relative shadow-sm">
+               {/* Speech pulse arrow tip */}
+               <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[#b2c2d1]"></div>
+               <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-white"></div>
 
-               <div className="flex gap-2">
-                  <input
-                     className="flex-1 border border-[#b2c2d1] rounded-[2px] p-1.5 text-[12px] text-[#555] focus:border-[#5C95C4] focus:ring-1 focus:ring-[#5C95C4] outline-none"
-                     value={statusText}
-                     onChange={(e) => setStatusText(e.target.value)}
-                     placeholder="¿Qué estás pensando?"
-                  />
-                  <button
-                     onClick={handleUpdateStatus}
-                     className="bg-[#6FA3CD] text-white text-[11px] font-bold px-3 py-1 rounded-[2px] hover:bg-[#5C95C4]"
-                  >
-                     Guardar
-                  </button>
+               <div className="flex gap-2 items-start">
+                  <div className="flex-1 relative">
+                     <input
+                        className="w-full border-none p-2 text-[18px] text-[#333] placeholder-gray-300 outline-none"
+                        value={statusText}
+                        onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
+                        placeholder="¡Hola!"
+                     />
+                     {/* Character count bubble */}
+                     <div className="absolute top-[-25px] right-0 bg-[#f0f0f0] border border-[#ccc] text-[#999] text-[10px] w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-sm">
+                        {140 - statusText.length}
+                     </div>
+                  </div>
                </div>
-               <div className="text-[11px] text-[#888] mt-1">
-                  Última actualización: <span className="text-[#333]">{user?.bio || 'Sin estado'}</span>
+            </div>
+
+            <div className="flex justify-between items-center mt-2 pl-2">
+               <div className="text-[11px] text-[#888]">
+                  Última actualización: <span className="text-[#333] font-bold">"{user?.bio || 'Sin estado'}"</span>
                </div>
+               <button
+                  onClick={handleUpdateStatus}
+                  className="bg-[#2B7BB9] text-white text-[12px] font-bold px-6 py-1 rounded-[3px] border border-[#1e5a8c] hover:bg-[#256ca3] shadow-sm"
+               >
+                  Guardar
+               </button>
             </div>
          </div>
 
