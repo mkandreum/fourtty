@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Edit3, Tag, Youtube, Flag, ThumbsUp, UserPlus, Plus, Bell, X } from 'lucide-react';
+import { MessageSquare, Edit3, Tag, Youtube, Flag, ThumbsUp, UserPlus, Plus, Bell, X, Mail, MessageCircle, BarChart2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
@@ -26,6 +26,7 @@ const Feed: React.FC = () => {
    const [myInvitations, setMyInvitations] = useState<any[]>([]);
    const [isInvitesExpanded, setIsInvitesExpanded] = useState(false); // Collapsed by default on mobile
    const [unreadNotifications, setUnreadNotifications] = useState<any[]>([]);
+   const [stats, setStats] = useState({ visits: 0 });
 
    const fetchFeed = async (pageNum: number, isRefresh = false) => {
       try {
@@ -52,7 +53,8 @@ const Feed: React.FC = () => {
          await Promise.all([
             fetchFeed(1, true),
             fetchInvitations(),
-            fetchUnreadNotifications()
+            fetchUnreadNotifications(),
+            fetchStats()
          ]);
          setIsLoading(false);
       };
@@ -74,6 +76,15 @@ const Feed: React.FC = () => {
          setUnreadNotifications(res.data.notifications.filter((n: any) => !n.read));
       } catch (error) {
          console.error("Error fetching notifications:", error);
+      }
+   };
+
+   const fetchStats = async () => {
+      try {
+         const res = await api.get('/stats');
+         setStats({ visits: res.data.visits });
+      } catch (error) {
+         console.error("Error fetching stats:", error);
       }
    };
 
@@ -240,41 +251,61 @@ const Feed: React.FC = () => {
          </div>
 
          {/* Unread Notifications - Shown below status box */}
-         {unreadNotifications.length > 0 && (
-            <motion.div
-               initial={{ opacity: 0, y: -10 }}
-               animate={{ opacity: 1, y: 0 }}
-               className="mb-4 bg-[#fff9e6] border border-[#ffeaa7] rounded-[4px] p-2 shadow-sm"
-            >
-               <div className="flex items-center gap-2 mb-1">
-                  <Bell size={12} className="text-[#d4a017]" />
-                  <span className="text-[11px] font-bold text-[#856404]">Tienes {unreadNotifications.length} notificaciones nuevas:</span>
-               </div>
-               <div className="flex flex-col gap-1">
-                  {unreadNotifications.slice(0, 3).map(notif => (
-                     <div
-                        key={notif.id}
-                        onClick={() => {
-                           if (notif.type === 'friendship' && notif.relatedUserId) {
-                              navigate(`/profile/${notif.relatedUserId}`);
-                           } else {
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                           }
-                        }}
-                        className="text-[10px] text-[#856404] flex items-center gap-1 cursor-pointer hover:underline"
-                     >
-                        <div className="w-1 h-1 bg-[#d4a017] rounded-full"></div>
-                        <span className="truncate">{notif.content}</span>
+         {(() => {
+            const groups = {
+               messages: unreadNotifications.filter(n => n.type === 'message'),
+               friendships: unreadNotifications.filter(n => n.type === 'friendship'),
+               comments: unreadNotifications.filter(n => ['comment', 'comment_photo', 'comment_post', 'tag'].includes(n.type)),
+               tags: unreadNotifications.filter(n => ['tag', 'tag_photo'].includes(n.type)),
+            };
+
+            const items = [
+               { key: 'visits', label: 'visitas al perfil', icon: <BarChart2 size={16} />, count: stats.visits },
+               { key: 'messages', label: 'mensajes privados', icon: <Mail size={16} />, count: groups.messages.length },
+               { key: 'friendships', label: 'peticiones de amistad', icon: <UserPlus size={16} />, count: groups.friendships.length },
+               { key: 'comments', label: 'comentarios y menciones', icon: <MessageCircle size={16} />, count: groups.comments.length },
+               { key: 'tags', label: 'etiquetas', icon: <Tag size={16} />, count: groups.tags.length },
+            ].filter(item => item.count > 0);
+
+            if (items.length === 0) return null;
+
+            return (
+               <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mb-6 bg-white border border-[#EEE] rounded-[4px] p-3 shadow-[0_4px_12px_rgba(0,0,0,0.05)]"
+               >
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#F5F5F5]">
+                     <Bell size={14} className="text-[#59B200] animate-pulse" />
+                     <span className="text-[12px] font-bold text-[#333]">Centro de Notificaciones</span>
+                     <div className="ml-auto bg-[#cc0000] text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">
+                        {unreadNotifications.length}
                      </div>
-                  ))}
-                  {unreadNotifications.length > 3 && (
-                     <div className="text-[9px] text-[#856404] font-bold mt-1 italic pointer-events-none">
-                        Y otras {unreadNotifications.length - 3} más...
-                     </div>
-                  )}
-               </div>
-            </motion.div>
-         )}
+                  </div>
+                  <div className="flex flex-col gap-3">
+                     {items.map(item => (
+                        <div
+                           key={item.key}
+                           className="flex items-center gap-3 group cursor-pointer hover:bg-[#F9FBFE] p-1.5 rounded-sm transition-colors"
+                           onClick={() => {
+                              if (item.key === 'visits') navigate('/profile');
+                              else if (item.key === 'friendships') navigate('/people');
+                              else if (item.key === 'tags') navigate('/profile/photos');
+                              else navigate('/');
+                           }}
+                        >
+                           <div className="text-[#59B200] bg-[#59B200]/10 p-1.5 rounded-sm">
+                              {item.icon}
+                           </div>
+                           <span className="text-[13px] font-bold text-[#59B200] group-hover:underline">
+                              {item.count} {item.label}
+                           </span>
+                        </div>
+                     ))}
+                  </div>
+               </motion.div>
+            );
+         })()}
 
          {/* Invitations Panel - Especially for Mobile */}
          <div className="mb-6 bg-[#f9fbfd] border border-[#dce5ed] rounded-[4px] p-2 md:p-3 shadow-sm overflow-hidden">
