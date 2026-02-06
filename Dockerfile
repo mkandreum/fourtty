@@ -21,15 +21,17 @@ RUN npx prisma generate
 RUN npm run build
 
 # Stage 3: Production Runner
-FROM node:18-alpine
+FROM node:18-slim
 WORKDIR /app
-RUN apk add --no-cache openssl libc6-compat
+
+# Install openssl and other dependencies needed by Prisma
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 # Install production dependencies for backend
 COPY backend/package*.json ./
 RUN npm install --production
 
-# Copy prisma client (requires schema)
+# Copy prisma schema
 COPY --from=backend-build /app/backend/prisma ./prisma
 
 # Generate prisma client in production environment
@@ -51,6 +53,4 @@ ENV NODE_ENV=production
 ENV PORT=5000
 
 # Start command
-# Need to run prisma migrate deploy? Maybe. For now, just start.
-# Ideally we use a startup script to migrate then start.
 CMD ["node", "dist/index.js"]
