@@ -314,6 +314,24 @@ const Feed: React.FC = () => {
                            <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
                               {item.count} {item.label}
                            </span>
+                           {item.key === 'visits' && recentVisitors.length > 0 && (
+                              <div className="flex -space-x-1.5 overflow-hidden ml-1">
+                                 {recentVisitors.slice(0, 4).map((visitor, idx) => (
+                                    <img
+                                       key={visitor.id}
+                                       src={getAvatarUrl(visitor.avatar)}
+                                       className="inline-block h-5 w-5 rounded-full ring-2 ring-white object-cover shadow-sm"
+                                       alt={visitor.name}
+                                       style={{ zIndex: 10 - idx }}
+                                    />
+                                 ))}
+                                 {recentVisitors.length > 4 && (
+                                    <div className="flex items-center justify-center h-5 w-5 rounded-full bg-gray-100 ring-2 ring-white text-[8px] font-bold text-gray-500 z-0 shadow-sm">
+                                       +{recentVisitors.length - 4}
+                                    </div>
+                                 )}
+                              </div>
+                           )}
                         </div>
                      ))}
                   </div>
@@ -374,9 +392,9 @@ const Feed: React.FC = () => {
             </div>
          </div>
 
-         {/* Recent Visitors - Home Sidebar Style */}
+         {/* Recent Visitors - Home Sidebar Style (Desktop Only) */}
          {recentVisitors.length > 0 && (
-            <div className="mb-6 bg-white border border-[#dce5ed] rounded-[4px] p-3 shadow-sm">
+            <div className="hidden md:block mb-6 bg-white border border-[#dce5ed] rounded-[4px] p-3 shadow-sm">
                <h4 className="font-bold text-[#005599] text-[12px] mb-3 border-b border-[#eee] pb-1 flex items-center justify-between">
                   <span>¿Quién ha visto tu perfil? <span className="text-[#888] font-normal">({recentVisitors.length})</span></span>
                   <span className="text-[10px] text-[#005599] hover:underline cursor-pointer font-normal" onClick={() => navigate(`/profile/${user?.id}`)}>Ver todos</span>
