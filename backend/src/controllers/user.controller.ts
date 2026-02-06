@@ -20,6 +20,7 @@ export const getUserProfile = async (req: AuthRequest, res: Response): Promise<v
                 relationshipStatus: true,
                 location: true,
                 occupation: true,
+                privacy: true,
                 createdAt: true,
                 _count: {
                     select: {
@@ -56,7 +57,7 @@ export const updateUserProfile = async (req: AuthRequest, res: Response): Promis
             return;
         }
 
-        const { name, bio, gender, age, relationshipStatus, location, occupation } = req.body;
+        const { name, bio, gender, age, relationshipStatus, location, occupation, privacy } = req.body;
 
         const updatedUser = await prisma.user.update({
             where: { id: userId },
@@ -67,7 +68,8 @@ export const updateUserProfile = async (req: AuthRequest, res: Response): Promis
                 ...(age && { age: parseInt(age) }),
                 ...(relationshipStatus && { relationshipStatus }),
                 ...(location !== undefined && { location }),
-                ...(occupation !== undefined && { occupation })
+                ...(occupation !== undefined && { occupation }),
+                ...(privacy && { privacy })
             },
             select: {
                 id: true,
@@ -80,6 +82,7 @@ export const updateUserProfile = async (req: AuthRequest, res: Response): Promis
                 relationshipStatus: true,
                 location: true,
                 occupation: true,
+                privacy: true,
                 createdAt: true,
                 updatedAt: true
             }

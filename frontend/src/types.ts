@@ -11,6 +11,7 @@ export interface User {
   relationshipStatus?: string;
   location?: string;
   occupation?: string;
+  privacy?: string;
   createdAt?: string;
   _count?: {
     friendships?: number;
@@ -24,9 +25,10 @@ export interface Post {
   userId: number;
   user: User;
   content: string;
-  type: 'status' | 'photo' | 'comment';
+  type: 'status' | 'photo' | 'comment' | 'video';
   image?: string;
-  createdAt: string; // timestamp
+  videoUrl?: string;
+  createdAt: string;
   updatedAt?: string;
   comments?: Comment[];
   _count?: {

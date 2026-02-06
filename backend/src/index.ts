@@ -13,6 +13,7 @@ import friendshipRoutes from './routes/friendship.routes';
 import messageRoutes from './routes/message.routes';
 import notificationRoutes from './routes/notification.routes';
 import extraRoutes from './routes/extra.routes';
+import pageRoutes from './routes/page.routes';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/friendships', friendshipRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/pages', pageRoutes);
 app.use('/api', extraRoutes);
 
 // Error handling middleware

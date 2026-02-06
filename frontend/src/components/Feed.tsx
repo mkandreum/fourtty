@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Edit3, Tag } from 'lucide-react';
+import { MessageSquare, Edit3, Tag, Youtube, Flag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import { Post } from '../types';
@@ -185,13 +185,33 @@ const Feed: React.FC = () => {
                            </div>
                         )}
 
+                        {/* Video specific */}
+                        {post.type === 'video' && post.videoUrl && (
+                           <div className="mt-2 w-full max-w-[400px]">
+                              <div className="aspect-video bg-black rounded-sm overflow-hidden border border-[#ccc]">
+                                 <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src={`https://www.youtube.com/embed/${post.videoUrl.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)?.[1]}`}
+                                    title="YouTube video player"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                 ></iframe>
+                              </div>
+                              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[#59B200] font-bold">
+                                 <Youtube size={14} /> Vídeo de YouTube
+                              </div>
+                           </div>
+                        )}
+
                         {/* Photo specific */}
                         {post.type === 'photo' && post.image && (
                            <div className="mt-2 flex gap-2">
-                              <div className="border border-[#ddd] p-1 bg-white inline-block shadow-sm">
+                              <div className="border border-[#ddd] p-1 bg-white inline-block shadow-sm hover:border-[#2B7BB9] cursor-pointer transition-colors">
                                  <img
                                     src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
-                                    className="h-[80px] w-auto cursor-pointer"
+                                    className="h-[120px] md:h-[180px] w-auto"
                                     alt="attachment"
                                  />
                               </div>

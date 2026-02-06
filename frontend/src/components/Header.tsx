@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronDown, LogOut, Bell } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, ChevronDown, LogOut, Bell, Flag } from 'lucide-react';
 import { ViewState, User } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
@@ -120,12 +120,23 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
         {/* Center: Search & Nav combined for responsiveness */}
         <nav className="flex-1 flex items-center justify-end gap-1 overflow-x-auto no-scrollbar py-1">
           <div className="flex items-center gap-0.5 min-w-max">
-            <button
-              className={navItemClass(ViewState.HOME)}
-              onClick={() => handleNavigate('/')}
+            <Link
+              to="/"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-md text-white hover:bg-white/10 transition-colors shrink-0"
             >
-              Inicio
-            </button>
+              <div className="w-5 h-5 flex items-center justify-center bg-white/10 rounded">
+                <span className="text-[10px] font-bold">;)</span>
+              </div>
+              <span className="text-[13px] font-bold">Inicio</span>
+            </Link>
+
+            <Link
+              to="/pages"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-md text-white hover:bg-white/10 transition-colors shrink-0"
+            >
+              <Flag size={18} className="opacity-80" />
+              <span className="text-[13px] font-bold">Páginas</span>
+            </Link>
             <button
               className={navItemClass(ViewState.PROFILE)}
               onClick={() => handleNavigate('/profile')}

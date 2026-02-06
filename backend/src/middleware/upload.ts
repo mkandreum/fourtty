@@ -25,30 +25,20 @@ const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFil
     }
 };
 
-// Avatar upload (single file, 5MB limit)
-export const uploadAvatar = multer({
-    storage,
-    fileFilter,
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB
-    }
-}).single('avatar');
-
-// Post image upload (single file, 10MB limit)
-export const uploadPostImage = multer({
+// Generic image upload (single file, 10MB limit)
+export const upload = multer({
     storage,
     fileFilter,
     limits: {
         fileSize: 10 * 1024 * 1024 // 10MB
     }
-}).single('image');
+});
+
+// Avatar upload (single file, 5MB limit)
+export const uploadAvatar = upload.single('avatar');
+
+// Post image upload (single file, 10MB limit)
+export const uploadPostImage = upload.single('image');
 
 // Multiple photos upload (up to 10 files, 10MB each)
-export const uploadPhotos = multer({
-    storage,
-    fileFilter,
-    limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB per file
-        files: 10
-    }
-}).array('photos', 10);
+export const uploadPhotos = upload.array('photos', 10);

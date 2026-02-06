@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera } from 'lucide-react';
+import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import { User, Post } from '../types';
@@ -351,6 +351,18 @@ const Profile: React.FC = () => {
                            onChange={(e) => setEditData({ ...editData, occupation: e.target.value })}
                         />
                      </div>
+                     <div>
+                        <label className="block font-bold text-[#666] mb-1">Privacidad del perfil</label>
+                        <select
+                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           value={editData.privacy || 'public'}
+                           onChange={(e) => setEditData({ ...editData, privacy: e.target.value })}
+                        >
+                           <option value="public">Público (todo el mundo)</option>
+                           <option value="friends">Solo amigos</option>
+                           <option value="private">Privado (solo yo)</option>
+                        </select>
+                     </div>
                      <button
                         onClick={handleUpdateProfile}
                         className="bg-[#59B200] text-white font-bold py-1.5 rounded-[2px] border border-[#4a9600] mt-1"
@@ -372,9 +384,15 @@ const Profile: React.FC = () => {
                         <MapPin size={12} className="text-[#888]" />
                         <span>{profileUser.location || 'No especificado'}</span>
                      </div>
-                     <div className="flex items-center gap-2">
+                     <div className="flex items-center gap-2 mb-1.5">
                         <Briefcase size={12} className="text-[#888]" />
                         <span>{profileUser.occupation || 'No especificado'}</span>
+                     </div>
+                     <div className="flex items-center gap-2 border-t border-[#eee] pt-1.5 mt-1.5">
+                        <div className={`w-2 h-2 rounded-full ${profileUser.privacy === 'public' ? 'bg-green-500' : (profileUser.privacy === 'friends' ? 'bg-blue-500' : 'bg-red-500')}`}></div>
+                        <span className="text-[10px] font-bold text-[#666]">
+                           {profileUser.privacy === 'public' ? 'Perfil público' : (profileUser.privacy === 'friends' ? 'Solo amigos' : 'Perfil privado')}
+                        </span>
                      </div>
                   </div>
                )}
@@ -423,6 +441,20 @@ const Profile: React.FC = () => {
                   </button>
                </div>
 
+               {/* Pages Widget */}
+               <div className="bg-white border border-[#dce5ed] rounded-[4px] p-3">
+                  <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1 flex items-center gap-1">
+                     <Flag size={14} /> Páginas
+                  </h3>
+                  <div className="flex flex-col gap-2">
+                     <button
+                        onClick={() => navigate('/pages')}
+                        className="text-[11px] text-[#005599] hover:underline text-left font-medium"
+                     >
+                        » Explorar todas las páginas
+                     </button>
+                  </div>
+               </div>
             </div>
 
             {/* Right Column: The Wall */}

@@ -80,22 +80,23 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
 // Create post
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { content, type } = req.body;
+        const { content, type, videoUrl } = req.body;
 
-        if (!content || !content.trim()) {
-            res.status(400).json({ error: 'Content is required' });
+        if (!content && !videoUrl && !req.file) {
+            res.status(400).json({ error: 'Content, image or video is required' });
             return;
         }
 
-        const postType = type || (req.file ? 'photo' : 'status');
+        const postType = type || (videoUrl ? 'video' : (req.file ? 'photo' : 'status'));
         const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
         const post = await prisma.post.create({
             data: {
                 userId: req.userId!,
-                content,
+                content: content || (videoUrl ? 'compartió un vídeo' : 'compartió una foto'),
                 type: postType,
-                image: imageUrl
+                image: imageUrl,
+                videoUrl: videoUrl
             },
             include: {
                 user: {
@@ -128,11 +129,15 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
         );
 
         if (friendIds.length > 0) {
+            // Get current user name for notification
+            const currentUser = await prisma.user.findUnique({ where: { id: req.userId! }, select: { name: true } });
+            const senderName = currentUser?.name || 'Un amigo';
+
             await prisma.notification.createMany({
                 data: friendIds.map(friendId => ({
                     userId: friendId,
-                    type: postType === 'photo' ? 'photo' : 'status',
-                    content: `${post.user.name} ha publicado ${postType === 'photo' ? 'una foto' : 'un estado'}`,
+                    type: postType === 'photo' ? 'photo' : postType === 'video' ? 'video' : 'status',
+                    content: `${senderName} ha publicado ${postType === 'photo' ? 'una foto' : postType === 'video' ? 'un vídeo' : 'un estado'}`,
                     relatedId: post.id,
                     relatedUserId: req.userId!
                 }))

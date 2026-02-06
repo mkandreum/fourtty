@@ -8,6 +8,8 @@ import LeftPanel from './components/LeftPanel';
 import Profile from './components/Profile';
 import Gallery from './components/Gallery';
 import Inbox from './components/Inbox';
+import Pages from './components/Pages';
+import PageDetails from './components/PageDetails';
 import ChatBar from './components/ChatBar';
 import { ViewState } from './types';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -160,6 +162,22 @@ const AppContent = () => {
         isAuthenticated ? (
           <Layout view={ViewState.PROFILE}>
             <Inbox />
+          </Layout>
+        ) : <Navigate to="/login" />
+      } />
+
+      <Route path="/pages" element={
+        isAuthenticated ? (
+          <Layout view={ViewState.HOME}>
+            <Pages />
+          </Layout>
+        ) : <Navigate to="/login" />
+      } />
+
+      <Route path="/pages/:id" element={
+        isAuthenticated ? (
+          <Layout view={ViewState.HOME}>
+            <PageDetails />
           </Layout>
         ) : <Navigate to="/login" />
       } />

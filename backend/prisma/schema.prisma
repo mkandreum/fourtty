@@ -23,6 +23,7 @@ model User {
   relationshipStatus String?        @default("Soltero")
   location           String?        @default("")
   occupation         String?        @default("")
+  privacy            String?        @default("public") // public, friends, private
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
 
@@ -31,9 +32,8 @@ model User {
   comments           Comment[]
   photos             Photo[]
   
-  // Friendships - user is the requester
+  // Friendships
   friendships        Friendship[]   @relation("UserFriendships")
-  // Friendships - user is the friend
   friendOf           Friendship[]   @relation("FriendOfUser")
   
   // Messages
@@ -48,13 +48,18 @@ model User {
   visitsMade         Visit[]        @relation("Visitor")
 
   // Events
-  createdEvents      Event[]        @relation("CreatedEvents")
+  createdEvents      Event[]         @relation("CreatedEvents")
   attendingEvents    EventAttendee[]
+
+  // Pages
+  pagesCreated       Page[]          @relation("PageCreator")
+  pagesFollowing     PageFollower[]
+
+  // Real Tagging
+  photoTags          PhotoTag[]
 
   @@map("users")
 }
-
-// Existing Post, Comment, Friendship, Message, Photo... are there
 
 model Visit {
   id            Int       @id @default(autoincrement())
@@ -104,8 +109,9 @@ model Post {
   id            Int       @id @default(autoincrement())
   userId        Int
   content       String
-  type          String    @default("status") // status, photo, comment
+  type          String    @default("status") // status, photo, video
   image         String?
+  videoUrl      String?   // For YouTube links
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -176,24 +182,81 @@ model Photo {
   userId        Int
   url           String
   caption       String?
-  tags          String?   // JSON array of user IDs
   createdAt     DateTime  @default(now())
 
   // Relations
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photoTags     PhotoTag[]
 
   @@map("photos")
   @@index([userId])
 }
 
+model PhotoTag {
+  id        Int      @id @default(autoincrement())
+  photoId   Int
+  userId    Int
+  x         Float?
+  y         Float?
+  createdAt DateTime @default(now())
+
+  photo     Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([photoId, userId])
+  @@map("photo_tags")
+}
+
+model Page {
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String?
+  category      String?
+  image         String?
+  creatorId     Int
+  createdAt     DateTime       @default(now())
+
+  creator       User           @relation("PageCreator", fields: [creatorId], references: [id])
+  followers     PageFollower[]
+  posts         PagePost[]
+
+  @@map("pages")
+}
+
+model PageFollower {
+  id        Int      @id @default(autoincrement())
+  pageId    Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, userId])
+  @@map("page_followers")
+}
+
+model PagePost {
+  id        Int      @id @default(autoincrement())
+  pageId    Int
+  content   String
+  image     String?
+  videoUrl  String?
+  createdAt DateTime @default(now())
+
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@map("page_posts")
+}
+
 model Notification {
   id            Int       @id @default(autoincrement())
   userId        Int
-  type          String    // comment, friendship, message, tag, like
+  type          String    // comment, friendship, message, tag, like, page_invite
   content       String
   read          Boolean   @default(false)
-  relatedId     Int?      // ID of related entity (post, comment, friendship, etc.)
-  relatedUserId Int?      // ID of user who triggered the notification
+  relatedId     Int?      
+  relatedUserId Int?      
   createdAt     DateTime  @default(now())
 
   // Relations
