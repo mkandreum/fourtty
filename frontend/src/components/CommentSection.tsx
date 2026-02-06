@@ -9,19 +9,23 @@ interface CommentSectionProps {
     photoId?: number;
     initialCommentsCount: number;
     isPhoto?: boolean;
+    forceExpand?: boolean;
+    onToggle?: () => void;
 }
 
 import { useNavigate } from 'react-router-dom';
 import { ThumbsUp } from 'lucide-react';
 
-const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initialCommentsCount, isPhoto }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initialCommentsCount, isPhoto, forceExpand, onToggle }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [comments, setComments] = useState<Comment[]>([]);
     const [commentCount, setCommentCount] = useState(initialCommentsCount);
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [internalExpanded, setInternalExpanded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [newComment, setNewComment] = useState('');
+
+    const isExpanded = forceExpand !== undefined ? forceExpand : internalExpanded;
 
     const fetchComments = async () => {
         setIsLoading(true);
@@ -40,7 +44,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
         if (!isExpanded && comments.length === 0 && (commentCount > 0 || isPhoto)) {
             fetchComments();
         }
-        setIsExpanded(!isExpanded);
+        if (onToggle) onToggle();
+        else setInternalExpanded(!internalExpanded);
     };
 
     const handleToggleCommentLike = async (commentId: number) => {
@@ -78,7 +83,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
             setCommentCount(prev => prev + 1);
             setNewComment('');
 
-            if (!isExpanded) setIsExpanded(true);
+            if (!isExpanded) {
+                if (onToggle) onToggle();
+                else setInternalExpanded(true);
+            }
 
         } catch (error) {
             console.error("Error posting comment:", error);
@@ -116,29 +124,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
 
     return (
         <div className="mt-1">
-            {/* Interaction Summary / Toggle */}
-            <div className="flex items-center gap-1 text-[11px] mb-1">
-                {commentCount > 0 && (
-                    <div
-                        className="flex items-center gap-1 cursor-pointer group"
-                        onClick={handleToggleComments}
-                    >
-                        <MessageSquare size={10} className="text-[#59B200] fill-[#59B200]" />
-                        <span className="text-[#59B200] font-bold group-hover:underline">
-                            {commentCount} comentarios
-                        </span>
-                    </div>
-                )}
-
-                {commentCount === 0 && (
-                    <div
-                        className="text-[#005599] hover:underline cursor-pointer font-bold"
-                        onClick={() => setIsExpanded(true)}
-                    >
-                        Comentar
-                    </div>
-                )}
-            </div>
+            {/* Interaction Summary / Toggle removed for Action Bar consolidation */}
 
             {/* Comments List & Input */}
             {isExpanded && (

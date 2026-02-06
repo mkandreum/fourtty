@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag } from 'lucide-react';
+import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag, ThumbsUp, MessageCircle, Tag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { usePhotoModal } from '../contexts/PhotoModalContext';
@@ -696,7 +696,7 @@ const Profile: React.FC = () => {
                                  hidden: { opacity: 0, x: -10 },
                                  show: { opacity: 1, x: 0 }
                               }}
-                              className={`flex gap-3 p-3 border-b border-[#eee] ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f9fbfd]'} hover:bg-[#f0f5f9] transition-smooth cursor-default group`}
+                              className={`flex gap-3 p-4 mb-3 rounded-[8px] border border-[#dce5ed] shadow-sm ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f9fbfd]'} hover:bg-[#f3f7f9] transition-smooth cursor-default group`}
                            >
                               <div className="w-10 flex-shrink-0">
                                  <img
@@ -707,14 +707,22 @@ const Profile: React.FC = () => {
                                  />
                               </div>
                               <div className="flex-1">
-                                 <div className="mb-1">
+                                 <div className="flex items-center gap-1.5 mb-1.5 pr-6">
                                     <span
-                                       className="text-[#005599] font-bold text-[12px] hover:underline cursor-pointer"
+                                       className="text-[#005599] font-bold text-[13px] hover:underline cursor-pointer"
                                        onClick={() => navigate(`/profile/${post.user.id}`)}
                                     >
                                        {post.user.name} {post.user.lastName}
                                     </span>
-                                    <span className="text-[#333] text-[12px]"> {post.content}</span>
+                                    <span className="text-[#999] text-[10px]">&bull;</span>
+                                    <span className="text-[#999] text-[10px]">{new Date(post.createdAt).toLocaleDateString()}</span>
+                                 </div>
+                                 <div className="text-[13px] text-[#333] leading-relaxed mb-2">
+                                    {post.type === 'status' ? (
+                                       <span className="italic text-[#444] font-medium">"{post.content}"</span>
+                                    ) : (
+                                       <span>{post.content}</span>
+                                    )}
                                  </div>
                                  {post.image && (
                                     <motion.div
@@ -740,12 +748,30 @@ const Profile: React.FC = () => {
                                        />
                                     </motion.div>
                                  )}
-                                 <div className="text-[#999] text-[10px] mb-1">
-                                    {new Date(post.createdAt).toLocaleDateString()}
+                                 {/* Modern Action Bar */}
+                                 <div className="mt-3 flex items-center gap-2 pt-2 border-t border-[#f0f2f5]">
+                                    <button
+                                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold text-[#65676b] hover:bg-[#f0f2f5] transition-all"
+                                    >
+                                       <ThumbsUp size={14} />
+                                       Me mola
+                                       {post._count && post._count.likes > 0 && <span className="ml-1 opacity-70">({post._count.likes})</span>}
+                                    </button>
+
+                                    <button
+                                       onClick={() => togglePostExpansion(post.id)}
+                                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${expandedPostIds.includes(post.id) ? 'bg-[#005599]/10 text-[#005599]' : 'text-[#65676b] hover:bg-[#f0f2f5]'}`}
+                                    >
+                                       <MessageCircle size={14} />
+                                       Comentar
+                                       {post._count && post._count.comments > 0 && <span className="ml-1 opacity-70">({post._count.comments})</span>}
+                                    </button>
                                  </div>
                                  <CommentSection
                                     postId={post.id}
                                     initialCommentsCount={post._count?.comments || 0}
+                                    forceExpand={expandedPostIds.includes(post.id)}
+                                    onToggle={() => togglePostExpansion(post.id)}
                                  />
                               </div>
                            </motion.div>
