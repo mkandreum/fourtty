@@ -12,6 +12,7 @@ RUN npm run build
 # Stage 2: Build Backend
 FROM node:18-alpine as backend-build
 WORKDIR /app/backend
+RUN apk add --no-cache openssl libc6-compat
 COPY backend/package*.json ./
 RUN npm install
 COPY backend/ .
@@ -22,6 +23,7 @@ RUN npm run build
 # Stage 3: Production Runner
 FROM node:18-alpine
 WORKDIR /app
+RUN apk add --no-cache openssl libc6-compat
 
 # Install production dependencies for backend
 COPY backend/package*.json ./
