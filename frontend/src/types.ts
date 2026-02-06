@@ -51,6 +51,7 @@ export interface Photo {
   photoTags?: any[];
   _count?: {
     likes?: number;
+    comments?: number;
   };
 }
 

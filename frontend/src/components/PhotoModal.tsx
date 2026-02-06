@@ -14,12 +14,10 @@ const PhotoModal: React.FC = () => {
     const [isTagging, setIsTagging] = useState(false);
     const [friends, setFriends] = useState<any[]>([]);
     const [showFriendList, setShowFriendList] = useState<{ x: number, y: number } | null>(null);
-    const [localPhoto, setLocalPhoto] = useState<Photo | null>(null);
     const imgRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
         if (activePhoto) {
-            setLocalPhoto(activePhoto);
             fetchFriends();
         }
     }, [activePhoto]);
@@ -98,13 +96,13 @@ const PhotoModal: React.FC = () => {
         openPhoto(playlist[nextIdx], playlist);
     };
 
-    if (!isOpen || !localPhoto) return null;
+    if (!isOpen || !activePhoto) return null;
 
-    const currentIndex = playlist.findIndex(p => p.id === localPhoto.id);
-    const userName = localPhoto.user?.name || 'Usuario';
+    const currentIndex = playlist.findIndex(p => p.id === activePhoto.id);
+    const userName = activePhoto.user?.name || 'Usuario';
 
     return (
-        <div className="fixed inset-0 bg-[#333] z-[100] flex flex-col animate-in fade-in duration-200">
+        <div className="fixed inset-0 bg-[#333] z-[999999] flex flex-col animate-in fade-in duration-200">
             {/* Top Bar */}
             <div className="h-[45px] bg-black text-white flex items-center justify-between px-4 border-b border-[#444]">
                 <div className="flex items-center gap-4 text-[13px] font-bold">
@@ -135,13 +133,13 @@ const PhotoModal: React.FC = () => {
                     <div className="relative inline-block max-w-full max-h-full">
                         <img
                             ref={imgRef}
-                            src={getPhotoUrl(localPhoto.url)}
+                            src={getPhotoUrl(activePhoto.url)}
                             onClick={handleImageClick}
                             className={`max-w-full max-h-[70vh] md:max-h-[85vh] object-contain shadow-2xl ${isTagging ? 'cursor-crosshair' : ''}`}
                             alt="Selected"
                         />
                         {/* Tags */}
-                        {localPhoto.photoTags?.map((tag: any) => (
+                        {activePhoto.photoTags?.map((tag: any) => (
                             <div key={tag.id} className="absolute group/tag" style={{ left: `${tag.x}%`, top: `${tag.y}%` }}>
                                 <div className="w-4 h-4 mt-[-8px] ml-[-8px] border-2 border-white shadow-md bg-transparent rounded-sm opacity-0 group-hover:opacity-100 group-hover/tag:opacity-100 transition-opacity"></div>
                                 <div className="hidden group-hover/tag:block absolute top-full left-1/2 translate-x-[-50%] mt-1 bg-black/80 text-white text-[9px] px-1.5 py-0.5 rounded-[2px] whitespace-nowrap z-20">
@@ -184,21 +182,21 @@ const PhotoModal: React.FC = () => {
                 <div className="w-full md:w-[350px] bg-[#f2f6f9] border-l border-[#ddd] flex flex-col overflow-y-auto">
                     <div className="p-4 border-b border-[#ddd] bg-white">
                         <div className="flex items-center gap-3 mb-4">
-                            <img src={localPhoto.user?.avatar || `/api/proxy/avatar?name=${encodeURIComponent(userName)}`}
+                            <img src={activePhoto.user?.avatar || `/api/proxy/avatar?name=${encodeURIComponent(userName)}`}
                                 className="w-10 h-10 rounded-[2px] border border-[#ccc]" />
                             <div>
                                 <h4 className="text-[13px] font-bold text-[#005599]">{userName}</h4>
-                                <p className="text-[10px] text-gray-500">Subida el {new Date(localPhoto.createdAt).toLocaleDateString()}</p>
+                                <p className="text-[10px] text-gray-500">Subida el {new Date(activePhoto.createdAt).toLocaleDateString()}</p>
                             </div>
                         </div>
 
                         <div className="flex flex-wrap gap-2 mb-4">
                             <button onClick={handleToggleLike}
-                                className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${localPhoto.likedByMe ? 'bg-[#59B200] text-white' : 'bg-white text-[#555] border border-[#ccc]'}`}>
-                                <ThumbsUp size={12} fill={localPhoto.likedByMe ? 'white' : 'transparent'} />
-                                {localPhoto.likedByMe ? '¡Me mola!' : 'Me mola'}
+                                className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${activePhoto.likedByMe ? 'bg-[#59B200] text-white' : 'bg-white text-[#555] border border-[#ccc]'}`}>
+                                <ThumbsUp size={12} fill={activePhoto.likedByMe ? 'white' : 'transparent'} />
+                                {activePhoto.likedByMe ? '¡Me mola!' : 'Me mola'}
                             </button>
-                            {user?.id === localPhoto.userId && (
+                            {user?.id === activePhoto.userId && (
                                 <button onClick={() => setIsTagging(!isTagging)}
                                     className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${isTagging ? 'bg-[#59B200] text-white' : 'bg-white text-[#555] border border-[#ccc]'}`}>
                                     <Tag size={12} /> {isTagging ? 'Haz clic en la foto' : 'Etiquetar'}
@@ -206,18 +204,18 @@ const PhotoModal: React.FC = () => {
                             )}
                         </div>
 
-                        {localPhoto._count?.likes > 0 && (
+                        {activePhoto._count?.likes! > 0 && (
                             <div className="mb-4 text-[11px] text-[#59B200] font-bold bg-[#f6fff0] p-2 rounded border border-[#e2efd9] flex items-center gap-2">
                                 <ThumbsUp size={14} fill="#59B200" />
-                                <span>A {localPhoto._count.likes} {localPhoto._count.likes === 1 ? 'persona le mola' : 'personas les mola'}</span>
+                                <span>A {activePhoto._count?.likes} {activePhoto._count?.likes === 1 ? 'persona le mola' : 'personas les mola'}</span>
                             </div>
                         )}
 
-                        {localPhoto.photoTags?.length > 0 && (
+                        {activePhoto.photoTags?.length! > 0 && (
                             <div className="mb-4">
                                 <h5 className="text-[10px] font-bold text-[#888] uppercase mb-2">En esta foto:</h5>
                                 <div className="flex flex-wrap gap-1.5">
-                                    {localPhoto.photoTags.map((tag: any) => (
+                                    {activePhoto.photoTags?.map((tag: any) => (
                                         <Link to={`/profile/${tag.userId}`} key={tag.id} onClick={closePhoto}
                                             className="bg-white border border-[#ccc] text-[#005599] text-[11px] px-2 py-0.5 rounded-[2px] hover:bg-[#2B7BB9] hover:text-white">
                                             {tag.user.name}
@@ -230,7 +228,7 @@ const PhotoModal: React.FC = () => {
 
                     <div className="p-4 flex-1">
                         <h5 className="text-[11px] font-bold text-[#333] mb-4 flex items-center gap-1"><MessageSquare size={14} className="text-[#59B200]" /> Comentarios</h5>
-                        <CommentSection photoId={localPhoto.id} isPhoto={true} initialCommentsCount={localPhoto._count?.likes || 0} />
+                        <CommentSection photoId={activePhoto.id} isPhoto={true} initialCommentsCount={activePhoto._count?.comments || 0} />
                     </div>
                 </div>
 

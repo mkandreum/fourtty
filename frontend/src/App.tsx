@@ -194,6 +194,7 @@ function App() {
           <ToastProvider>
             <Router>
               <AppContent />
+              <PhotoModal />
             </Router>
           </ToastProvider>
         </PhotoModalProvider>
