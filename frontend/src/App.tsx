@@ -93,7 +93,7 @@ const AppContent = () => {
       <div className="main-content-container max-w-[980px] mx-auto px-0 sm:px-2">
         <div className={`flex flex-col md:flex-row md:gap-0 items-start ${view === ViewState.HOME || view === ViewState.PEOPLE ? 'md:bg-white md:border md:border-[#dce5ed] md:rounded-[4px] md:shadow-sm md:mt-4' : ''}`}>
           {view === ViewState.HOME && (
-            <aside className="hidden md:block w-[190px] shrink-0 sticky top-[62px] border-r border-[#eee] min-h-[calc(100vh-62px)]">
+            <aside className="hidden md:block w-[190px] shrink-0 sticky top-[68px] border-r border-[#eee] min-h-[calc(100vh-68px)]">
               <div className="p-3">
                 <LeftPanel />
               </div>
@@ -103,7 +103,7 @@ const AppContent = () => {
             {children}
           </main>
           {(view === ViewState.HOME || view === ViewState.PEOPLE) && (
-            <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[62px] border-l border-[#eee] min-h-[calc(100vh-62px)]">
+            <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[68px] border-l border-[#eee] min-h-[calc(100vh-68px)]">
               <div className="p-3">
                 <Sidebar />
               </div>

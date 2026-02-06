@@ -123,7 +123,7 @@ const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 w-full h-[42px] bg-[#005599] z-50 border-b border-[#003366] shadow-sm">
+    <header className="fixed top-0 left-0 w-full h-[48px] bg-[#005599] z-50 border-b border-[#003366] shadow-sm">
       <div className="max-w-[980px] mx-auto h-full flex items-center justify-between px-2">
 
         {/* Left Side: Logo + Navigation */}

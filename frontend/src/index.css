@@ -22,12 +22,12 @@ body {
 
 /* STICKY HEADER SPACING */
 .main-content-container {
-    padding-top: 42px !important;
+    padding-top: 48px !important;
 }
 
 @media (max-width: 768px) {
     .main-content-container {
-        padding-top: 42px !important;
+        padding-top: 48px !important;
     }
 }
 
