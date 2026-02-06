@@ -160,6 +160,7 @@ model Comment {
   post          Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
   photo         Photo?    @relation(fields: [photoId], references: [id], onDelete: Cascade)
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes         Like[]
 
   @@map("comments")
   @@index([postId])
@@ -302,13 +303,16 @@ model Like {
   userId    Int
   postId    Int?
   photoId   Int?
+  commentId Int?
   createdAt DateTime @default(now())
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
   photo     Photo?   @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
   @@unique([userId, photoId])
+  @@unique([userId, commentId])
   @@map("likes")
 }

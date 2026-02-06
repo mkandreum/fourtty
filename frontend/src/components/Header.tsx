@@ -87,7 +87,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-0 w-full h-[42px] bg-[#005599] z-50 border-b border-[#003366] shadow-sm">
-      <div className="max-w-[980px] mx-auto h-full flex items-center justify-between px-2 overflow-hidden">
+      <div className="max-w-[980px] mx-auto h-full flex items-center justify-between px-2">
 
         {/* Left Side: Logo + Navigation */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
@@ -144,7 +144,7 @@ const Header: React.FC = () => {
         </div>
 
         {/* Right Side: Search & Actions */}
-        <div className="flex items-center justify-end gap-1 md:gap-2 flex-1 ml-4 overflow-hidden">
+        <div className="flex items-center justify-end gap-1 md:gap-2 flex-1 ml-4">
           {/* Search Bar - Compact - Hidden on mobile */}
           <div className="relative shrink-1 min-w-[60px] max-w-[180px] hidden md:block">
             <input
@@ -224,40 +224,78 @@ const Header: React.FC = () => {
 
                 {/* Notifications Dropdown */}
                 {showNotifs && (
-                  <div className="absolute top-[30px] right-0 w-[280px] bg-white shadow-2xl border border-[#ccc] rounded-b-[4px] z-[100] animate-in fade-in slide-in-from-top-2 duration-200 text-left">
-                    <div className="bg-[#f2f6f9] border-b border-[#dce5ed] p-2 flex justify-between items-center">
-                      <span className="text-[11px] font-bold text-[#333]">Notificaciones</span>
+                  <div className="absolute top-[35px] right-0 w-[300px] md:w-[340px] bg-white/95 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/20 rounded-[4px] z-[100] animate-in fade-in slide-in-from-top-2 duration-300 text-left overflow-hidden ring-1 ring-black/5">
+                    <div className="bg-[#005599] text-white p-3 flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <Bell size={14} className="animate-pulse" />
+                        <span className="text-[12px] font-bold tracking-tight">Centro de Notificaciones</span>
+                      </div>
                       <button
                         onClick={() => setShowNotifs(false)}
-                        className="text-[10px] text-[#005599] hover:underline"
+                        className="text-white/80 hover:text-white transition-colors"
                       >
-                        Cerrar
+                        <X size={16} />
                       </button>
                     </div>
-                    <div className="max-h-[350px] overflow-y-auto">
+
+                    <div className="max-h-[400px] overflow-y-auto no-scrollbar bg-white/50">
                       {notifications.length === 0 ? (
-                        <div className="p-8 text-center text-gray-400 text-[11px]">No tienes notificaciones</div>
+                        <div className="py-12 px-6 text-center text-gray-400">
+                          <div className="bg-gray-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <Bell size={20} className="opacity-20" />
+                          </div>
+                          <p className="text-[11px] font-medium">No tienes notificaciones por ahora</p>
+                        </div>
                       ) : (
-                        notifications.map(notif => (
+                        notifications.map((notif, index) => (
                           <div
                             key={notif.id}
                             onClick={() => {
                               handleMarkAsRead(notif.id);
-                              if (notif.type === 'friendship') handleNavigate(`/profile/${notif.relatedId}`);
-                              if (notif.type === 'comment' || notif.type === 'message' || notif.type === 'tag') handleNavigate('/');
+                              if (notif.type === 'friendship' && notif.relatedUserId) {
+                                handleNavigate(`/profile/${notif.relatedUserId}`);
+                              } else if (['photo', 'tag_photo', 'like_photo', 'comment_photo'].includes(notif.type) && notif.relatedId) {
+                                handleNavigate(`/profile/photos`); // Navigate to gallery or specific photo
+                              } else if (notif.relatedId) {
+                                handleNavigate(`/`); // For now posts are in home
+                              } else {
+                                handleNavigate(`/`);
+                              }
                               setShowNotifs(false);
                             }}
-                            className={`p-2 border-b border-[#eee] hover:bg-[#f9fbfd] cursor-pointer flex gap-2 items-start ${!notif.read ? 'bg-[#fff9e6]' : ''}`}
+                            className={`p-3 border-b border-gray-100 last:border-0 hover:bg-[#ebf5ff] cursor-pointer flex gap-3 items-start transition-all duration-200 group ${!notif.read ? 'bg-[#f0f9ff]' : ''}`}
+                            style={{ animationDelay: `${index * 50}ms` }}
                           >
-                            <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${!notif.read ? 'bg-[#59B200]' : 'bg-transparent'}`}></div>
+                            <div className="relative shrink-0">
+                              <div className={`w-2 h-2 rounded-full mt-1.5 ${!notif.read ? 'bg-[#59B200] shadow-[0_0_8px_rgba(89,178,0,0.5)]' : 'bg-transparent'}`}></div>
+                              {notif.type === 'tag' && <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-0.5 rounded-full scale-75 border border-white"><User size={8} /></div>}
+                            </div>
                             <div className="flex-1">
-                              <p className="text-[11px] text-[#333] leading-tight mb-1">{notif.content}</p>
-                              <span className="text-[8px] text-gray-400">{new Date(notif.createdAt).toLocaleString()}</span>
+                              <p className={`text-[12px] leading-[1.4] mb-1.5 ${!notif.read ? 'text-[#003366] font-bold' : 'text-[#444] font-medium'}`}>
+                                {notif.content}
+                              </p>
+                              <div className="flex items-center justify-between">
+                                <span className="text-[9px] text-gray-400 font-medium">{new Date(notif.createdAt).toLocaleDateString()} · {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                {!notif.read && <span className="text-[8px] text-[#005599] font-bold opacity-0 group-hover:opacity-100 transition-opacity">Nuevo</span>}
+                              </div>
                             </div>
                           </div>
                         ))
                       )}
                     </div>
+
+                    {notifications.length > 0 && (
+                      <div className="bg-gray-50/50 p-2 text-center border-t border-gray-100">
+                        <button
+                          className="text-[10px] font-bold text-[#005599] hover:underline"
+                          onClick={() => {
+                            // Maybe implement mark all as read
+                          }}
+                        >
+                          Ver todas las notificaciones
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

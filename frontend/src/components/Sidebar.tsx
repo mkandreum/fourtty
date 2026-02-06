@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
+import { useSocket } from '../contexts/SocketContext';
 import { User } from '../types';
 import { motion } from 'framer-motion';
 
 const Sidebar: React.FC = () => {
    const { user } = useAuth();
+   const { socket } = useSocket();
    const [friends, setFriends] = useState<User[]>([]);
+   const [onlineUserIds, setOnlineUserIds] = useState<number[]>([]);
    const [filterQuery, setFilterQuery] = useState('');
    const [isLoading, setIsLoading] = useState(true);
 
@@ -26,6 +29,23 @@ const Sidebar: React.FC = () => {
          fetchFriends();
       }
    }, [user]);
+
+   useEffect(() => {
+      if (!socket || !user) return;
+
+      const handleOnlineUsers = (ids: number[]) => {
+         setOnlineUserIds(ids);
+      };
+
+      socket.on('online_users', handleOnlineUsers);
+      socket.emit('get_online_users');
+
+      return () => {
+         socket.off('online_users', handleOnlineUsers);
+      };
+   }, [socket, user]);
+
+   const onlineFriendsCount = friends.filter(f => onlineUserIds.includes(f.id)).length;
 
    const filteredFriends = friends.filter(friend =>
       friend.name.toLowerCase().includes(filterQuery.toLowerCase())
@@ -52,8 +72,8 @@ const Sidebar: React.FC = () => {
          <div className="bg-[#fff]">
             <h4 className="text-[#333] font-bold text-[11px] mb-2 flex items-center justify-between border-b border-[#eee] pb-1">
                <div className="flex items-center gap-1">
-                  <span className="w-2 h-2 bg-[#59B200] rounded-full"></span>
-                  Chat ({filteredFriends.length})
+                  <span className={`w-2 h-2 rounded-full ${onlineFriendsCount > 0 ? 'bg-[#59B200]' : 'bg-gray-400'}`}></span>
+                  Chat ({onlineFriendsCount})
                </div>
                <span className="text-[#005599] hover:underline cursor-pointer text-[10px]">Ajustes</span>
             </h4>
@@ -71,15 +91,18 @@ const Sidebar: React.FC = () => {
                {isLoading ? (
                   <div className="text-[10px] text-gray-400 p-2">Cargando amigos...</div>
                ) : filteredFriends.length > 0 ? (
-                  filteredFriends.map(friend => (
-                     <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[#e1f0fa] cursor-pointer group">
-                        <div className="w-2 h-2 rounded-full bg-[#59B200]"></div>
-                        <span className="text-[11px] text-[#333] group-hover:text-black truncate">{friend.name}</span>
-                     </div>
-                  ))
+                  filteredFriends.map(friend => {
+                     const isOnline = onlineUserIds.includes(friend.id);
+                     return (
+                        <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[#e1f0fa] cursor-pointer group">
+                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-300'}`}></div>
+                           <span className={`text-[11px] ${isOnline ? 'text-[#333]' : 'text-gray-400'} group-hover:text-black truncate`}>{friend.name}</span>
+                        </div>
+                     );
+                  })
                ) : (
                   <div className="text-[10px] text-gray-400 p-2">
-                     {filterQuery ? 'No se encontraron amigos' : 'No tienes amigos conectados'}
+                     {filterQuery ? 'No se encontraron amigos' : 'No tienes amigos todavía'}
                   </div>
                )}
             </div>

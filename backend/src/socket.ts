@@ -9,6 +9,11 @@ interface ConnectedUser {
 const connectedUsers: ConnectedUser[] = [];
 
 export const initSocketHandlers = (io: Server) => {
+    const broadcastOnlineUsers = () => {
+        const onlineIds = Array.from(new Set(connectedUsers.map(u => u.userId)));
+        io.emit('online_users', onlineIds);
+    };
+
     io.on('connection', (socket: Socket) => {
         console.log('👤 New client connected:', socket.id);
 
@@ -17,7 +22,7 @@ export const initSocketHandlers = (io: Server) => {
             if (!userId) return;
 
             // Remove previous connections for this user (optional)
-            const index = connectedUsers.findIndex(u => u.userId === userId);
+            const index = connectedUsers.findIndex(u => u.socketId === socket.id);
             if (index !== -1) {
                 connectedUsers.splice(index, 1);
             }
@@ -25,6 +30,13 @@ export const initSocketHandlers = (io: Server) => {
             connectedUsers.push({ userId, socketId: socket.id });
             socket.join(`user_${userId}`);
             console.log(`🔑 User ${userId} authenticated and joined room user_${userId}`);
+            broadcastOnlineUsers();
+        });
+
+        // Request initial online users
+        socket.on('get_online_users', () => {
+            const onlineIds = Array.from(new Set(connectedUsers.map(u => u.userId)));
+            socket.emit('online_users', onlineIds);
         });
 
         // Chat messaging logic
@@ -86,6 +98,7 @@ export const initSocketHandlers = (io: Server) => {
                 const userId = connectedUsers[index].userId;
                 connectedUsers.splice(index, 1);
                 console.log(`👤 User ${userId} disconnected`);
+                broadcastOnlineUsers();
             }
         });
     });

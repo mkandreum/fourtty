@@ -163,19 +163,39 @@ const ChatWindow = ({
 
 const ChatBar: React.FC = () => {
    const { user } = useAuth();
+   const { socket } = useSocket();
    const [isOpen, setIsOpen] = useState(false);
    const [activeChatUser, setActiveChatUser] = useState<User | null>(null);
    const [friends, setFriends] = useState<User[]>([]);
+   const [onlineUserIds, setOnlineUserIds] = useState<number[]>([]);
 
    useEffect(() => {
-      if (user && isOpen) {
+      if (user) {
+         // Fetch friends list on mount
          api.get(`/users/${user.id}/friends`)
             .then(res => setFriends(res.data.friends))
             .catch(err => console.error(err));
       }
-   }, [user, isOpen]);
+   }, [user]);
+
+   useEffect(() => {
+      if (!socket || !user) return;
+
+      const handleOnlineUsers = (ids: number[]) => {
+         setOnlineUserIds(ids);
+      };
+
+      socket.on('online_users', handleOnlineUsers);
+      socket.emit('get_online_users');
+
+      return () => {
+         socket.off('online_users', handleOnlineUsers);
+      };
+   }, [socket, user]);
 
    if (!user) return null;
+
+   const onlineFriends = friends.filter(f => onlineUserIds.includes(f.id));
 
    return (
       <>
@@ -187,8 +207,8 @@ const ChatBar: React.FC = () => {
                className="flex items-center gap-2 h-full px-3 hover:bg-[#333] cursor-pointer border-r border-[#333] select-none"
                onClick={() => setIsOpen(!isOpen)}
             >
-               <div className="w-2 h-2 rounded-full bg-[#59B200] shadow-[0_0_4px_#59B200]"></div>
-               <span className="font-bold text-[12px]">Chat ({friends.length})</span>
+               <div className={`w-2 h-2 rounded-full ${onlineFriends.length > 0 ? 'bg-[#59B200] shadow-[0_0_4px_#59B200]' : 'bg-gray-500'}`}></div>
+               <span className="font-bold text-[12px]">Chat ({onlineFriends.length})</span>
             </div>
 
             {/* Right: Settings or minimized chats */}
@@ -198,7 +218,7 @@ const ChatBar: React.FC = () => {
                      className="h-full px-3 bg-[#005599] flex items-center gap-2 cursor-pointer text-[12px] font-bold"
                      onClick={() => setActiveChatUser(activeChatUser)}
                   >
-                     <span className="w-2 h-2 rounded-full bg-[#59B200]"></span>
+                     <span className={`w-2 h-2 rounded-full ${onlineUserIds.includes(activeChatUser.id) ? 'bg-[#59B200]' : 'bg-gray-400'}`}></span>
                      {activeChatUser.name}
                   </div>
                )}
@@ -210,32 +230,34 @@ const ChatBar: React.FC = () => {
          {isOpen && (
             <div className="fixed bottom-[30px] left-2 w-[200px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 max-h-[400px] flex flex-col">
                <div className="bg-[#f0f0f0] p-2 border-b border-[#ccc] flex justify-between items-center">
-                  <span className="text-[11px] font-bold text-[#333]">Conectados</span>
+                  <span className="text-[11px] font-bold text-[#333]">Amigos {friends.length > 0 && `(${onlineFriends.length}/${friends.length})`}</span>
                   <div className="flex gap-1">
                      <span className="text-[9px] text-[#005599] hover:underline cursor-pointer">Ajustes</span>
                   </div>
                </div>
                <div className="overflow-y-auto p-1 flex-1 h-[300px]">
                   <input type="text" placeholder="Buscar amigo" className="w-full text-[11px] p-1 border border-[#ccc] rounded-[2px] mb-2 focus:outline-none" />
-                  {friends.length > 0 ? friends.map(friend => (
-                     <div
-                        key={friend.id}
-                        className="flex items-center gap-2 p-1.5 hover:bg-[#e1f0fa] cursor-pointer rounded-[2px]"
-                        onClick={() => {
-                           setActiveChatUser(friend);
-                           // setIsOpen(false); // Maybe keep open?
-                        }}
-                     >
-                        <div className="w-2 h-2 rounded-full bg-[#59B200]"></div>
-                        <img
-                           src={friend.avatar || `https://ui-avatars.com/api/?name=${friend.name}`}
-                           className="w-5 h-5 rounded-sm object-cover"
-                           alt={friend.name}
-                        />
-                        <span className="text-[11px] text-[#333] truncate">{friend.name}</span>
-                     </div>
-                  )) : (
-                     <div className="text-[10px] text-gray-400 p-2">No tienes amigos conectados</div>
+                  {friends.length > 0 ? friends.map(friend => {
+                     const isOnline = onlineUserIds.includes(friend.id);
+                     return (
+                        <div
+                           key={friend.id}
+                           className="flex items-center gap-2 p-1.5 hover:bg-[#e1f0fa] cursor-pointer rounded-[2px]"
+                           onClick={() => {
+                              setActiveChatUser(friend);
+                           }}
+                        >
+                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-300'}`}></div>
+                           <img
+                              src={friend.avatar || `https://ui-avatars.com/api/?name=${friend.name}`}
+                              className={`w-5 h-5 rounded-sm object-cover ${!isOnline ? 'grayscale opacity-70' : ''}`}
+                              alt={friend.name}
+                           />
+                           <span className={`text-[11px] ${isOnline ? 'text-[#333] font-bold' : 'text-gray-500'} truncate`}>{friend.name}</span>
+                        </div>
+                     );
+                  }) : (
+                     <div className="text-[10px] text-gray-400 p-2">No tienes amigos todavía</div>
                   )}
                </div>
             </div>

@@ -101,3 +101,53 @@ export const togglePhotoLike = async (req: AuthRequest, res: Response): Promise<
         res.status(500).json({ error: 'Failed to toggle like' });
     }
 };
+
+// Toggle like on a comment
+export const toggleCommentLike = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.userId!;
+        const commentId = parseInt(req.params.id as string);
+
+        const existingLike = await prisma.like.findUnique({
+            where: {
+                userId_commentId: {
+                    userId,
+                    commentId
+                }
+            }
+        });
+
+        if (existingLike) {
+            await prisma.like.delete({ where: { id: existingLike.id } });
+            res.json({ liked: false });
+        } else {
+            await prisma.like.create({
+                data: { userId, commentId }
+            });
+
+            // Notify comment owner
+            const comment = await prisma.comment.findUnique({
+                where: { id: commentId },
+                include: { user: { select: { id: true, name: true } } }
+            });
+
+            if (comment && comment.userId !== userId) {
+                const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true } });
+                await prisma.notification.create({
+                    data: {
+                        userId: comment.userId,
+                        type: 'like',
+                        content: `${currentUser?.name} le mola tu comentario`,
+                        relatedId: comment.postId || comment.photoId || commentId,
+                        relatedUserId: userId
+                    }
+                });
+            }
+
+            res.status(201).json({ liked: true });
+        }
+    } catch (error) {
+        console.error('Toggle comment like error:', error);
+        res.status(500).json({ error: 'Failed to toggle like' });
+    }
+};

@@ -55,11 +55,14 @@ export interface Photo {
 
 export interface Comment {
   id: number;
-  postId: number;
+  postId?: number;
+  photoId?: number;
   userId: number;
   user: User;
   content: string;
   createdAt: string;
+  likeCount?: number;
+  isLiked?: boolean;
 }
 
 export interface SidebarItem {

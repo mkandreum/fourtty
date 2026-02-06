@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Edit3, Tag, Youtube, Flag, ThumbsUp, UserPlus, Plus, Bell, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import api from '../api';
@@ -10,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Feed: React.FC = () => {
    const { user, updateUser } = useAuth();
    const { showToast } = useToast();
+   const navigate = useNavigate();
    const [statusText, setStatusText] = useState('');
    const [posts, setPosts] = useState<Post[]>([]);
    const [isLoading, setIsLoading] = useState(true);
@@ -237,7 +239,17 @@ const Feed: React.FC = () => {
                </div>
                <div className="flex flex-col gap-1">
                   {unreadNotifications.slice(0, 3).map(notif => (
-                     <div key={notif.id} className="text-[10px] text-[#856404] flex items-center gap-1">
+                     <div
+                        key={notif.id}
+                        onClick={() => {
+                           if (notif.type === 'friendship' && notif.relatedUserId) {
+                              navigate(`/profile/${notif.relatedUserId}`);
+                           } else {
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                           }
+                        }}
+                        className="text-[10px] text-[#856404] flex items-center gap-1 cursor-pointer hover:underline"
+                     >
                         <div className="w-1 h-1 bg-[#d4a017] rounded-full"></div>
                         <span className="truncate">{notif.content}</span>
                      </div>

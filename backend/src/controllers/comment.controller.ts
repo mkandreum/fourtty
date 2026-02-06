@@ -6,6 +6,7 @@ import { AuthRequest } from '../middleware/auth';
 export const getPostComments = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const postId = parseInt(req.params.postId as string);
+        const userId = req.userId;
 
         const comments = await prisma.comment.findMany({
             where: { postId },
@@ -16,14 +17,26 @@ export const getPostComments = async (req: AuthRequest, res: Response): Promise<
                         name: true,
                         avatar: true
                     }
-                }
+                },
+                _count: {
+                    select: { likes: true }
+                },
+                likes: userId ? {
+                    where: { userId }
+                } : false
             },
             orderBy: {
                 createdAt: 'asc'
             }
         });
 
-        res.json({ comments });
+        const formattedComments = comments.map(c => ({
+            ...c,
+            likeCount: c._count.likes,
+            isLiked: c.likes?.length > 0
+        }));
+
+        res.json({ comments: formattedComments });
     } catch (error) {
         console.error('Get comments error:', error);
         res.status(500).json({ error: 'Failed to get comments' });
@@ -34,6 +47,7 @@ export const getPostComments = async (req: AuthRequest, res: Response): Promise<
 export const getPhotoComments = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const photoId = parseInt(req.params.photoId as string);
+        const userId = req.userId;
 
         const comments = await prisma.comment.findMany({
             where: { photoId },
@@ -44,14 +58,26 @@ export const getPhotoComments = async (req: AuthRequest, res: Response): Promise
                         name: true,
                         avatar: true
                     }
-                }
+                },
+                _count: {
+                    select: { likes: true }
+                },
+                likes: userId ? {
+                    where: { userId }
+                } : false
             },
             orderBy: {
                 createdAt: 'asc'
             }
         });
 
-        res.json({ comments });
+        const formattedComments = comments.map(c => ({
+            ...c,
+            likeCount: c._count.likes,
+            isLiked: c.likes?.length > 0
+        }));
+
+        res.json({ comments: formattedComments });
     } catch (error) {
         console.error('Get photo comments error:', error);
         res.status(500).json({ error: 'Failed to get comments' });
@@ -70,60 +96,103 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
             return;
         }
 
+        const commentData: any = { userId, content };
+        let targetId: number | null = null;
+        let targetType: 'post' | 'photo' | null = null;
+
         if (postId) {
-            const pid = parseInt(postId as string);
-            const post = await prisma.post.findUnique({ where: { id: pid } });
-            if (!post) {
-                res.status(404).json({ error: 'Post not found' });
-                return;
-            }
-
-            const comment = await prisma.comment.create({
-                data: { postId: pid, userId, content },
-                include: { user: { select: { id: true, name: true, avatar: true } } }
-            });
-
-            if (post.userId !== userId) {
-                await prisma.notification.create({
-                    data: {
-                        userId: post.userId,
-                        type: 'comment',
-                        content: `${comment.user.name} ha comentado en tu publicación`,
-                        relatedId: pid,
-                        relatedUserId: userId
-                    }
-                });
-            }
-            res.status(201).json({ message: 'Comment created successfully', comment });
-
+            targetId = parseInt(postId as string);
+            commentData.postId = targetId;
+            targetType = 'post';
         } else if (photoId) {
-            const phid = parseInt(photoId as string);
-            const photo = await prisma.photo.findUnique({ where: { id: phid } });
-            if (!photo) {
-                res.status(404).json({ error: 'Photo not found' });
-                return;
-            }
+            targetId = parseInt(photoId as string);
+            commentData.photoId = targetId;
+            targetType = 'photo';
+        }
 
-            const comment = await prisma.comment.create({
-                data: { photoId: phid, userId, content },
-                include: { user: { select: { id: true, name: true, avatar: true } } }
+        if (!targetId) {
+            res.status(400).json({ error: 'Target ID is required' });
+            return;
+        }
+
+        const comment = await prisma.comment.create({
+            data: commentData,
+            include: { user: { select: { id: true, name: true, avatar: true } } }
+        });
+
+        // Notify content owner
+        const notifyOwner = async () => {
+            if (targetType === 'post') {
+                const post = await prisma.post.findUnique({ where: { id: targetId! } });
+                if (post && post.userId !== userId) {
+                    await prisma.notification.create({
+                        data: {
+                            userId: post.userId,
+                            type: 'comment',
+                            content: `${comment.user.name} ha comentado en tu publicación`,
+                            relatedId: targetId!,
+                            relatedUserId: userId
+                        }
+                    });
+                }
+            } else {
+                const photo = await prisma.photo.findUnique({ where: { id: targetId! } });
+                if (photo && photo.userId !== userId) {
+                    await prisma.notification.create({
+                        data: {
+                            userId: photo.userId,
+                            type: 'comment',
+                            content: `${comment.user.name} ha comentado en tu foto`,
+                            relatedId: targetId!,
+                            relatedUserId: userId
+                        }
+                    });
+                }
+            }
+        };
+        await notifyOwner();
+
+        // Parse mentions (@Name)
+        const mentions = content.match(/@([\w\sáéíóúÁÉÍÓÚñÑ]+)/g);
+        if (mentions) {
+            // Get friends to verify mentions
+            const userFriends = await prisma.friendship.findMany({
+                where: {
+                    OR: [
+                        { userId, status: 'accepted' },
+                        { friendId: userId, status: 'accepted' }
+                    ]
+                },
+                include: {
+                    user: true,
+                    friend: true
+                }
             });
 
-            if (photo.userId !== userId) {
-                await prisma.notification.create({
-                    data: {
-                        userId: photo.userId,
-                        type: 'comment',
-                        content: `${comment.user.name} ha comentado en tu foto`,
-                        relatedId: phid,
-                        relatedUserId: userId
-                    }
-                });
+            const friends = userFriends.map(f => f.userId === userId ? f.friend : f.user);
+
+            for (const mention of mentions) {
+                const nameMentioned = mention.substring(1).trim();
+                const matchedFriend = friends.find(f => f.name.toLowerCase() === nameMentioned.toLowerCase());
+
+                if (matchedFriend && matchedFriend.id !== userId) {
+                    await prisma.notification.create({
+                        data: {
+                            userId: matchedFriend.id,
+                            type: 'tag',
+                            content: `${comment.user.name} te ha mencionado en un comentario`,
+                            relatedId: targetId!,
+                            relatedUserId: userId
+                        }
+                    });
+                }
             }
-            res.status(201).json({ message: 'Comment created successfully', comment });
-        } else {
-            res.status(400).json({ error: 'Target ID is required' });
         }
+
+        res.status(201).json({
+            message: 'Comment created successfully',
+            comment: { ...comment, likeCount: 0, isLiked: false }
+        });
 
     } catch (error) {
         console.error('Create comment error:', error);
