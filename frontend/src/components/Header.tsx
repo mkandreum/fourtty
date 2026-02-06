@@ -133,7 +133,10 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
               Perfil
             </button>
 
-            <button className={navLinkClass}>
+            <button
+              className={navLinkClass}
+              onClick={() => handleNavigate('/messages')}
+            >
               Mensajes
               {unreadMessages > 0 &&
                 <span className="bg-[#cc0000] text-white text-[9px] font-bold px-1 rounded-sm shadow-sm ml-1">{unreadMessages}</span>
@@ -161,11 +164,11 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
             </button>
 
             {/* Search Bar - More compact like original */}
-            <div className="relative mx-1 md:mx-2 shrink-0">
+            <div className="relative mx-1 md:mx-2 shrink-1 min-w-[60px]">
               <input
                 type="text"
                 placeholder="Buscar..."
-                className="w-[80px] md:w-[120px] h-[24px] pl-2 pr-6 rounded-[2px] border-none text-[10px] md:text-[11px] text-gray-700 focus:ring-0 placeholder-gray-400 outline-none"
+                className="w-full md:w-[120px] h-[24px] pl-2 pr-6 rounded-[2px] border-none text-[10px] md:text-[11px] text-gray-700 focus:ring-0 placeholder-gray-400 outline-none"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -203,9 +206,35 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
             </div>
 
             {/* Subir fotos button - icon only on mobile */}
-            <button className="bg-[#2B7BB9] hover:bg-[#256ca3] text-white text-[11px] font-bold px-2 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm flex items-center gap-1 mr-2 md:mr-4 shrink-0">
-              <span className="hidden sm:inline">Subir fotos</span> <span className="text-[14px] mb-0.5">↑</span>
-            </button>
+            <div className="relative">
+              <input
+                type="file"
+                id="photo-upload"
+                className="hidden"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  const formData = new FormData();
+                  formData.append('image', file); // Controller expects 'image' due to uploadPostImage middleware
+
+                  try {
+                    await api.post('/photos', formData);
+                    alert('¡Foto subida con éxito! Pronto podrás verla en tu galería.');
+                  } catch (err) {
+                    console.error("Upload error:", err);
+                    alert('Error al subir la foto.');
+                  }
+                }}
+              />
+              <button
+                onClick={() => document.getElementById('photo-upload')?.click()}
+                className="bg-[#2B7BB9] hover:bg-[#256ca3] text-white text-[11px] font-bold px-2 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm flex items-center gap-1 mr-2 md:mr-4 shrink-0"
+              >
+                <span className="hidden sm:inline">Subir fotos</span> <span className="text-[14px] mb-0.5">↑</span>
+              </button>
+            </div>
 
             {/* Right most links */}
             <div className="flex items-center gap-2 md:gap-3 text-white text-[10px] whitespace-nowrap pr-2">

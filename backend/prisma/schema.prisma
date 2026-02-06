@@ -42,8 +42,62 @@ model User {
   
   // Notifications
   notifications      Notification[]
+  
+  // Profile visits
+  visitsReceived     Visit[]        @relation("TargetUser")
+  visitsMade         Visit[]        @relation("Visitor")
+
+  // Events
+  createdEvents      Event[]        @relation("CreatedEvents")
+  attendingEvents    EventAttendee[]
 
   @@map("users")
+}
+
+// Existing Post, Comment, Friendship, Message, Photo... are there
+
+model Visit {
+  id            Int       @id @default(autoincrement())
+  visitorId     Int
+  targetId      Int
+  createdAt     DateTime  @default(now())
+
+  visitor       User      @relation("Visitor", fields: [visitorId], references: [id], onDelete: Cascade)
+  target        User      @relation("TargetUser", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@map("visits")
+  @@index([targetId])
+  @@index([visitorId])
+}
+
+model Event {
+  id            Int       @id @default(autoincrement())
+  creatorId     Int
+  title         String
+  description   String?
+  location      String?
+  date          DateTime
+  image         String?
+  createdAt     DateTime  @default(now())
+
+  creator       User      @relation("CreatedEvents", fields: [creatorId], references: [id], onDelete: Cascade)
+  attendees     EventAttendee[]
+
+  @@map("events")
+}
+
+model EventAttendee {
+  id            Int       @id @default(autoincrement())
+  eventId       Int
+  userId        Int
+  status        String    @default("interested") // going, interested, invited
+  createdAt     DateTime  @default(now())
+
+  event         Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@map("event_attendees")
 }
 
 model Post {

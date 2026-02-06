@@ -5,11 +5,12 @@ import api from '../api';
 import { User, Post } from '../types';
 import CommentSection from './CommentSection';
 
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Profile: React.FC = () => {
    const { user, updateUser } = useAuth();
    const { id } = useParams<{ id: string }>();
+   const navigate = useNavigate();
    const [profileUser, setProfileUser] = useState<User | null>(null);
    const [friends, setFriends] = useState<User[]>([]);
    const [friendStatus, setFriendStatus] = useState<'none' | 'pending_sent' | 'pending_received' | 'accepted' | 'self'>('self');
@@ -56,6 +57,11 @@ const Profile: React.FC = () => {
 
                setFriends(friendsRes.data.friends);
                setWallPosts(postsRes.data.posts);
+
+               // Track visit if it's someone else's profile
+               if (!isOwnProfile) {
+                  api.post(`/visit/${targetUserId}`).catch(e => console.error("Track visit error:", e));
+               }
             }
          } catch (error) {
             console.error("Error loading profile data:", error);
@@ -80,31 +86,22 @@ const Profile: React.FC = () => {
       }
    };
 
+   const [postImage, setPostImage] = useState<File | null>(null);
+
    const handlePostToWall = async () => {
-      if (!wallInput.trim() || !profileUser) return;
+      if (!wallInput.trim() && !postImage) return;
 
       try {
-         // Create post. If it's another user's wall, we might need a different endpoint logic 
-         // OR currently posts are just generic. 
-         // For now, let's assume we are posting TO the user's wall?
-         // The current backend POST /api/posts creates a post for the CURRENT user.
-         // To post on someone else's wall, we might need 'receiverId' or similar in Post model.
-         // If generic 'status', it appears on own wall.
-         // If writing on friend's wall, it's complex. 
-         // Let's assume for now we only post to OWN wall or ignore cross-posting for MVP unless implemented.
+         const formData = new FormData();
+         formData.append('content', wallInput);
+         formData.append('type', postImage ? 'photo' : 'status');
+         if (postImage) formData.append('image', postImage);
 
-         if (!isOwnProfile) {
-            alert("Escribir en el muro de otros aún no está implementado en backend.");
-            return;
-         }
-
-         const response = await api.post('/posts', {
-            content: wallInput,
-            type: 'status'
-         });
+         const response = await api.post('/posts', formData);
 
          setWallPosts([response.data.post, ...wallPosts]);
          setWallInput('');
+         setPostImage(null);
       } catch (error) {
          console.error("Error posting to wall:", error);
       }
@@ -250,7 +247,7 @@ const Profile: React.FC = () => {
                {profileUser.bio || 'Sin estado'} <span className="text-[#999] text-[11px] ml-2"></span>
             </div>
 
-            <div className="absolute top-0 right-0 flex gap-2">
+            <div className="flex md:absolute top-0 right-0 gap-2 mb-4 md:mb-0">
                {renderActionButtons()}
             </div>
          </div>
@@ -403,9 +400,27 @@ const Profile: React.FC = () => {
                   </div>
                   {friends.length > 9 && (
                      <div className="text-right mt-2">
-                        <a href="#" className="text-[#005599] text-[11px] hover:underline">Ver todos</a>
+                        <button
+                           onClick={() => navigate(`/profile`)} // Should list all friends, but link to gallery instead? 
+                           className="text-[#005599] text-[11px] hover:underline"
+                        >
+                           Ver todos
+                        </button>
                      </div>
                   )}
+               </div>
+
+               {/* Add Gallery Link Widget */}
+               <div>
+                  <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1">
+                     Galería de fotos
+                  </h3>
+                  <button
+                     onClick={() => navigate(id ? `/profile/photos/${id}` : '/profile/photos')}
+                     className="w-full bg-[#f2f6f9] border border-[#dce5ed] p-2 text-[11px] text-[#005599] font-bold hover:bg-[#e1f0fa] flex items-center justify-center gap-2"
+                  >
+                     <Camera size={14} /> Ver fotos de {profileUser.name.split(' ')[0]}
+                  </button>
                </div>
 
             </div>
@@ -422,7 +437,23 @@ const Profile: React.FC = () => {
                         value={wallInput}
                         onChange={(e) => setWallInput(e.target.value)}
                      ></textarea>
-                     <div className="text-right mt-2">
+                     <div className="flex justify-between items-center mt-2">
+                        <div className="flex items-center gap-2">
+                           <input
+                              type="file"
+                              id="post-image"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={(e) => setPostImage(e.target.files?.[0] || null)}
+                           />
+                           <button
+                              onClick={() => document.getElementById('post-image')?.click()}
+                              className={`flex items-center gap-1 text-[11px] font-bold ${postImage ? 'text-[#59B200]' : 'text-[#888]'} hover:text-[#555]`}
+                           >
+                              <Camera size={14} /> {postImage ? 'Imagen lista' : 'Adjuntar foto'}
+                           </button>
+                           {postImage && <span className="text-[10px] text-gray-500 truncate max-w-[100px]">{postImage.name}</span>}
+                        </div>
                         <button
                            onClick={handlePostToWall}
                            className="bg-[#005599] text-white text-[11px] font-bold px-3 py-1 rounded-[3px] hover:bg-[#00447a]"
@@ -456,6 +487,15 @@ const Profile: React.FC = () => {
                                  <span className="text-[#005599] font-bold text-[12px] hover:underline cursor-pointer">{post.user.name}</span>
                                  <span className="text-[#333] text-[12px]"> {post.content}</span>
                               </div>
+                              {post.image && (
+                                 <div className="mb-2 mt-1">
+                                    <img
+                                       src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
+                                       className="max-w-full max-h-[300px] rounded-[2px] border border-[#eee]"
+                                       alt="Post"
+                                    />
+                                 </div>
+                              )}
                               <div className="text-[#999] text-[10px] mb-1">
                                  {new Date(post.createdAt).toLocaleDateString()}
                               </div>

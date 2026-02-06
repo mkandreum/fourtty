@@ -104,20 +104,20 @@ const Feed: React.FC = () => {
                         placeholder="¡Hola!"
                      />
                      {/* Character count bubble */}
-                     <div className="absolute top-[-25px] right-0 bg-[#f0f0f0] border border-[#ccc] text-[#999] text-[10px] w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-sm">
+                     <div className="absolute top-[-20px] right-0 bg-[#f0f0f0] border border-[#ccc] text-[#999] text-[9px] w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm z-10">
                         {140 - statusText.length}
                      </div>
                   </div>
                </div>
             </div>
 
-            <div className="flex justify-between items-center mt-2 pl-2">
-               <div className="text-[11px] text-[#888]">
-                  Última actualización: <span className="text-[#333] font-bold">"{user?.bio || 'Sin estado'}"</span>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 pl-2 gap-2">
+               <div className="text-[11px] text-[#888] italic">
+                  Última actualización: <span className="text-[#333] font-bold not-italic">"{user?.bio || 'Sin estado'}"</span>
                </div>
                <button
                   onClick={handleUpdateStatus}
-                  className="bg-[#2B7BB9] text-white text-[12px] font-bold px-6 py-1 rounded-[3px] border border-[#1e5a8c] hover:bg-[#256ca3] shadow-sm"
+                  className="bg-[#2B7BB9] text-white text-[12px] font-bold px-6 py-1 rounded-[3px] border border-[#1e5a8c] hover:bg-[#256ca3] shadow-sm self-end sm:self-auto"
                >
                   Guardar
                </button>

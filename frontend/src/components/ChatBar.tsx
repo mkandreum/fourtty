@@ -56,7 +56,7 @@ const ChatWindow = ({
    };
 
    return (
-      <div className="fixed bottom-[30px] right-20 w-[260px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 flex flex-col">
+      <div className="fixed bottom-[30px] right-2 md:right-20 w-[calc(100%-16px)] md:w-[260px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 flex flex-col">
          {/* Header */}
          <div
             className="bg-[#005599] text-white p-1.5 px-2 flex justify-between items-center rounded-t-[3px] cursor-pointer"
