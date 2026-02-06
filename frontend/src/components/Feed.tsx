@@ -195,20 +195,11 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <motion.div
-         initial={{ opacity: 0, x: -20 }}
-         animate={{ opacity: 1, x: 0 }}
-         exit={{ opacity: 0, x: 20 }}
-         transition={{ duration: 0.3 }}
-         className="bg-white md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4"
-      >
+      <div className="bg-white md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4">
 
          {/* Status Box - Speech Bubble Style */}
          <div className="mb-4 md:mb-6 relative pt-0">
-            <motion.div
-               whileFocus={{ scale: 1.01 }}
-               className="bg-white border-2 border-[#b2c2d1] rounded-[8px] p-2 relative shadow-sm"
-            >
+            <div className="bg-white border-2 border-[#b2c2d1] rounded-[8px] p-2 relative shadow-sm">
                {/* Speech pulse arrow tip */}
                <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[#b2c2d1]"></div>
                <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-white"></div>
@@ -236,7 +227,7 @@ const Feed: React.FC = () => {
                      </AnimatePresence>
                   </div>
                </div>
-            </motion.div>
+            </div>
 
             <div className="flex justify-between items-center mt-2 px-1 gap-2">
                <div className="text-[10px] md:text-[11px] text-[#888] italic truncate max-w-[60%]">
@@ -272,11 +263,7 @@ const Feed: React.FC = () => {
             if (items.length === 0) return null;
 
             return (
-               <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-4"
-               >
+               <div className="mb-4">
                   <div className="flex flex-col gap-1">
                      {items.map(item => (
                         <div
@@ -298,7 +285,7 @@ const Feed: React.FC = () => {
                         </div>
                      ))}
                   </div>
-               </motion.div>
+               </div>
             );
          })()}
 
@@ -357,13 +344,9 @@ const Feed: React.FC = () => {
 
          <div className="flex items-center justify-between mb-2 border-b border-[#EEE] pb-1">
             <h3 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1">
-               <motion.div
-                  initial={{ rotate: -20, scale: 0.8 }}
-                  animate={{ rotate: 0, scale: 1 }}
-                  className="bg-[#59B200] text-white p-0.5 rounded-[3px] shadow-sm"
-               >
+               <div className="bg-[#59B200] text-white p-0.5 rounded-[3px] shadow-sm">
                   <MessageSquare size={14} fill="white" strokeWidth={0} />
-               </motion.div>
+               </div>
                Novedades
             </h3>
             <div className="text-[11px] flex gap-2">
@@ -375,165 +358,139 @@ const Feed: React.FC = () => {
          {isLoading ? (
             <div className="p-4 text-center text-gray-500 text-xs">Cargando novedades...</div>
          ) : (
-            <motion.div
-               variants={{
-                  hidden: { opacity: 0 },
-                  show: {
-                     opacity: 1,
-                     transition: {
-                        staggerChildren: 0.08
-                     }
-                  }
-               }}
-               initial="hidden"
-               animate="show"
-               className="flex flex-col gap-4"
-            >
+            <div className="flex flex-col gap-4">
                {posts.length === 0 && (
                   <div className="p-4 text-center text-gray-500 text-xs">
                      No hay novedades recientes. ¡Agrega amigos para ver sus posts!
                   </div>
                )}
 
-               <AnimatePresence mode="popLayout">
-                  {posts.map((post) => (
-                     <motion.div
-                        key={post.id}
-                        variants={{
-                           hidden: { opacity: 0, y: 20, scale: 0.98 },
-                           show: { opacity: 1, y: 0, scale: 1 }
-                        }}
-                        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                        className="flex gap-2 group hover-lift p-1 rounded-sm"
-                     >
-                        {/* Avatar */}
-                        <div className="w-[50px] shrink-0">
-                           {post.user.avatar ? (
-                              <motion.img
-                                 whileHover={{ scale: 1.05 }}
-                                 src={post.user.avatar.startsWith('http') ? post.user.avatar : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.user.avatar}`}
-                                 alt={post.user.name}
-                                 className="w-[50px] h-[50px] object-cover border border-[#ccc] rounded-[2px] p-[1px] bg-white shadow-sm cursor-pointer"
-                              />
-                           ) : (
-                              <div className="w-[50px] h-[50px] bg-gray-200 border border-[#ccc] rounded-[2px] flex items-center justify-center text-gray-400">
-                                 No img
-                              </div>
-                           )}
+               {posts.map((post) => (
+                  <div
+                     key={post.id}
+                     className="flex gap-2 hover-lift p-1 rounded-sm"
+                  >
+                     {/* Avatar */}
+                     <div className="w-[50px] shrink-0">
+                        {post.user.avatar ? (
+                           <img
+                              src={post.user.avatar.startsWith('http') ? post.user.avatar : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.user.avatar}`}
+                              alt={post.user.name}
+                              className="w-[50px] h-[50px] object-cover border border-[#ccc] rounded-[2px] p-[1px] bg-white shadow-sm cursor-pointer hover:scale-105 transition-transform"
+                           />
+                        ) : (
+                           <div className="w-[50px] h-[50px] bg-gray-200 border border-[#ccc] rounded-[2px] flex items-center justify-center text-gray-400">
+                              No img
+                           </div>
+                        )}
+                     </div>
+
+                     {/* Content */}
+                     <div className="flex-1 border-b border-[#f5f5f5] pb-3 relative">
+                        {post.userId === user?.id && (
+                           <button
+                              onClick={() => handleDeletePost(post.id)}
+                              className="absolute top-0 right-0 text-gray-300 hover:text-red-500 transition-colors p-1"
+                              title="Borrar"
+                           >
+                              <X size={14} />
+                           </button>
+                        )}
+                        <div className="text-[12px] leading-snug mb-1">
+                           <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name} {post.user.lastName}</a>
+                           <span className="text-[#333] font-bold"> {post.content}</span>
                         </div>
 
-                        {/* Content */}
-                        <div className="flex-1 border-b border-[#f5f5f5] pb-3 relative">
-                           {post.userId === user?.id && (
-                              <button
-                                 onClick={() => handleDeletePost(post.id)}
-                                 className="absolute top-0 right-0 text-gray-300 hover:text-red-500 transition-colors p-1"
-                                 title="Borrar"
-                              >
-                                 <X size={14} />
-                              </button>
-                           )}
-                           <div className="text-[12px] leading-snug mb-1">
-                              <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name} {post.user.lastName}</a>
-                              <span className="text-[#333] font-bold"> {post.content}</span>
+                        <div className="text-[10px] text-[#999] mb-1 flex items-center gap-2">
+                           {new Date(post.createdAt).toLocaleString()}
+                           <span className="mx-1">·</span>
+                           <button
+                              onClick={() => handleToggleLike(post.id)}
+                              className={`font-bold hover:underline ${post.likedByMe ? 'text-[#59B200]' : 'text-[#005599]'}`}
+                           >
+                              {post.likedByMe ? 'Ya no me mola' : '¡Me mola!'}
+                           </button>
+                        </div>
+
+                        {post._count && post._count.likes > 0 && (
+                           <div className="flex items-center gap-1 text-[10px] text-[#59B200] font-bold mt-1 mb-1">
+                              <ThumbsUp size={10} fill="#59B200" /> {post._count.likes} {post._count.likes === 1 ? 'persona le mola esto' : 'personas les mola esto'}
                            </div>
+                        )}
 
-                           <div className="text-[10px] text-[#999] mb-1 flex items-center gap-2">
-                              {new Date(post.createdAt).toLocaleString()}
-                              <span className="mx-1">·</span>
-                              <button
-                                 onClick={() => handleToggleLike(post.id)}
-                                 className={`font-bold hover:underline ${post.likedByMe ? 'text-[#59B200]' : 'text-[#005599]'}`}
-                              >
-                                 {post.likedByMe ? 'Ya no me mola' : '¡Me mola!'}
-                              </button>
-                              <span className="mx-1">·</span>
-                              <span className="text-[#005599] hover:underline cursor-pointer">Comentar</span>
+
+                        {/* Video specific */}
+                        {post.type === 'video' && post.videoUrl && (
+                           <div className="mt-2 w-full max-w-[400px]">
+                              <div className="aspect-video bg-black rounded-sm overflow-hidden border border-[#ccc]">
+                                 <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src={`https://www.youtube.com/embed/${post.videoUrl.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)?.[1]}`}
+                                    title="YouTube video player"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                 ></iframe>
+                              </div>
+                              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[#59B200] font-bold">
+                                 <Youtube size={14} /> Vídeo de YouTube
+                              </div>
                            </div>
+                        )}
 
-                           {post._count && post._count.likes > 0 && (
-                              <div className="flex items-center gap-1 text-[10px] text-[#59B200] font-bold mt-1 mb-1">
-                                 <ThumbsUp size={10} fill="#59B200" /> {post._count.likes} {post._count.likes === 1 ? 'persona le mola esto' : 'personas les mola esto'}
+                        {/* Photo specific */}
+                        {post.type === 'photo' && post.image && (
+                           <div className="mt-2 flex flex-col gap-2">
+                              <div className="border border-[#ddd] p-1 bg-white inline-block shadow-sm hover:border-[#2B7BB9] cursor-pointer transition-all hover:scale-[1.01] self-start">
+                                 <img
+                                    src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
+                                    className="h-[250px] md:h-[450px] w-auto max-w-full object-contain"
+                                    onClick={() => {
+                                       const photoObj = {
+                                          id: post.id,
+                                          url: post.image!,
+                                          userId: post.userId,
+                                          createdAt: post.createdAt,
+                                          user: post.user,
+                                          _count: post._count,
+                                          photoTags: []
+                                       } as any;
+                                       openPhoto(photoObj, [photoObj]);
+                                    }}
+                                    alt="attachment"
+                                 />
                               </div>
-                           )}
-
-
-                           {/* Video specific */}
-                           {post.type === 'video' && post.videoUrl && (
-                              <div className="mt-2 w-full max-w-[400px]">
-                                 <div className="aspect-video bg-black rounded-sm overflow-hidden border border-[#ccc]">
-                                    <iframe
-                                       width="100%"
-                                       height="100%"
-                                       src={`https://www.youtube.com/embed/${post.videoUrl.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)?.[1]}`}
-                                       title="YouTube video player"
-                                       frameBorder="0"
-                                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                       allowFullScreen
-                                    ></iframe>
-                                 </div>
-                                 <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[#59B200] font-bold">
-                                    <Youtube size={14} /> Vídeo de YouTube
-                                 </div>
-                              </div>
-                           )}
-
-                           {/* Photo specific */}
-                           {post.type === 'photo' && post.image && (
-                              <div className="mt-2 flex gap-2">
-                                 <motion.div
-                                    whileHover={{ scale: 1.01 }}
-                                    className="border border-[#ddd] p-1 bg-white inline-block shadow-sm hover:border-[#2B7BB9] cursor-pointer transition-colors"
+                              <div className="flex justify-start">
+                                 <button
+                                    onClick={() => handleToggleLike(post.id)}
+                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[#59B200] text-white' : 'bg-[#f2f6f9] text-[#555] border border-[#ccc] hover:bg-[#e1e9f0]'}`}
                                  >
-                                    <img
-                                       src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
-                                       className="h-[180px] md:h-[300px] w-auto max-w-full object-contain"
-                                       onClick={() => {
-                                          const photoObj = {
-                                             id: post.id,
-                                             url: post.image!,
-                                             userId: post.userId,
-                                             createdAt: post.createdAt,
-                                             user: post.user,
-                                             _count: post._count,
-                                             photoTags: [] // Posts might not have tags directly in the same way, but we pass what we have
-                                          } as any;
-                                          openPhoto(photoObj, [photoObj]);
-                                       }}
-                                       alt="attachment"
-                                    />
-                                    <div className="mt-1 border-t border-[#eee] pt-1 flex justify-center">
-                                       <button
-                                          onClick={() => handleToggleLike(post.id)}
-                                          className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[#59B200] text-white' : 'bg-[#f2f6f9] text-[#555] border border-[#ccc] hover:bg-[#e1e9f0]'}`}
-                                       >
-                                          <ThumbsUp size={12} fill={post.likedByMe ? 'white' : 'transparent'} />
-                                          {post.likedByMe ? '¡Me mola!' : 'Me mola'}
-                                       </button>
-                                    </div>
-                                 </motion.div>
+                                    <ThumbsUp size={12} fill={post.likedByMe ? 'white' : 'transparent'} />
+                                    {post.likedByMe ? '¡Me mola!' : 'Me mola'}
+                                 </button>
+                              </div>
+                           </div>
+                        )}
+
+                        {/* Interaction Summary */}
+                        <div className="mt-1 flex flex-col gap-0.5">
+                           <CommentSection
+                              postId={post.id}
+                              initialCommentsCount={post._count?.comments || 0}
+                           />
+
+                           {post.type === 'photo' && (
+                              <div className="flex items-center gap-1 text-[11px]">
+                                 <Tag size={10} className="text-[#59B200] fill-[#59B200]" />
+                                 <span className="text-[#59B200] font-bold">Etiquetas</span>
                               </div>
                            )}
-
-                           {/* Interaction Summary */}
-                           <div className="mt-1 flex flex-col gap-0.5">
-                              <CommentSection
-                                 postId={post.id}
-                                 initialCommentsCount={post._count?.comments || 0}
-                              />
-
-                              {post.type === 'photo' && (
-                                 <div className="flex items-center gap-1 text-[11px]">
-                                    <Tag size={10} className="text-[#59B200] fill-[#59B200]" />
-                                    <span className="text-[#59B200] font-bold">Etiquetas</span>
-                                 </div>
-                              )}
-                           </div>
                         </div>
-                     </motion.div>
-                  ))}
-               </AnimatePresence>
-            </motion.div>
+                     </div>
+                  </div>
+               ))}
+            </div>
          )}
 
          {hasMore && (
@@ -548,7 +505,7 @@ const Feed: React.FC = () => {
             </div>
          )}
 
-      </motion.div>
+      </div>
    );
 };
 

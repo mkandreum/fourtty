@@ -322,12 +322,7 @@ const Profile: React.FC = () => {
    if (!profileUser) return <div className="p-4">Usuario no encontrado</div>;
 
    return (
-      <motion.div
-         initial={{ opacity: 0, y: 10 }}
-         animate={{ opacity: 1, y: 0 }}
-         transition={{ duration: 0.3 }}
-         className="bg-white md:rounded-[4px] md:border border-[#dce5ed] p-3 md:p-4 min-h-[600px]"
-      >
+      <div className="bg-white md:rounded-[4px] md:border border-[#dce5ed] p-3 md:p-4 min-h-[600px]">
          <AnimatePresence>
             {imageToCrop && (
                <motion.div
@@ -434,14 +429,11 @@ const Profile: React.FC = () => {
 
          <div className="flex flex-col md:flex-row gap-6">
             <div className="w-full md:w-[30%] flex flex-col gap-4">
-               <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  className="p-1 bg-white border border-[#ccc] shadow-sm inline-block group relative cursor-pointer"
-               >
+               <div className="p-1 bg-white border border-[#ccc] shadow-sm inline-block group relative cursor-pointer">
                   <img
                      src={getAvatarUrl(profileUser.avatar)}
                      alt="Profile"
-                     className="w-full h-auto min-h-[150px] object-cover"
+                     className="w-full h-auto min-h-[150px] object-cover group-hover:scale-[1.01] transition-transform"
                   />
                   {isOwnProfile && (
                      <label className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
@@ -456,14 +448,10 @@ const Profile: React.FC = () => {
                         />
                      </label>
                   )}
-               </motion.div>
+               </div>
 
                {isEditing ? (
-                  <motion.div
-                     initial={{ opacity: 0, height: 0 }}
-                     animate={{ opacity: 1, height: 'auto' }}
-                     className="bg-[#f2f6f9] border border-[#dce5ed] p-3 text-[11px] flex flex-col gap-2 overflow-hidden"
-                  >
+                  <div className="bg-[#f2f6f9] border border-[#dce5ed] p-3 text-[11px] flex flex-col gap-2 overflow-hidden animate-in fade-in duration-200">
                      <div>
                         <label className="block font-bold text-[#666] mb-1">Nombre</label>
                         <input
@@ -551,7 +539,7 @@ const Profile: React.FC = () => {
                      >
                         Guardar cambios
                      </button>
-                  </motion.div>
+                  </div>
                ) : (
                   (profileUser.gender || profileUser.age || profileUser.relationshipStatus || profileUser.location || profileUser.occupation) ? (
                      <div className="bg-[#f9fbfd] border-t border-b border-[#e1e9f0] p-2 text-[11px] text-[#333]">
@@ -587,48 +575,32 @@ const Profile: React.FC = () => {
                   ) : null
                )}
 
-               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+               <div>
                   <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1 flex items-center justify-between">
                      <span>Amigos <span className="text-[#888] font-normal">({friends.length})</span></span>
                      <span className="text-[10px] text-[#005599] hover:underline cursor-pointer font-normal">Ver todos</span>
                   </h3>
-                  <motion.div
-                     variants={{
-                        hidden: { opacity: 0 },
-                        show: {
-                           opacity: 1,
-                           transition: { staggerChildren: 0.05 }
-                        }
-                     }}
-                     initial="hidden"
-                     animate="show"
-                     className="grid grid-cols-3 gap-1"
-                  >
+                  <div className="grid grid-cols-3 gap-1">
                      {friends.slice(0, 9).map(friend => (
-                        <motion.div
+                        <div
                            key={friend.id}
-                           variants={{
-                              hidden: { opacity: 0, scale: 0.8 },
-                              show: { opacity: 1, scale: 1 }
-                           }}
-                           whileHover={{ scale: 1.05, y: -2 }}
-                           className="cursor-pointer group relative"
+                           className="cursor-pointer group relative hover:translate-y-[-2px] transition-transform"
                            onClick={() => navigate(`/profile/${friend.id}`)}
                         >
                            <img
                               src={getAvatarUrl(friend.avatar)}
-                              className="w-full aspect-square object-cover border border-[#eee]"
+                              className="w-full aspect-square object-cover border border-[#eee] group-hover:scale-105 transition-transform"
                               alt={friend.name}
                            />
                            <div className="text-[9px] text-center mt-0.5 truncate text-[#005599] group-hover:underline">
                               {friend.name.split(' ')[0]}
                            </div>
-                        </motion.div>
+                        </div>
                      ))}
-                  </motion.div>
-               </motion.div>
+                  </div>
+               </div>
 
-               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+               <div>
                   <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1">
                      Galería de fotos
                   </h3>
@@ -638,16 +610,12 @@ const Profile: React.FC = () => {
                   >
                      <Camera size={14} /> Ver fotos de {profileUser.name.split(' ')[0]}
                   </button>
-               </motion.div>
+               </div>
             </div>
 
             <div className="flex-1">
                {isOwnProfile && (
-                  <motion.div
-                     initial={{ opacity: 0, x: 20 }}
-                     animate={{ opacity: 1, x: 0 }}
-                     className="bg-[#f2f6f9] p-3 rounded-[4px] border border-[#e1e9f0] mb-4 shadow-sm"
-                  >
+                  <div className="bg-[#f2f6f9] p-3 rounded-[4px] border border-[#e1e9f0] mb-4 shadow-sm animate-in slide-in-from-right-2 duration-300">
                      <div className="text-[#005599] font-bold text-[12px] mb-1">Escribe algo en tu tablón...</div>
                      <textarea
                         className="w-full h-16 border border-[#b2c2d1] rounded-[2px] p-1 text-[12px] resize-none focus:border-[#5C95C4] outline-none transition-colors"
@@ -677,7 +645,7 @@ const Profile: React.FC = () => {
                            Publicar
                         </button>
                      </div>
-                  </motion.div>
+                  </div>
                )}
 
                <h3 className="text-[#333] font-bold text-[13px] mb-3 pb-1 border-b border-[#ccc]">Tablón</h3>
@@ -688,14 +656,10 @@ const Profile: React.FC = () => {
                   ) : wallPosts.length === 0 ? (
                      <div className="p-4 text-center text-xs text-gray-500">No hay publicaciones en el tablón.</div>
                   ) : (
-                     <AnimatePresence>
+                     <>
                         {wallPosts.map((post, idx) => (
-                           <motion.div
+                           <div
                               key={post.id}
-                              variants={{
-                                 hidden: { opacity: 0, x: -10 },
-                                 show: { opacity: 1, x: 0 }
-                              }}
                               className={`flex gap-3 p-3 border-b border-[#eee] ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f9fbfd]'} hover:bg-[#f0f5f9] transition-smooth cursor-default group`}
                            >
                               <div className="w-10 flex-shrink-0">
@@ -717,13 +681,10 @@ const Profile: React.FC = () => {
                                     <span className="text-[#333] text-[12px]"> {post.content}</span>
                                  </div>
                                  {post.image && (
-                                    <motion.div
-                                       whileHover={{ scale: 1.02 }}
-                                       className="mb-2 mt-1"
-                                    >
+                                    <div className="mb-2 mt-1">
                                        <img
                                           src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
-                                          className="max-w-full max-h-[300px] rounded-[2px] border border-[#eee] cursor-pointer"
+                                          className="max-w-full max-h-[300px] rounded-[2px] border border-[#eee] cursor-pointer hover:scale-[1.01] transition-transform"
                                           onClick={() => {
                                              const photoObj = {
                                                 id: post.id,
@@ -738,7 +699,7 @@ const Profile: React.FC = () => {
                                           }}
                                           alt="Post"
                                        />
-                                    </motion.div>
+                                    </div>
                                  )}
                                  <div className="text-[#999] text-[10px] mb-1">
                                     {new Date(post.createdAt).toLocaleDateString()}
@@ -748,14 +709,14 @@ const Profile: React.FC = () => {
                                     initialCommentsCount={post._count?.comments || 0}
                                  />
                               </div>
-                           </motion.div>
+                           </div>
                         ))}
-                     </AnimatePresence>
+                     </>
                   )}
                </div>
             </div>
          </div>
-      </motion.div>
+      </div>
    );
 };
 
