@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Search, Image as ImageIcon, Bell, LogOut, User, Menu, X, UserPlus } from 'lucide-react';
+import { Search, Image as ImageIcon, Bell, LogOut, User, Menu, X, UserPlus, Mail, MessageCircle, Tag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import PhotoUploadModal from './PhotoUploadModal';
@@ -238,50 +238,86 @@ const Header: React.FC = () => {
                       </button>
                     </div>
 
-                    <div className="max-h-[400px] overflow-y-auto no-scrollbar bg-white/50">
-                      {notifications.length === 0 ? (
+                    <div className="max-h-[500px] overflow-y-auto no-scrollbar p-3 bg-white">
+                      {unreadNotifsCount === 0 ? (
                         <div className="py-12 px-6 text-center text-gray-400">
-                          <div className="bg-gray-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <Bell size={20} className="opacity-20" />
-                          </div>
-                          <p className="text-[11px] font-medium">No tienes notificaciones por ahora</p>
+                          <Bell size={32} className="opacity-10 mx-auto mb-2" />
+                          <p className="text-[11px] font-medium">No tienes notificaciones nuevas</p>
                         </div>
-                      ) : (
-                        notifications.map((notif, index) => (
-                          <div
-                            key={notif.id}
-                            onClick={() => {
-                              handleMarkAsRead(notif.id);
-                              if (notif.type === 'friendship' && notif.relatedUserId) {
-                                handleNavigate(`/profile/${notif.relatedUserId}`);
-                              } else if (['photo', 'tag_photo', 'like_photo', 'comment_photo'].includes(notif.type) && notif.relatedId) {
-                                handleNavigate(`/profile/photos`); // Navigate to gallery or specific photo
-                              } else if (notif.relatedId) {
-                                handleNavigate(`/`); // For now posts are in home
-                              } else {
-                                handleNavigate(`/`);
-                              }
-                              setShowNotifs(false);
-                            }}
-                            className={`p-3 border-b border-gray-100 last:border-0 hover:bg-[#ebf5ff] cursor-pointer flex gap-3 items-start transition-all duration-200 group ${!notif.read ? 'bg-[#f0f9ff]' : ''}`}
-                            style={{ animationDelay: `${index * 50}ms` }}
-                          >
-                            <div className="relative shrink-0">
-                              <div className={`w-2 h-2 rounded-full mt-1.5 ${!notif.read ? 'bg-[#59B200] shadow-[0_0_8px_rgba(89,178,0,0.5)]' : 'bg-transparent'}`}></div>
-                              {notif.type === 'tag' && <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-0.5 rounded-full scale-75 border border-white"><User size={8} /></div>}
-                            </div>
-                            <div className="flex-1">
-                              <p className={`text-[12px] leading-[1.4] mb-1.5 ${!notif.read ? 'text-[#003366] font-bold' : 'text-[#444] font-medium'}`}>
-                                {notif.content}
-                              </p>
-                              <div className="flex items-center justify-between">
-                                <span className="text-[9px] text-gray-400 font-medium">{new Date(notif.createdAt).toLocaleDateString()} · {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                {!notif.read && <span className="text-[8px] text-[#005599] font-bold opacity-0 group-hover:opacity-100 transition-opacity">Nuevo</span>}
+                      ) : (() => {
+                        const unread = notifications.filter(n => !n.read);
+                        const groups = {
+                          messages: unread.filter(n => n.type === 'message'),
+                          friendships: unread.filter(n => n.type === 'friendship'),
+                          comments: unread.filter(n => ['comment', 'comment_photo', 'comment_post', 'tag'].includes(n.type)),
+                          tags: unread.filter(n => ['tag', 'tag_photo'].includes(n.type)),
+                        };
+
+                        const items = [
+                          { key: 'messages', label: 'mensajes privados', icon: <Mail size={16} />, count: groups.messages.length },
+                          { key: 'friendships', label: 'peticiones de amistad', icon: <UserPlus size={16} />, count: groups.friendships.length },
+                          { key: 'comments', label: 'comentarios y menciones', icon: <MessageCircle size={16} />, count: groups.comments.length },
+                          { key: 'tags', label: 'etiquetas', icon: <Tag size={16} />, count: groups.tags.length, thumbnails: groups.tags.slice(0, 5) },
+                        ].filter(item => item.count > 0);
+
+                        return (
+                          <div className="flex flex-col gap-3">
+                            {items.map(item => (
+                              <div key={item.key} className="flex flex-col gap-2">
+                                <div
+                                  className="flex items-center gap-2 group cursor-pointer"
+                                  onClick={() => {
+                                    if (item.key === 'friendships') handleNavigate('/people');
+                                    else if (item.key === 'tags') handleNavigate('/profile/photos');
+                                    else handleNavigate('/');
+                                    setShowNotifs(false);
+                                  }}
+                                >
+                                  <div className="text-[#59B200]">
+                                    {item.icon}
+                                  </div>
+                                  <span className="text-[13px] font-bold text-[#59B200] group-hover:underline">
+                                    {item.count} {item.label}
+                                  </span>
+                                </div>
+                                {item.key === 'tags' && item.thumbnails && (
+                                  <div className="flex gap-1.5 pl-6">
+                                    {item.thumbnails.map(t => (
+                                      <div
+                                        key={t.id}
+                                        className="w-10 h-10 border border-[#ccc] p-[1px] bg-white cursor-pointer hover:border-[#59B200]"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleMarkAsRead(t.id);
+                                          handleNavigate('/profile/photos');
+                                          setShowNotifs(false);
+                                        }}
+                                      >
+                                        <div className="w-full h-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                          <ImageIcon size={14} className="text-gray-300" />
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-                            </div>
+                            ))}
+                            {unread.length > 0 && (
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    await api.put('/notifications/mark-all-read');
+                                    fetchNotifications();
+                                  } catch (e) { }
+                                }}
+                                className="mt-4 text-[10px] text-gray-400 hover:text-[#59B200] text-center border-t border-gray-100 pt-3"
+                              >
+                                Marcar todas como leídas
+                              </button>
+                            )}
                           </div>
-                        ))
-                      )}
+                        );
+                      })()}
                     </div>
 
                     {notifications.length > 0 && (

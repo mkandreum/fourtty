@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { trackVisit, getProfileStats } from '../controllers/visit.controller';
 import { togglePostLike, togglePhotoLike, toggleCommentLike } from '../controllers/like.controller';
-import { uploadPhoto, getUserPhotos, tagPhoto } from '../controllers/photo.controller';
+import { uploadPhoto, getUserPhotos, tagPhoto, deletePhoto } from '../controllers/photo.controller';
 import { createEvent, getEvents, joinEvent } from '../controllers/event.controller';
 import { authenticateToken } from '../middleware/auth';
 import { checkPrivacy } from '../middleware/privacy';

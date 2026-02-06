@@ -148,6 +148,19 @@ const Feed: React.FC = () => {
       }
    };
 
+   const handleDeletePost = async (postId: number) => {
+      if (!window.confirm("¿Estás seguro de que quieres borrar esta publicación?")) return;
+
+      try {
+         await api.delete(`/posts/${postId}`);
+         setPosts(prev => prev.filter(p => p.id !== postId));
+         showToast("Publicación borrada", "success");
+      } catch (error) {
+         console.error("Error deleting post:", error);
+         showToast("No se pudo borrar la publicación", "error");
+      }
+   };
+
    const handleSendInvite = async () => {
       if (!inviteEmail.trim()) return;
       setIsInviting(true);
@@ -366,7 +379,16 @@ const Feed: React.FC = () => {
                         </div>
 
                         {/* Content */}
-                        <div className="flex-1 border-b border-[#f5f5f5] pb-3">
+                        <div className="flex-1 border-b border-[#f5f5f5] pb-3 relative">
+                           {post.userId === user?.id && (
+                              <button
+                                 onClick={() => handleDeletePost(post.id)}
+                                 className="absolute top-0 right-0 text-gray-300 hover:text-red-500 transition-colors p-1"
+                                 title="Borrar"
+                              >
+                                 <X size={14} />
+                              </button>
+                           )}
                            <div className="text-[12px] leading-snug mb-1">
                               <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name}</a>
                               <span className="text-[#333] font-bold"> {post.content}</span>

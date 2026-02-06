@@ -161,3 +161,33 @@ export const tagPhoto = async (req: AuthRequest, res: Response): Promise<void> =
         res.status(500).json({ error: 'Failed to tag photo' });
     }
 };
+
+// Delete photo from gallery
+export const deletePhoto = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const photoId = parseInt(req.params.id as string);
+
+        const photo = await prisma.photo.findUnique({
+            where: { id: photoId }
+        });
+
+        if (!photo) {
+            res.status(404).json({ error: 'Photo not found' });
+            return;
+        }
+
+        if (photo.userId !== req.userId) {
+            res.status(403).json({ error: 'You can only delete your own photos' });
+            return;
+        }
+
+        await prisma.photo.delete({
+            where: { id: photoId }
+        });
+
+        res.json({ message: 'Photo deleted successfully' });
+    } catch (error) {
+        console.error('Delete photo error:', error);
+        res.status(500).json({ error: 'Failed to delete photo' });
+    }
+};

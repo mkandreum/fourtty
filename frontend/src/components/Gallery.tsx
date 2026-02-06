@@ -110,6 +110,19 @@ const Gallery: React.FC = () => {
         }
     };
 
+    const handleDeletePhoto = async (photoId: number) => {
+        if (!window.confirm("¿Estás seguro de que quieres borrar esta foto de tu galería?")) return;
+
+        try {
+            await api.delete(`/photos/${photoId}`);
+            setPhotos(prev => prev.filter(p => p.id !== photoId));
+            setSelectedPhotoIndex(null);
+        } catch (error) {
+            console.error("Error deleting photo:", error);
+            alert("No se pudo borrar la foto");
+        }
+    };
+
     if (isLoading) return <div className="p-10 text-center opacity-50">Cargando galería...</div>;
 
     const currentPhoto = selectedPhotoIndex !== null ? photos[selectedPhotoIndex] : null;
@@ -287,16 +300,26 @@ const Gallery: React.FC = () => {
                                     </button>
 
                                     {user?.id === Number(targetUserId) && (
-                                        <button
-                                            onClick={() => setIsTagging(!isTagging)}
-                                            className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${isTagging
-                                                ? 'bg-[#59B200] text-white border border-[#4a9400] scale-105'
-                                                : 'bg-white text-[#555] border border-[#ccc] hover:bg-gray-50'
-                                                }`}
-                                        >
-                                            <Tag size={12} fill={isTagging ? 'white' : 'transparent'} />
-                                            {isTagging ? 'Haz clic en la foto' : 'Etiquetar'}
-                                        </button>
+                                        <>
+                                            <button
+                                                onClick={() => setIsTagging(!isTagging)}
+                                                className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${isTagging
+                                                    ? 'bg-[#59B200] text-white border border-[#4a9400] scale-105'
+                                                    : 'bg-white text-[#555] border border-[#ccc] hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                <Tag size={12} fill={isTagging ? 'white' : 'transparent'} />
+                                                {isTagging ? 'Haz clic en la foto' : 'Etiquetar'}
+                                            </button>
+
+                                            <button
+                                                onClick={() => handleDeletePhoto(currentPhoto.id)}
+                                                className="flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold bg-white text-red-500 border border-red-200 hover:bg-red-50 transition-all"
+                                            >
+                                                <X size={12} />
+                                                Borrar
+                                            </button>
+                                        </>
                                     )}
                                 </div>
 
