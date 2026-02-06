@@ -5,7 +5,7 @@ services:
     build: .
     restart: always
     ports:
-      - "80:5000"
+      - "3000:5000"
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/dev.db:/app/dev.db
