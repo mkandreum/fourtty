@@ -80,23 +80,23 @@ const AppContent = () => {
     <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
       <Header currentView={view} />
 
-      <div className="max-w-[980px] mx-auto mt-[54px] px-2 flex gap-4 items-start">
+      <div className="max-w-[980px] mx-auto mt-[54px] px-2 flex flex-col md:flex-row gap-4 items-start">
 
-        {/* Left Config based on View */}
+        {/* Left Side: Visible on mobile at top if HOME, or fixed on desktop */}
         {view === ViewState.HOME && (
-          <aside className="w-[190px] shrink-0 hidden md:block">
+          <aside className="w-full md:w-[190px] shrink-0">
             <LeftPanel />
           </aside>
         )}
 
         {/* Main Content */}
-        <main className={`flex-1 min-w-0 ${view === ViewState.PROFILE ? 'w-full' : ''}`}>
+        <main className={`flex-1 min-w-0 w-full ${view === ViewState.PROFILE ? 'max-w-4xl mx-auto' : ''}`}>
           {children}
         </main>
 
-        {/* Right Config based on View */}
+        {/* Right Side: Visible on mobile at bottom or fixed on desktop */}
         {view === ViewState.HOME && (
-          <aside className="w-[200px] shrink-0 hidden lg:block">
+          <aside className="w-full md:w-[200px] shrink-0">
             <Sidebar />
           </aside>
         )}

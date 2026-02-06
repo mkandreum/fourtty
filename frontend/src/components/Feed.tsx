@@ -98,7 +98,7 @@ const Feed: React.FC = () => {
                <div className="flex gap-2 items-start">
                   <div className="flex-1 relative">
                      <input
-                        className="w-full border-none p-2 text-[18px] text-[#333] placeholder-gray-300 outline-none"
+                        className="w-full border-none p-2 text-[14px] md:text-[18px] text-[#333] placeholder-gray-300 outline-none"
                         value={statusText}
                         onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                         placeholder="¡Hola!"
