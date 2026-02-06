@@ -5,7 +5,8 @@ import {
     rejectFriendRequest,
     getFriendRequests,
     getFriends,
-    removeFriend
+    removeFriend,
+    checkFriendshipStatus
 } from '../controllers/friendship.controller';
 import { authenticateToken } from '../middleware/auth';
 
@@ -17,5 +18,6 @@ router.put('/:id/reject', authenticateToken, rejectFriendRequest);
 router.get('/requests', authenticateToken, getFriendRequests);
 router.get('/', authenticateToken, getFriends);
 router.delete('/:id', authenticateToken, removeFriend);
+router.get('/status/:userId', authenticateToken, checkFriendshipStatus);
 
 export default router;

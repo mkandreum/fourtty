@@ -284,3 +284,49 @@ export const removeFriend = async (req: AuthRequest, res: Response): Promise<voi
         res.status(500).json({ error: 'Failed to remove friend' });
     }
 };
+// Check friendship status
+export const checkFriendshipStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const targetUserId = parseInt(req.params.userId as string);
+
+        if (targetUserId === req.userId) {
+            res.json({ status: 'self' });
+            return;
+        }
+
+        const friendship = await prisma.friendship.findFirst({
+            where: {
+                OR: [
+                    { userId: req.userId!, friendId: targetUserId },
+                    { userId: targetUserId, friendId: req.userId! }
+                ]
+            }
+        });
+
+        if (!friendship) {
+            res.json({ status: 'none' });
+            return;
+        }
+
+        if (friendship.status === 'accepted') {
+            res.json({ status: 'accepted', friendshipId: friendship.id });
+            return;
+        }
+
+        if (friendship.status === 'pending') {
+            // Check who sent it
+            if (friendship.userId === req.userId) {
+                res.json({ status: 'pending_sent', friendshipId: friendship.id });
+            } else {
+                res.json({ status: 'pending_received', friendshipId: friendship.id });
+            }
+            return;
+        }
+
+        res.json({ status: 'none' });
+
+    } catch (error) {
+        console.error('Check friendship status error:', error);
+        res.status(500).json({ error: 'Failed to check friendship status' });
+    }
+};

@@ -4,20 +4,128 @@ import { useAuth } from '../contexts/AuthContext';
 import { User } from '../types';
 import api from '../api';
 
+const ChatWindow = ({
+   friend,
+   onClose,
+   currentUser
+}: {
+   friend: User,
+   onClose: () => void,
+   currentUser: User
+}) => {
+   const [messages, setMessages] = useState<any[]>([]);
+   const [inputText, setInputText] = useState('');
+   const scrollRef = React.useRef<HTMLDivElement>(null);
+
+   useEffect(() => {
+      fetchMessages();
+      const interval = setInterval(fetchMessages, 3000); // Poll every 3s
+      return () => clearInterval(interval);
+   }, [friend.id]);
+
+   useEffect(() => {
+      // Scroll to bottom on new messages
+      if (scrollRef.current) {
+         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+   }, [messages]);
+
+   const fetchMessages = async () => {
+      try {
+         const res = await api.get(`/messages/${friend.id}`);
+         setMessages(res.data.messages);
+      } catch (e) {
+         console.error(e);
+      }
+   };
+
+   const handleSend = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!inputText.trim()) return;
+
+      try {
+         await api.post('/messages', {
+            receiverId: friend.id,
+            content: inputText
+         });
+         setInputText('');
+         fetchMessages(); // Immediate refresh
+      } catch (e) {
+         console.error(e);
+      }
+   };
+
+   return (
+      <div className="fixed bottom-[30px] right-20 w-[260px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 flex flex-col">
+         {/* Header */}
+         <div
+            className="bg-[#005599] text-white p-1.5 px-2 flex justify-between items-center rounded-t-[3px] cursor-pointer"
+            onClick={onClose}
+         >
+            <div className="flex items-center gap-2 font-bold text-[12px]">
+               <div className="w-2 h-2 rounded-full bg-[#59B200] border border-white"></div>
+               {friend.name}
+            </div>
+            <div className="flex gap-2">
+               <Minus size={14} className="hover:opacity-75" onClick={(e) => { e.stopPropagation(); onClose(); }} />
+               <X size={14} className="hover:opacity-75" onClick={(e) => { e.stopPropagation(); onClose(); }} />
+            </div>
+         </div>
+
+         {/* Body */}
+         <div
+            className="h-[200px] overflow-y-auto p-2 bg-white text-[12px] flex flex-col gap-2"
+            ref={scrollRef}
+         >
+            {messages.length === 0 && (
+               <div className="text-[#999] text-[10px] text-center mt-4">Inicio de la conversación</div>
+            )}
+
+            {messages.map((msg, idx) => {
+               const isMe = msg.senderId === currentUser.id;
+               return (
+                  <div key={idx} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                     <div className={`max-w-[85%] rounded-[4px] p-1 px-2 ${isMe ? 'bg-[#e1f0fa]' : 'bg-[#f0f0f0]'}`}>
+                        <span className="text-[#333]">{msg.content}</span>
+                     </div>
+                     <span className="text-[9px] text-[#999] mt-0.5">
+                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                     </span>
+                  </div>
+               );
+            })}
+         </div>
+
+         {/* Input */}
+         <form onSubmit={handleSend} className="p-2 border-t border-[#ccc] bg-[#f2f6f9]">
+            <input
+               type="text"
+               className="w-full border border-[#b2c2d1] rounded-[2px] p-1 text-[11px] focus:outline-none focus:border-[#005599]"
+               autoFocus
+               value={inputText}
+               onChange={(e) => setInputText(e.target.value)}
+               placeholder="Escribe un mensaje..."
+            />
+         </form>
+      </div>
+   );
+};
+
 const ChatBar: React.FC = () => {
    const { user } = useAuth();
    const [isOpen, setIsOpen] = useState(false);
-   const [activeChat, setActiveChat] = useState<string | null>(null);
+   const [activeChatUser, setActiveChatUser] = useState<User | null>(null);
    const [friends, setFriends] = useState<User[]>([]);
 
    useEffect(() => {
-      // Only fetch if chat is opened or initialized
       if (user && isOpen) {
          api.get(`/users/${user.id}/friends`)
             .then(res => setFriends(res.data.friends))
             .catch(err => console.error(err));
       }
    }, [user, isOpen]);
+
+   if (!user) return null;
 
    return (
       <>
@@ -30,18 +138,18 @@ const ChatBar: React.FC = () => {
                onClick={() => setIsOpen(!isOpen)}
             >
                <div className="w-2 h-2 rounded-full bg-[#59B200] shadow-[0_0_4px_#59B200]"></div>
-               <span className="font-bold text-[12px]">Chat ({friends.length > 0 ? friends.length : '0'})</span>
+               <span className="font-bold text-[12px]">Chat ({friends.length})</span>
             </div>
 
             {/* Right: Settings or minimized chats */}
             <div className="flex items-center gap-4 h-full">
-               {activeChat && (
+               {activeChatUser && (
                   <div
                      className="h-full px-3 bg-[#005599] flex items-center gap-2 cursor-pointer text-[12px] font-bold"
-                     onClick={() => setActiveChat(activeChat)}
+                     onClick={() => setActiveChatUser(activeChatUser)}
                   >
                      <span className="w-2 h-2 rounded-full bg-[#59B200]"></span>
-                     {activeChat}
+                     {activeChatUser.name}
                   </div>
                )}
                <Settings size={14} className="text-gray-400 hover:text-white cursor-pointer" />
@@ -58,14 +166,22 @@ const ChatBar: React.FC = () => {
                   </div>
                </div>
                <div className="overflow-y-auto p-1 flex-1 h-[300px]">
-                  <input type="text" placeholder="Buscar amigo" className="w-full text-[11px] p-1 border border-[#ccc] rounded-[2px] mb-2" />
+                  <input type="text" placeholder="Buscar amigo" className="w-full text-[11px] p-1 border border-[#ccc] rounded-[2px] mb-2 focus:outline-none" />
                   {friends.length > 0 ? friends.map(friend => (
                      <div
                         key={friend.id}
                         className="flex items-center gap-2 p-1.5 hover:bg-[#e1f0fa] cursor-pointer rounded-[2px]"
-                        onClick={() => setActiveChat(friend.name)}
+                        onClick={() => {
+                           setActiveChatUser(friend);
+                           // setIsOpen(false); // Maybe keep open?
+                        }}
                      >
                         <div className="w-2 h-2 rounded-full bg-[#59B200]"></div>
+                        <img
+                           src={friend.avatar || `https://ui-avatars.com/api/?name=${friend.name}`}
+                           className="w-5 h-5 rounded-sm object-cover"
+                           alt={friend.name}
+                        />
                         <span className="text-[11px] text-[#333] truncate">{friend.name}</span>
                      </div>
                   )) : (
@@ -76,38 +192,12 @@ const ChatBar: React.FC = () => {
          )}
 
          {/* Active Chat Window */}
-         {activeChat && (
-            <div className="fixed bottom-[30px] right-20 w-[260px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 flex flex-col">
-               {/* Header */}
-               <div className="bg-[#005599] text-white p-1.5 px-2 flex justify-between items-center rounded-t-[3px] cursor-pointer">
-                  <div className="flex items-center gap-2 font-bold text-[12px]">
-                     <div className="w-2 h-2 rounded-full bg-[#59B200] border border-white"></div>
-                     {activeChat}
-                  </div>
-                  <div className="flex gap-2">
-                     <Minus size={14} className="hover:opacity-75" onClick={() => setActiveChat(null)} />
-                     <X size={14} className="hover:opacity-75" onClick={() => setActiveChat(null)} />
-                  </div>
-               </div>
-
-               {/* Body */}
-               <div className="h-[200px] overflow-y-auto p-2 bg-white text-[12px]">
-                  <div className="text-[#999] text-[10px] text-center mb-2">Hoy, 18:34</div>
-                  <div className="mb-2">
-                     <span className="font-bold text-[#005599]">{activeChat}:</span>
-                     <span className="text-[#333]"> Hey! Qué tal? Viste las fotos de ayer?</span>
-                  </div>
-                  <div className="mb-2">
-                     <span className="font-bold text-[#333]">Tú:</span>
-                     <span className="text-[#333]"> Siii jajajaja vaya cara salgo en la del bar</span>
-                  </div>
-               </div>
-
-               {/* Input */}
-               <div className="p-2 border-t border-[#ccc] bg-[#f2f6f9]">
-                  <input type="text" className="w-full border border-[#b2c2d1] rounded-[2px] p-1 text-[11px]" autoFocus />
-               </div>
-            </div>
+         {activeChatUser && (
+            <ChatWindow
+               friend={activeChatUser}
+               currentUser={user}
+               onClose={() => setActiveChatUser(null)}
+            />
          )}
       </>
    );

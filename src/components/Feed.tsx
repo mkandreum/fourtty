@@ -3,12 +3,17 @@ import { MessageSquare, Edit3, Tag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import { Post } from '../types';
+import CommentSection from './CommentSection';
 
 const Feed: React.FC = () => {
    const { user, updateUser } = useAuth();
    const [statusText, setStatusText] = useState('');
    const [posts, setPosts] = useState<Post[]>([]);
    const [isLoading, setIsLoading] = useState(true);
+   const [limit] = useState(10);
+   const [page, setPage] = useState(1);
+   const [hasMore, setHasMore] = useState(true);
+   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
    // Initialize status text when user data is available
    useEffect(() => {
@@ -17,21 +22,41 @@ const Feed: React.FC = () => {
       }
    }, [user]);
 
-   // Fetch feed posts
-   useEffect(() => {
-      const fetchFeed = async () => {
-         try {
-            const response = await api.get('/posts/feed');
-            setPosts(response.data.posts);
-         } catch (error) {
-            console.error("Error fetching feed:", error);
-         } finally {
-            setIsLoading(false);
-         }
-      };
+   const fetchFeed = async (pageNum: number, isRefresh = false) => {
+      try {
+         const response = await api.get(`/posts/feed?page=${pageNum}&limit=${limit}`);
 
-      fetchFeed();
+         if (isRefresh) {
+            setPosts(response.data.posts);
+         } else {
+            setPosts(prev => [...prev, ...response.data.posts]);
+         }
+
+         const { total, page: currentPage, limit: currentLimit } = response.data.pagination;
+         setHasMore(currentPage * currentLimit < total);
+
+      } catch (error) {
+         console.error("Error fetching feed:", error);
+      }
+   };
+
+   // Initial fetch
+   useEffect(() => {
+      const init = async () => {
+         setIsLoading(true);
+         await fetchFeed(1, true);
+         setIsLoading(false);
+      };
+      init();
    }, []);
+
+   const handleLoadMore = async () => {
+      setIsLoadingMore(true);
+      const nextPage = page + 1;
+      await fetchFeed(nextPage);
+      setPage(nextPage);
+      setIsLoadingMore(false);
+   };
 
    const handleUpdateStatus = async () => {
       if (!statusText.trim()) return;
@@ -40,20 +65,20 @@ const Feed: React.FC = () => {
          // Update profile bio (status)
          await api.put('/users/profile', { bio: statusText });
 
-         // Create a new post for this status update
+         // Create a new post
          await api.post('/posts', {
             content: statusText,
             type: 'status'
          });
 
-         // Refresh user data to show new bio
+         // Refresh user data
          if (user) {
             updateUser({ ...user, bio: statusText });
          }
 
-         // Refresh feed
-         const feedResponse = await api.get('/posts/feed');
-         setPosts(feedResponse.data.posts);
+         // Refresh feed (reset to page 1)
+         setPage(1);
+         await fetchFeed(1, true);
 
       } catch (error) {
          console.error("Error updating status:", error);
@@ -167,12 +192,11 @@ const Feed: React.FC = () => {
 
                         {/* Interaction Summary */}
                         <div className="mt-1 flex flex-col gap-0.5">
-                           {post._count && post._count.comments > 0 && (
-                              <div className="flex items-center gap-1 text-[11px]">
-                                 <MessageSquare size={10} className="text-[#59B200] fill-[#59B200]" />
-                                 <span className="text-[#59B200] font-bold">{post._count.comments} comentarios</span>
-                              </div>
-                           )}
+                           <CommentSection
+                              postId={post.id}
+                              initialCommentsCount={post._count?.comments || 0}
+                           />
+
                            {post.type === 'photo' && (
                               <div className="flex items-center gap-1 text-[11px]">
                                  <Tag size={10} className="text-[#59B200] fill-[#59B200]" />
@@ -186,11 +210,17 @@ const Feed: React.FC = () => {
             </div>
          )}
 
-         <div className="mt-4 text-center">
-            <button className="text-[#005599] font-bold text-[12px] hover:underline bg-[#f2f6f9] w-full py-2 rounded border border-[#e1e9f0]">
-               Ver más novedades
-            </button>
-         </div>
+         {hasMore && (
+            <div className="mt-4 text-center">
+               <button
+                  onClick={handleLoadMore}
+                  disabled={isLoadingMore}
+                  className="text-[#005599] font-bold text-[12px] hover:underline bg-[#f2f6f9] w-full py-2 rounded border border-[#e1e9f0]"
+               >
+                  {isLoadingMore ? 'Cargando...' : 'Ver más novedades'}
+               </button>
+            </div>
+         )}
 
       </div>
    );

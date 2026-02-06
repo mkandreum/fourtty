@@ -7,6 +7,7 @@ import { User } from '../types';
 const Sidebar: React.FC = () => {
    const { user } = useAuth();
    const [friends, setFriends] = useState<User[]>([]);
+   const [filterQuery, setFilterQuery] = useState('');
    const [isLoading, setIsLoading] = useState(true);
 
    useEffect(() => {
@@ -24,6 +25,10 @@ const Sidebar: React.FC = () => {
          fetchFriends();
       }
    }, [user]);
+
+   const filteredFriends = friends.filter(friend =>
+      friend.name.toLowerCase().includes(filterQuery.toLowerCase())
+   );
 
    return (
       <div className="flex flex-col gap-4">
@@ -44,7 +49,7 @@ const Sidebar: React.FC = () => {
             <h4 className="text-[#333] font-bold text-[11px] mb-2 flex items-center justify-between border-b border-[#eee] pb-1">
                <div className="flex items-center gap-1">
                   <span className="w-2 h-2 bg-[#59B200] rounded-full"></span>
-                  Chat ({friends.length})
+                  Chat ({filteredFriends.length})
                </div>
                <span className="text-[#005599] hover:underline cursor-pointer text-[10px]">Ajustes</span>
             </h4>
@@ -53,21 +58,25 @@ const Sidebar: React.FC = () => {
                   type="text"
                   placeholder="Buscar amigo"
                   className="w-full border border-[#ccc] rounded-[2px] py-0.5 px-1 text-[11px] pl-5"
+                  value={filterQuery}
+                  onChange={(e) => setFilterQuery(e.target.value)}
                />
                <Search size={10} className="absolute left-1 top-1.5 text-gray-400" />
             </div>
             <div className="flex flex-col gap-0.5 max-h-[300px] overflow-y-auto pr-1">
                {isLoading ? (
                   <div className="text-[10px] text-gray-400 p-2">Cargando amigos...</div>
-               ) : friends.length > 0 ? (
-                  friends.map(friend => (
+               ) : filteredFriends.length > 0 ? (
+                  filteredFriends.map(friend => (
                      <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[#e1f0fa] cursor-pointer group">
                         <div className="w-2 h-2 rounded-full bg-[#59B200]"></div>
                         <span className="text-[11px] text-[#333] group-hover:text-black truncate">{friend.name}</span>
                      </div>
                   ))
                ) : (
-                  <div className="text-[10px] text-gray-400 p-2">No tienes amigos conectados</div>
+                  <div className="text-[10px] text-gray-400 p-2">
+                     {filterQuery ? 'No se encontraron amigos' : 'No tienes amigos conectados'}
+                  </div>
                )}
             </div>
          </div>
