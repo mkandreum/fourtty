@@ -85,3 +85,49 @@ export const markAllAsRead = async (req: AuthRequest, res: Response): Promise<vo
         res.status(500).json({ error: 'Failed to mark all as read' });
     }
 };
+
+// Delete notification
+export const deleteNotification = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const notificationId = parseInt(req.params.id as string);
+
+        const notification = await prisma.notification.findUnique({
+            where: { id: notificationId }
+        });
+
+        if (!notification) {
+            res.status(404).json({ error: 'Notification not found' });
+            return;
+        }
+
+        if (notification.userId !== req.userId) {
+            res.status(403).json({ error: 'You can only delete your own notifications' });
+            return;
+        }
+
+        await prisma.notification.delete({
+            where: { id: notificationId }
+        });
+
+        res.json({ message: 'Notification deleted' });
+    } catch (error) {
+        console.error('Delete notification error:', error);
+        res.status(500).json({ error: 'Failed to delete notification' });
+    }
+};
+
+// Delete all notifications
+export const deleteAllNotifications = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        await prisma.notification.deleteMany({
+            where: {
+                userId: req.userId!
+            }
+        });
+
+        res.json({ message: 'All notifications deleted' });
+    } catch (error) {
+        console.error('Delete all notifications error:', error);
+        res.status(500).json({ error: 'Failed to delete all notifications' });
+    }
+};

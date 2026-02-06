@@ -50,6 +50,43 @@ const Header: React.FC = () => {
     }
   };
 
+  const handleDeleteNotification = async (id: number) => {
+    try {
+      await api.delete(`/notifications/${id}`);
+      setNotifications(prev => prev.filter(n => n.id !== id));
+      setUnreadNotifsCount(prev => Math.max(0, prev - 1));
+    } catch (e) {
+      console.error('Error deleting notification:', e);
+    }
+  };
+
+  const handleDeleteAllNotifications = async () => {
+    if (!confirm('¿Seguro que quieres borrar todas las notificaciones?')) return;
+    try {
+      await api.delete('/notifications');
+      setNotifications([]);
+      setUnreadNotifsCount(0);
+    } catch (e) {
+      console.error('Error deleting all notifications:', e);
+    }
+  };
+
+  const handleGroupAction = async (type: string) => {
+    // Find notification IDs of this type
+    const relatedNotifs = notifications.filter(n => {
+      if (type === 'friendships') return n.type === 'friendship';
+      if (type === 'tags') return ['tag', 'tag_photo'].includes(n.type);
+      if (type === 'comments') return ['comment', 'comment_photo', 'comment_post', 'tag'].includes(n.type);
+      if (type === 'messages') return n.type === 'message';
+      return false;
+    });
+
+    // Delete them all
+    for (const notif of relatedNotifs) {
+      await handleDeleteNotification(notif.id);
+    }
+  };
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchQuery.trim()) {
@@ -267,6 +304,7 @@ const Header: React.FC = () => {
                                 <div
                                   className="flex items-center gap-2 group cursor-pointer"
                                   onClick={() => {
+                                    handleGroupAction(item.key);
                                     if (item.key === 'friendships') handleNavigate('/people');
                                     else if (item.key === 'tags') handleNavigate('/profile/photos');
                                     else handleNavigate('/');
@@ -288,7 +326,7 @@ const Header: React.FC = () => {
                                         className="w-10 h-10 border border-[#ccc] p-[1px] bg-white cursor-pointer hover:border-[#59B200]"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          handleMarkAsRead(t.id);
+                                          handleDeleteNotification(t.id);
                                           handleNavigate('/profile/photos');
                                           setShowNotifs(false);
                                         }}
@@ -302,17 +340,12 @@ const Header: React.FC = () => {
                                 )}
                               </div>
                             ))}
-                            {unread.length > 0 && (
+                            {notifications.length > 0 && (
                               <button
-                                onClick={async () => {
-                                  try {
-                                    await api.put('/notifications/mark-all-read');
-                                    fetchNotifications();
-                                  } catch (e) { }
-                                }}
-                                className="mt-4 text-[10px] text-gray-400 hover:text-[#59B200] text-center border-t border-gray-100 pt-3"
+                                onClick={handleDeleteAllNotifications}
+                                className="mt-4 text-[10px] text-red-500 hover:text-red-700 font-bold text-center border-t border-gray-100 pt-3 flex items-center justify-center gap-1 w-full"
                               >
-                                Marcar todas como leídas
+                                <X size={12} /> Borrar todas las notificaciones
                               </button>
                             )}
                           </div>
@@ -320,18 +353,11 @@ const Header: React.FC = () => {
                       })()}
                     </div>
 
-                    {notifications.length > 0 && (
-                      <div className="bg-gray-50/50 p-2 text-center border-t border-gray-100">
-                        <button
-                          className="text-[10px] font-bold text-[#005599] hover:underline"
-                          onClick={() => {
-                            // Maybe implement mark all as read
-                          }}
-                        >
-                          Ver todas las notificaciones
-                        </button>
-                      </div>
-                    )}
+                    <div className="bg-gray-50/50 p-2 text-center border-t border-gray-100">
+                      <span className="text-[9px] text-gray-400">
+                        {notifications.length} notificaciones en total
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>

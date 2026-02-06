@@ -25,6 +25,7 @@ const Profile: React.FC = () => {
    const [isEditing, setIsEditing] = useState(false);
    const [isRestricted, setIsRestricted] = useState(false);
    const [editData, setEditData] = useState<Partial<User>>({});
+   const [stats, setStats] = useState({ visits: 0 });
 
    // Cropping states
    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
@@ -68,6 +69,10 @@ const Profile: React.FC = () => {
 
                if (!isOwnProfile) {
                   api.post(`/visit/${targetUserId}`).catch(e => console.error("Track visit error:", e));
+               } else {
+                  // Fetch stats for own profile
+                  const statsRes = await api.get('/stats');
+                  setStats({ visits: statsRes.data.visits });
                }
             }
          } catch (error) {
@@ -392,6 +397,17 @@ const Profile: React.FC = () => {
             </h1>
             <div className="text-[#555] text-[12px] md:text-[13px] mb-3 border-b border-[#eee] pb-3 pr-[80px] md:pr-0">
                {profileUser.bio || 'Sin estado'}
+               {/* Mobile visits counter */}
+               {isOwnProfile && (
+                  <div className="md:hidden mt-2 flex items-center gap-2">
+                     <div className="flex items-center gap-1.5 bg-[#59B200]/10 px-2 py-0.5 rounded-full border border-[#59B200]/20">
+                        <div className="w-1.5 h-1.5 bg-[#59B200] rounded-full animate-pulse"></div>
+                        <span className="text-[11px] font-bold text-[#59B200]">
+                           {stats.visits} visitas al perfil
+                        </span>
+                     </div>
+                  </div>
+               )}
             </div>
             <div className="absolute top-0 right-0">
                {renderActionButtons()}
