@@ -198,11 +198,11 @@ const Feed: React.FC = () => {
          animate={{ opacity: 1, x: 0 }}
          exit={{ opacity: 0, x: 20 }}
          transition={{ duration: 0.3 }}
-         className="bg-white min-h-[500px] p-3 md:p-0"
+         className="bg-white min-h-[500px] px-3 pb-3 pt-0 md:p-0"
       >
 
          {/* Status Box - Speech Bubble Style */}
-         <div className="mb-4 md:mb-6 relative pt-2">
+         <div className="mb-4 md:mb-6 relative pt-0">
             <motion.div
                whileFocus={{ scale: 1.01 }}
                className="bg-white border-2 border-[#b2c2d1] rounded-[8px] p-2 relative shadow-sm"
