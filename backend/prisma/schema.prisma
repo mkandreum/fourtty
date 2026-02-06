@@ -20,7 +20,7 @@ model User {
   avatar             String?
   bio                String?        @default("")
   gender             String?        @default("Hombre")
-  age                Int?           @default(22)
+  age                Int?
   relationshipStatus String?        @default("Soltero")
   location           String?        @default("")
   occupation         String?        @default("")
