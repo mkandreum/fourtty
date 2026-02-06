@@ -232,13 +232,62 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
                 <span className="hidden sm:inline">Subir</span> ↑
               </button>
 
-              {unreadNotifsCount > 0 && (
+              {unreadNotifsCount >= 0 && (
                 <button
                   onClick={() => setShowNotifs(!showNotifs)}
-                  className="bg-[#cc0000] text-white text-[9px] px-1 rounded-sm font-bold min-w-[16px]"
+                  className={`${unreadNotifsCount > 0 ? 'bg-[#cc0000]' : 'bg-white/20'} text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center hover:scale-110 transition-transform`}
+                  title="Notificaciones"
                 >
+                  <Bell size={10} className="mr-0.5" />
                   {unreadNotifsCount}
                 </button>
+              )}
+
+              {/* Notifications Dropdown */}
+              {showNotifs && (
+                <div className="absolute top-[42px] right-0 w-screen sm:w-[300px] bg-white shadow-2xl border-x sm:border border-[#ccc] sm:rounded-b-[4px] z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="bg-[#f2f6f9] border-b border-[#dce5ed] p-2 flex justify-between items-center">
+                    <span className="text-[11px] font-bold text-[#333]">Notificaciones</span>
+                    <button
+                      onClick={() => setShowNotifs(false)}
+                      className="text-[10px] text-[#005599] hover:underline"
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                  <div className="max-h-[350px] overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-8 text-center text-gray-400 text-[11px]">No tienes notificaciones</div>
+                    ) : (
+                      notifications.map(notif => (
+                        <div
+                          key={notif.id}
+                          onClick={() => {
+                            handleMarkAsRead(notif.id);
+                            if (notif.type === 'friendship') handleNavigate(`/profile/${notif.relatedId}`);
+                            if (notif.type === 'comment' || notif.type === 'message') handleNavigate('/'); // Link to relevant soon
+                            setShowNotifs(false);
+                          }}
+                          className={`p-3 border-b border-[#eee] hover:bg-[#f9fbfd] cursor-pointer flex gap-3 items-start ${!notif.read ? 'bg-[#fff9e6]' : ''}`}
+                        >
+                          <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${!notif.read ? 'bg-[#59B200]' : 'bg-transparent'}`}></div>
+                          <div className="flex-1">
+                            <p className="text-[12px] text-[#333] leading-tight mb-1">{notif.content}</p>
+                            <span className="text-[9px] text-gray-400">{new Date(notif.createdAt).toLocaleString()}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div className="p-2 border-t border-[#eee] text-center">
+                    <button
+                      onClick={() => handleNavigate('/messages')} // Placeholder for "all notifs"
+                      className="text-[10px] text-[#005599] font-bold hover:underline"
+                    >
+                      Ver todos los mensajes
+                    </button>
+                  </div>
+                </div>
               )}
 
               <button
