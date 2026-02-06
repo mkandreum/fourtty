@@ -73,3 +73,45 @@ export const sendInvitationEmail = async (to: string, inviterName: string, invit
         return { success: false, error: { message: error.message, code: error.code, command: error.command } };
     }
 };
+
+export const sendResetPasswordEmail = async (to: string, resetUrl: string): Promise<{ success: boolean; error?: any }> => {
+    const mailOptions = {
+        from: {
+            name: "Twenty",
+            address: process.env.SMTP_USER || ""
+        },
+        to,
+        subject: 'Restablece tu contraseña de Twenty',
+        text: `Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para hacerlo: ${resetUrl}\n\nSi no has solicitado esto, ignora este email.`,
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #dce5ed; border-radius: 8px; overflow: hidden;">
+                <div style="background-color: #005599; padding: 20px; text-align: center;">
+                    <h1 style="color: white; margin: 0; font-size: 28px;">;) twenty</h1>
+                </div>
+                <div style="padding: 30px; background-color: white;">
+                    <p style="font-size: 16px; color: #333;">Hola,</p>
+                    <p style="font-size: 16px; color: #333;">Has solicitado restablecer tu contraseña de <strong>Twenty</strong>.</p>
+                    <p style="font-size: 16px; color: #333;">Haz clic en el botón de abajo para elegir una nueva contraseña:</p>
+                    <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+                        <a href="${resetUrl}" style="background-color: #59B200; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 16px;">Restablecer Contraseña</a>
+                    </div>
+                    <p style="font-size: 12px; color: #999;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
+                    <p style="font-size: 12px; color: #999;">${resetUrl}</p>
+                    <p style="font-size: 14px; color: #555; margin-top: 30px;">Si no has solicitado este cambio, puedes ignorar este correo de forma segura.</p>
+                </div>
+                <div style="background-color: #f9fbfd; padding: 15px; text-align: center; border-top: 1px solid #dce5ed;">
+                    <p style="margin: 0; font-size: 12px; color: #999;">© Twenty 2010. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        `,
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('✉️ Reset password email sent: %s', info.messageId);
+        return { success: true };
+    } catch (error: any) {
+        console.error('❌ Error sending reset password email:', error);
+        return { success: false, error: { message: error.message, code: error.code } };
+    }
+};

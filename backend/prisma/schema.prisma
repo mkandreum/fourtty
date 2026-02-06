@@ -25,6 +25,8 @@ model User {
   occupation         String?        @default("")
   privacy            String?        @default("public") // public, friends, private
   invitationsCount   Int            @default(2)
+  resetPasswordToken String?
+  resetPasswordExpires DateTime?
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
 

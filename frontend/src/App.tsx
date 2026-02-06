@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import Header from './components/Header';
 import Feed from './components/Feed';
 import Sidebar from './components/Sidebar';
@@ -112,6 +114,14 @@ const AppContent = () => {
       <Routes location={location} key={location.pathname}>
         <Route path="/login" element={
           isAuthenticated ? <Navigate to="/" /> : <Login />
+        } />
+
+        <Route path="/forgot-password" element={
+          isAuthenticated ? <Navigate to="/" /> : <ForgotPassword />
+        } />
+
+        <Route path="/reset-password/:token" element={
+          isAuthenticated ? <Navigate to="/" /> : <ResetPassword />
         } />
 
         <Route path="/" element={

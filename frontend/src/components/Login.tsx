@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { User as UserIcon, MapPin, Smartphone, Info } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
@@ -120,8 +121,11 @@ const Login: React.FC = () => {
                   placeholder="********"
                   required
                 />
+                {/* Forgot Password Link */}
                 {!isRegister && (
-                  <a href="#" className="mt-1 text-blue-100 hover:underline">¿Has olvidado tu contraseña?</a>
+                  <Link to="/forgot-password" data-testid="forgot-password-link" className="mt-1 text-blue-100 hover:underline">
+                    ¿Has olvidado tu contraseña?
+                  </Link>
                 )}
               </div>
 

@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { prisma } from '../index';
+import { sendResetPasswordEmail } from '../services/email.service';
 import { AuthRequest } from '../middleware/auth';
 
 // Register new user
@@ -182,6 +184,96 @@ export const getCurrentUser = async (req: AuthRequest, res: Response): Promise<v
         res.json({ user });
     } catch (error) {
         console.error('Get current user error:', error);
-        res.status(500).json({ error: 'Failed to get user' });
+        res.status(500).json({ error: 'Failed to fetch user data' });
+    }
+};
+
+// Forgot Password - Send Reset Token
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            res.status(400).json({ error: 'Email is required' });
+            return;
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        if (!user) {
+            // Don't reveal if user exists for security
+            res.json({ message: 'Si el email está registrado, recibirás un enlace de recuperación pronto.' });
+            return;
+        }
+
+        // Generate token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenExpires = new Date(Date.now() + 3600000); // 1 hour
+
+        // Save to DB
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                resetPasswordToken: resetToken,
+                resetPasswordExpires: resetTokenExpires
+            }
+        });
+
+        // Send Email
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
+
+        await sendResetPasswordEmail(email, resetUrl);
+
+        res.json({ message: 'Si el email está registrado, recibirás un enlace de recuperación pronto.' });
+    } catch (error) {
+        console.error('Forgot password error:', error);
+        res.status(500).json({ error: 'Failed to process forgot password request' });
+    }
+};
+
+// Reset Password - Verify Token and Update Password
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { token, password } = req.body;
+
+        if (!token || !password) {
+            res.status(400).json({ error: 'Token and new password are required' });
+            return;
+        }
+
+        const user = await prisma.user.findFirst({
+            where: {
+                resetPasswordToken: token,
+                resetPasswordExpires: {
+                    gt: new Date()
+                }
+            }
+        });
+
+        if (!user) {
+            res.status(400).json({ error: 'Token inválido o expirado' });
+            return;
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Update user
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashedPassword,
+                resetPasswordToken: null,
+                resetPasswordExpires: null
+            }
+        });
+
+        res.json({ message: 'Contraseña actualizada con éxito' });
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({ error: 'Failed to reset password' });
     }
 };
