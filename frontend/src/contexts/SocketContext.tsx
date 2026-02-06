@@ -18,10 +18,11 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     useEffect(() => {
         if (isAuthenticated && user) {
-            // In production, if served from the same domain, we can use a relative path or current origin
-            const socketUrl = import.meta.env.MODE === 'production'
-                ? window.location.origin
-                : (import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000');
+            // In production, use VITE_API_URL stripped of '/api' or window.location.origin
+            const apiUrl = import.meta.env.VITE_API_URL;
+            const socketUrl = apiUrl
+                ? apiUrl.replace('/api', '')
+                : (import.meta.env.MODE === 'production' ? window.location.origin : 'http://localhost:5000');
 
             console.log('🔌 Connecting to socket at:', socketUrl);
 
