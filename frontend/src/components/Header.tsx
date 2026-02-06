@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Search, Image as ImageIcon, Bell, LogOut, User, Menu, X, UserPlus, Mail, MessageCircle, Tag } from 'lucide-react';
+import { Search, Image as ImageIcon, Bell, LogOut, User, Menu, X, UserPlus, Mail, MessageCircle, Tag, Camera } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import PhotoUploadModal from './PhotoUploadModal';
@@ -241,9 +241,10 @@ const Header: React.FC = () => {
             />
             <button
               onClick={() => document.getElementById('photo-upload')?.click()}
-              className="bg-[#2B7BB9] text-white text-[10px] md:text-[11px] font-bold px-2 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm hover:bg-[#256ca3] active:scale-95 transition-all"
+              className="bg-[#2B7BB9] text-white text-[10px] md:text-[11px] font-bold px-2 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm hover:bg-[#256ca3] active:scale-95 transition-all flex items-center gap-1"
             >
-              <span className="hidden sm:inline">Subir</span> ↑
+              <span>Subir</span>
+              <Camera size={14} />
             </button>
 
             {unreadNotifsCount >= 0 && (
