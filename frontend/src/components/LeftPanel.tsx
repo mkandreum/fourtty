@@ -26,6 +26,7 @@ const LeftPanel: React.FC = () => {
       posts: 0,
       photos: 0
    });
+   const [recentVisitors, setRecentVisitors] = React.useState<any[]>([]);
    const [events, setEvents] = React.useState<any[]>([]);
    const [isLoading, setIsLoading] = React.useState(true);
 
@@ -46,6 +47,10 @@ const LeftPanel: React.FC = () => {
                posts: user?._count?.posts || 0,
                photos: user?._count?.photos || 0,
             }));
+
+            const visitorsRes = await api.get('/visitors');
+            setRecentVisitors(visitorsRes.data.visitors);
+
             setEvents(eventsRes.data.events);
          } catch (error) {
             console.error("Error fetching data:", error);
@@ -58,9 +63,9 @@ const LeftPanel: React.FC = () => {
       }
    }, [user]);
 
-   const getAvatarUrl = (avatar?: string) => {
-      if (!avatar) return `/api/proxy/avatar?name=${encodeURIComponent(user?.name || 'User')}`;
-      if (avatar.startsWith('http')) return avatar;
+   const getAvatarUrl = (avatar?: string | null, name?: string, lastName?: string) => {
+      if (!avatar) return `https://ui-avatars.com/api/?name=${name || ''}+${lastName || ''}&background=random`;
+      if (avatar && avatar.startsWith('http')) return avatar;
       return `${import.meta.env.VITE_API_URL?.replace('/api', '')}${avatar}`;
    };
 
@@ -89,7 +94,31 @@ const LeftPanel: React.FC = () => {
                </span>
             </div>
             <MenuItem icon={MessageSquare} count={stats.statusComments} text="estado con comentarios" />
-            <MenuItem icon={BarChart2} count={stats.visits} text="visitas nuevas" />
+            <div className="flex flex-col">
+               <MenuItem icon={BarChart2} count={stats.visits} text="visitas nuevas" />
+               {recentVisitors.length > 0 && (
+                  <div className="flex -space-x-1.5 overflow-hidden ml-5 mt-0.5">
+                     {recentVisitors.slice(0, 6).map((visitor, idx) => (
+                        <img
+                           key={visitor.id}
+                           src={getAvatarUrl(visitor.avatar, visitor.name, visitor.lastName)}
+                           className="inline-block h-6 w-6 rounded-full ring-1 ring-white object-cover shadow-sm cursor-pointer hover:scale-110 transition-transform"
+                           alt={visitor.name}
+                           style={{ zIndex: 10 - idx }}
+                           onClick={() => window.location.href = `/profile/${visitor.id}`}
+                           onError={(e) => {
+                              (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${visitor.name}+${visitor.lastName}&background=random`;
+                           }}
+                        />
+                     ))}
+                     {recentVisitors.length > 6 && (
+                        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 ring-1 ring-white text-[8px] font-bold text-gray-500 z-0 shadow-sm">
+                           +{recentVisitors.length - 6}
+                        </div>
+                     )}
+                  </div>
+               )}
+            </div>
          </div>
 
          {/* Invite Friends section moved to Feed */}

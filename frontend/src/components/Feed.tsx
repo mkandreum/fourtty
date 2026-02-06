@@ -25,8 +25,8 @@ const Feed: React.FC = () => {
    const [isLoadingMore, setIsLoadingMore] = useState(false);
    const [limit] = useState(10);
 
-   const getAvatarUrl = (avatar?: string | null) => {
-      if (!avatar) return `https://ui-avatars.com/api/?name=${user?.name}+${user?.lastName}&background=random`;
+   const getAvatarUrl = (avatar?: string | null, name?: string, lastName?: string) => {
+      if (!avatar) return `https://ui-avatars.com/api/?name=${name || ''}+${lastName || ''}&background=random`;
       if (avatar && avatar.startsWith('http')) return avatar;
       return `${import.meta.env.VITE_API_URL?.replace('/api', '')}${avatar}`;
    };
@@ -183,7 +183,6 @@ const Feed: React.FC = () => {
          showToast("No se pudo borrar la publicación", "error");
       }
    };
-
    const fetchRecentVisitors = async () => {
       try {
          const res = await api.get('/visitors');
@@ -192,7 +191,6 @@ const Feed: React.FC = () => {
          console.error("Error fetching visitors:", error);
       }
    };
-
 
    return (
       <div className="bg-white md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4">
@@ -219,7 +217,7 @@ const Feed: React.FC = () => {
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
                               exit={{ scale: 0 }}
-                              className="absolute top-[-20px] right-0 bg-[#f0f0f0] border border-[#ccc] text-[#999] text-[9px] w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm z-10"
+                              className="absolute top-[-24px] right-0 bg-[#f0f0f0] border border-[#ccc] text-[#999] text-[11px] w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-sm z-10"
                            >
                               {140 - statusText.length}
                            </motion.div>
@@ -230,7 +228,7 @@ const Feed: React.FC = () => {
             </div>
 
             <div className="flex justify-between items-center mt-2 px-1 gap-2">
-               <div className="text-[10px] md:text-[11px] text-[#888] italic truncate max-w-[60%]">
+               <div className="text-[13px] md:text-[15px] text-[#888] italic truncate max-w-[70%]">
                   Última: <span className="text-[#333] font-bold not-italic">"{user?.bio || 'Sin estado'}"</span>
                </div>
                <button
@@ -280,15 +278,15 @@ const Feed: React.FC = () => {
                               {item.icon}
                            </div>
                            <div className="flex flex-col">
-                              <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
+                              <span className="text-[14px] md:text-[16px] font-bold text-[#59B200] group-hover:underline">
                                  {item.count} {item.label}
                               </span>
                               {item.key === 'visits' && recentVisitors.length > 0 && (
-                                 <div className="flex -space-x-1 overflow-hidden mt-1">
+                                 <div className="md:hidden flex -space-x-1 overflow-hidden mt-1">
                                     {recentVisitors.slice(0, 6).map((visitor, idx) => (
                                        <img
                                           key={visitor.id}
-                                          src={getAvatarUrl(visitor.avatar)}
+                                          src={getAvatarUrl(visitor.avatar, visitor.name, visitor.lastName)}
                                           className="inline-block h-6 w-6 rounded-full ring-1 ring-white object-cover shadow-sm"
                                           alt={visitor.name}
                                           style={{ zIndex: 10 - idx }}
