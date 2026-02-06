@@ -266,7 +266,7 @@ const Feed: React.FC = () => {
                      {items.map(item => (
                         <div
                            key={item.key}
-                           className="flex items-center gap-2 group cursor-pointer hover:bg-[#F9FBFE] p-1 rounded-sm transition-colors"
+                           className={`flex items-center gap-2 group cursor-pointer hover:bg-[#F9FBFE] p-1 rounded-sm transition-colors ${item.key === 'visits' ? 'md:hidden' : ''}`}
                            onClick={() => {
                               if (item.key === 'visits') navigate('/profile');
                               else if (item.key === 'friendships') navigate('/people');
