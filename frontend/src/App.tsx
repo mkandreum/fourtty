@@ -27,7 +27,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
-      <Header currentView={currentView} onChangeView={setCurrentView} />
+      <Header currentView={currentView} />
 
       {/* Main Container */}
       <div className="max-w-[980px] mx-auto mt-[54px] px-2 flex gap-4 items-start">
