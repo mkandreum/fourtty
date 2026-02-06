@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             timeoutRef.current = setTimeout(() => {
                 console.log('Inactivity timeout reached. Logging out...');
                 logout();
-            }, 5 * 60 * 1000); // 5 minutes
+            }, 2 * 60 * 60 * 1000); // 2 hours
         }
     };
 

@@ -66,7 +66,7 @@ app.use(helmet({
 // Global Rate Limiting
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
+    max: 500, // Increased from 100 to allow more headroom
     message: { error: 'Demasiadas peticiones, por favor inténtalo más tarde.' }
 });
 app.use('/api', globalLimiter);
@@ -74,7 +74,7 @@ app.use('/api', globalLimiter);
 // Stricter Rate Limiting for Auth
 const authLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 10, // Limit each IP to 10 login/register attempts per hour
+    max: 100, // Increased from 10 to prevent login loop lockouts
     message: { error: 'Demasiados intentos de acceso, por favor inténtalo en una hora.' }
 });
 app.use('/api/auth/login', authLimiter);
@@ -121,7 +121,8 @@ app.get('*', (req: Request, res: Response) => {
         res.status(404).json({ error: 'Not Found', message: 'API Route not found' });
         return;
     }
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    const indexPath = path.join(__dirname, '../public/index.html');
+    res.sendFile(indexPath);
 });
 
 // Start server
