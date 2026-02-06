@@ -22,6 +22,7 @@ router.post('/comments/:id/like', authenticateToken, toggleCommentLike);
 router.post('/photos', authenticateToken, uploadPostImage, uploadPhoto);
 router.get('/photos/user/:userId', authenticateToken, checkPrivacy, getUserPhotos);
 router.post('/photos/:id/tag', authenticateToken, tagPhoto);
+router.delete('/photos/:id', authenticateToken, deletePhoto);
 
 // Events
 router.get('/events', authenticateToken, getEvents);
