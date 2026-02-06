@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
          className="flex flex-col gap-4"
       >
          {/* Add Friends */}
-         <div className="bg-[#fff] border-b border-[#dce5ed] pb-4">
+         <div className="pb-4">
             <h4 className="text-[#333] font-bold text-[11px] mb-2">Añadir amigos</h4>
             <div className="text-[11px] text-[#888] mb-2">¿Amigos en Hotmail, Gmail o Yahoo!?</div>
             <div className="flex gap-1">
@@ -69,7 +69,7 @@ const Sidebar: React.FC = () => {
          </div>
 
          {/* Chat Widget */}
-         <div className="bg-[#fff]">
+         <div className="">
             <h4 className="text-[#333] font-bold text-[11px] mb-2 flex items-center justify-between border-b border-[#eee] pb-1">
                <div className="flex items-center gap-1">
                   <span className={`w-2 h-2 rounded-full ${onlineFriendsCount > 0 ? 'bg-[#59B200]' : 'bg-gray-400'}`}></span>

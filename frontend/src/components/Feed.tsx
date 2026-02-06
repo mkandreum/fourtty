@@ -198,7 +198,7 @@ const Feed: React.FC = () => {
          animate={{ opacity: 1, x: 0 }}
          exit={{ opacity: 0, x: 20 }}
          transition={{ duration: 0.3 }}
-         className="bg-white min-h-[500px] px-3 pb-3 pt-4 md:px-0 md:pb-0"
+         className="bg-white md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4"
       >
 
          {/* Status Box - Speech Bubble Style */}
