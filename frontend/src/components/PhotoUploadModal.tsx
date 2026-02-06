@@ -31,7 +31,7 @@ const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({ file, onClose, onSu
 
    const fetchFriends = async () => {
       try {
-         const res = await api.get('/friendships/friends');
+         const res = await api.get('/friendships');
          setFriends(res.data.friends);
       } catch (e) {
          console.error(e);

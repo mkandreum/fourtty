@@ -20,6 +20,12 @@ body {
     /* Firefox */
 }
 
+/* STICKY HEADER SPACING */
+.main-content-container {
+    padding-top: 64px !important;
+    /* Ensure enough space under header */
+}
+
 /* GLOBAL FORCED WHITE BACKGROUND */
 input:not([type="checkbox"]):not([type="radio"]),
 select,
@@ -29,11 +35,38 @@ textarea {
     color: black !important;
 }
 
-/* Fix browser autofill blue color */
+/* Fix browser autofill blue color and persistent overlays */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
     -webkit-text-fill-color: black !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* Ensure parents don't have weird layers */
+.search-container input,
+.header-search input,
+form input {
+    position: relative;
+    z-index: 1;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }
