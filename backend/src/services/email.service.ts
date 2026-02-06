@@ -26,7 +26,7 @@ transporter.verify((error, success) => {
     }
 });
 
-export const sendInvitationEmail = async (to: string, inviterName: string, inviteCode: string) => {
+export const sendInvitationEmail = async (to: string, inviterName: string, inviteCode: string): Promise<{ success: boolean; error?: any }> => {
     const mailOptions = {
         from: process.env.SMTP_FROM || `"Twenty" <${process.env.SMTP_USER}>`,
         to,
@@ -59,7 +59,7 @@ export const sendInvitationEmail = async (to: string, inviterName: string, invit
     try {
         const info = await transporter.sendMail(mailOptions);
         console.log('✉️ Invitation email sent: %s', info.messageId);
-        return true;
+        return { success: true };
     } catch (error: any) {
         console.error('❌ Error sending invitation email:', {
             error: error.message,
@@ -67,6 +67,6 @@ export const sendInvitationEmail = async (to: string, inviterName: string, invit
             code: error.code,
             command: error.command
         });
-        return false;
+        return { success: false, error: { message: error.message, code: error.code, command: error.command } };
     }
 };

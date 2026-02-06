@@ -48,7 +48,8 @@ export const generateInvitation = async (req: AuthRequest, res: Response): Promi
 
         let emailSent = false;
         if (email && email.trim()) {
-            emailSent = await sendInvitationEmail(email, user.name, code);
+            const result = await sendInvitationEmail(email, user.name, code);
+            emailSent = result.success;
         }
 
         res.status(201).json({

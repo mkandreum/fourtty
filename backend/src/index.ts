@@ -72,11 +72,11 @@ app.post('/api/test-email', async (req: Request, res: Response) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email is required' });
 
-    const success = await sendInvitationEmail(email, 'Admin Test', 'TEST-123');
-    if (success) {
+    const result = await sendInvitationEmail(email, 'Admin Test', 'TEST-123');
+    if (result.success) {
         return res.json({ message: 'Email sent successfully. Check your inbox.' });
     } else {
-        return res.status(500).json({ error: 'Failed to send email. Check server logs for details.' });
+        return res.status(500).json({ error: 'Failed to send email', details: result.error });
     }
 });
 
@@ -84,11 +84,11 @@ app.get('/api/test-email', async (req: Request, res: Response) => {
     const { email } = req.query;
     if (!email) return res.status(400).send('Email is required as query param: ?email=test@example.com');
 
-    const success = await sendInvitationEmail(email as string, 'Admin Test (GET)', 'TEST-456');
-    if (success) {
+    const result = await sendInvitationEmail(email as string, 'Admin Test (GET)', 'TEST-456');
+    if (result.success) {
         return res.send(`Email sent successfully to ${email}. Check your inbox.`);
     } else {
-        return res.status(500).send(`Failed to send email to ${email}. Check server logs for details.`);
+        return res.status(500).json({ error: `Failed to send email to ${email}`, details: result.error });
     }
 });
 
