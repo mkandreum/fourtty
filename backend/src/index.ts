@@ -1,6 +1,8 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
 import { createServer } from 'http';
@@ -40,6 +42,28 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Security Headers
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// Global Rate Limiting
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: { error: 'Demasiadas peticiones, por favor inténtalo más tarde.' }
+});
+app.use('/api', globalLimiter);
+
+// Stricter Rate Limiting for Auth
+const authLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10, // Limit each IP to 10 login/register attempts per hour
+    message: { error: 'Demasiados intentos de acceso, por favor inténtalo en una hora.' }
+});
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
 
 // Basic Request Logging
 app.use((req: Request, _res: Response, next: NextFunction) => {

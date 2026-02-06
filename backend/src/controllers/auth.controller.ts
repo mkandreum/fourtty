@@ -93,7 +93,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         const token = jwt.sign(
             { userId: user.id },
             process.env.JWT_SECRET!,
-            { expiresIn: '7d' }
+            { expiresIn: '2h' }
         );
 
         res.status(201).json({
@@ -139,7 +139,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         const token = jwt.sign(
             { userId: user.id },
             process.env.JWT_SECRET!,
-            { expiresIn: '7d' }
+            { expiresIn: '2h' }
         );
 
         // Return user without password

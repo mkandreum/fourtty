@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Minus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -168,6 +168,26 @@ const ChatBar: React.FC = () => {
    const [activeChatUser, setActiveChatUser] = useState<User | null>(null);
    const [friends, setFriends] = useState<User[]>([]);
    const [onlineUserIds, setOnlineUserIds] = useState<number[]>([]);
+   const chatListRef = useRef<HTMLDivElement>(null);
+   const chatTriggerRef = useRef<HTMLDivElement>(null);
+
+   useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+         // If click is outside both the chat list and the trigger button
+         if (
+            isOpen &&
+            chatListRef.current &&
+            !chatListRef.current.contains(event.target as Node) &&
+            chatTriggerRef.current &&
+            !chatTriggerRef.current.contains(event.target as Node)
+         ) {
+            setIsOpen(false);
+         }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+   }, [isOpen]);
 
    useEffect(() => {
       if (user) {
@@ -204,6 +224,7 @@ const ChatBar: React.FC = () => {
 
             {/* Left: Chat Trigger */}
             <div
+               ref={chatTriggerRef}
                className="flex items-center gap-2 h-full px-3 hover:bg-[#333] cursor-pointer border-r border-[#333] select-none"
                onClick={() => setIsOpen(!isOpen)}
             >
@@ -228,7 +249,7 @@ const ChatBar: React.FC = () => {
 
          {/* Friends List Popup */}
          {isOpen && (
-            <div className="fixed bottom-[30px] left-2 w-[200px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 max-h-[400px] flex flex-col">
+            <div ref={chatListRef} className="fixed bottom-[30px] left-2 w-[200px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 max-h-[400px] flex flex-col">
                <div className="bg-[#f0f0f0] p-2 border-b border-[#ccc] flex justify-between items-center">
                   <span className="text-[11px] font-bold text-[#333]">Amigos {friends.length > 0 && `(${onlineFriends.length}/${friends.length})`}</span>
                   <div className="flex gap-1">

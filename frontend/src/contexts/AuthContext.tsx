@@ -18,6 +18,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
     const [isLoading, setIsLoading] = useState(true);
+    const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+    const resetTimeout = () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        if (user) {
+            timeoutRef.current = setTimeout(() => {
+                console.log('Inactivity timeout reached. Logging out...');
+                logout();
+            }, 5 * 60 * 1000); // 5 minutes
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+            events.forEach(event => document.addEventListener(event, resetTimeout));
+            resetTimeout();
+
+            return () => {
+                events.forEach(event => document.removeEventListener(event, resetTimeout));
+                if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            };
+        }
+    }, [user]);
 
     useEffect(() => {
         const initAuth = async () => {
