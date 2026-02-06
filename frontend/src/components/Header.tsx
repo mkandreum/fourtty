@@ -134,7 +134,7 @@ const Header: React.FC = () => {
           >
             <span className="text-white text-[18px] md:text-[22px] font-bold tracking-tighter flex items-center gap-0.5 mr-1 md:mr-2">
               <span className="text-lg md:text-xl">;)</span>
-              twenty
+              twentty
               <span className="text-[7px] md:text-[8px] font-normal align-top ml-0.5 mt-[-8px] md:mt-[-12px] opacity-60">TM</span>
             </span>
           </div>

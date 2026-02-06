@@ -124,7 +124,7 @@ const People: React.FC = () => {
                 <div className="bg-white border border-[#dce5ed] rounded-[4px] shadow-sm">
                     <div className="p-3 border-b border-[#eee] flex items-center justify-between gap-4">
                         <h2 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1 shrink-0">
-                            Gente en Twenty
+                            Gente en Twentty
                         </h2>
                         <div className="relative flex-1 max-w-[300px]">
                             <input

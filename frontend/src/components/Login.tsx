@@ -63,7 +63,7 @@ const Login: React.FC = () => {
           <div className="max-w-[980px] w-full flex flex-col md:flex-row justify-between md:justify-end gap-4 md:gap-0">
             {/* Logo for mobile in header */}
             <div className="md:hidden flex items-center gap-1 select-none">
-              <span className="text-2xl font-bold tracking-tighter text-white">;) twenty</span>
+              <span className="text-2xl font-bold tracking-tighter text-white">;) twentty</span>
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-wrap items-end md:items-start gap-2 md:gap-3 text-white text-[10px] md:text-[11px]">
@@ -116,7 +116,7 @@ const Login: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
-                  placeholder="laura@twenty.com"
+                  placeholder="laura@twentty.com"
                   required
                 />
                 {!isRegister && (
@@ -189,14 +189,14 @@ const Login: React.FC = () => {
                 <div className="bg-white/20 rounded-lg p-2 backdrop-blur-sm hidden md:block">
                   <span className="text-4xl md:text-6xl font-bold tracking-tighter text-white drop-shadow-md">;)</span>
                 </div>
-                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-white drop-shadow-md pb-2 mt-2">twenty</h1>
+                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-white drop-shadow-md pb-2 mt-2">twentty</h1>
               </div>
 
               <h2 className="text-lg md:text-xl font-bold mb-2 md:text-right w-full border-b border-white/30 pb-2">
-                ¿Qué es Twenty?
+                ¿Qué es Twentty?
               </h2>
               <p className="text-[13px] leading-relaxed text-justify opacity-90">
-                Twenty es una plataforma social privada, a la que se accede únicamente por invitación.
+                Twentty es una plataforma social privada, a la que se accede únicamente por invitación.
                 Cada día la usan millones de personas para comunicarse entre ellas y compartir información
                 de forma segura y privada.
               </p>
@@ -234,7 +234,7 @@ const Login: React.FC = () => {
               <div>
                 <h3 className="font-bold text-lg mb-1">Móvil</h3>
                 <p className="text-[12px] opacity-80 leading-snug">
-                  Accede a Twenty desde tu móvil en tiempo real estés donde estés.
+                  Accede a Twentty desde tu móvil en tiempo real estés donde estés.
                 </p>
               </div>
             </div>
@@ -246,7 +246,7 @@ const Login: React.FC = () => {
         <div className="md:absolute bottom-0 w-full bg-[#5C95C4] border-t border-white/20 p-4 mt-8">
           <div className="max-w-[980px] mx-auto flex justify-between text-[11px] text-blue-100">
             <div className="flex flex-wrap gap-2 md:gap-4">
-              <span>© Twenty 2026</span>
+              <span>© Twentty 2026</span>
               <span className="hover:underline cursor-pointer">Español</span>
               <span className="hover:underline cursor-pointer hidden sm:inline">Català</span>
               <span className="hover:underline cursor-pointer">English</span>

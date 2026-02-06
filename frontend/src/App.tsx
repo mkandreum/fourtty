@@ -83,7 +83,7 @@ const AppContent = () => {
   const location = useLocation();
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#eef4f9] text-[#005599] font-bold">Cargando Twenty...</div>;
+    return <div className="min-h-screen flex items-center justify-center bg-[#eef4f9] text-[#005599] font-bold">Cargando Twentty...</div>;
   }
 
   const Layout = ({ children, view }: { children: React.ReactNode, view: ViewState }) => (

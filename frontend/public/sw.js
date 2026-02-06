@@ -1,4 +1,4 @@
-const CACHE_NAME = 'twenty-cache-v2';
+const CACHE_NAME = 'twentty-cache-v2';
 const urlsToCache = [
     '/',
     '/index.html',

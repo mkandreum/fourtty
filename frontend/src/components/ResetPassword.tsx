@@ -52,7 +52,7 @@ const ResetPassword: React.FC = () => {
             <div className="flex-1 flex items-center justify-center p-4">
                 <div className="max-w-md w-full bg-white rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-300">
                     <div className="bg-[#005599] p-6 text-center text-white">
-                        <h1 className="text-3xl font-bold tracking-tighter">;) twenty</h1>
+                        <h1 className="text-3xl font-bold tracking-tighter">;) twentty</h1>
                         <p className="mt-2 opacity-80 text-sm italic">Seguridad primero</p>
                     </div>
 
@@ -142,7 +142,7 @@ const ResetPassword: React.FC = () => {
             </div>
 
             <div className="p-4 text-center text-white/60 text-[10px]">
-                © Twenty 2026 • Seguridad avanzada
+                © Twentty 2026 • Seguridad avanzada
             </div>
         </div>
     );
