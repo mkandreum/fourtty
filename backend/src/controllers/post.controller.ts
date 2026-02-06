@@ -93,7 +93,7 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
         const post = await prisma.post.create({
             data: {
                 userId: req.userId!,
-                content: content || (videoUrl ? 'compartió un vídeo' : 'compartió una foto'),
+                content: content || (videoUrl ? 'compartió un vídeo' : (req.file ? 'compartió una foto' : '')),
                 type: postType,
                 image: imageUrl,
                 videoUrl: videoUrl
