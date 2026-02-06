@@ -31,10 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files (uploads)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Health check
-app.get('/health', (_req: Request, res: Response) => {
-    res.json({ status: 'ok', message: 'Twenty API is running' });
-});
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, '../public')));
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -54,9 +52,14 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     });
 });
 
-// 404 handler
-app.use((_req: Request, res: Response) => {
-    res.status(404).json({ error: 'Not Found', message: 'Route not found' });
+// Handle SPA routing: return index.html for any unknown non-API route
+app.get('*', (req: Request, res: Response) => {
+    // If it's an API call that wasn't handled, return 404 JSON
+    if (req.path.startsWith('/api')) {
+        res.status(404).json({ error: 'Not Found', message: 'API Route not found' });
+        return;
+    }
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Start server

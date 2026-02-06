@@ -1,23 +1,50 @@
-# Build Stage
-FROM node:18-alpine as build
-
-WORKDIR /app
-
-COPY package*.json ./
+# Stage 1: Build Frontend
+FROM node:18-alpine as frontend-build
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
 RUN npm install
-
-COPY . .
+COPY frontend/ .
+# We need to set VITE_API_URL to relative loop for unified deploy or empty to use same host
+# Since we proxy /api in production via the same express server, we can use /api relative
+ENV VITE_API_URL=/api
 RUN npm run build
 
-# Production Stage
-FROM nginx:alpine
+# Stage 2: Build Backend
+FROM node:18-alpine as backend-build
+WORKDIR /app/backend
+COPY backend/package*.json ./
+RUN npm install
+COPY backend/ .
+# Generate prisma client
+RUN npx prisma generate
+RUN npm run build
 
-# Copy built assets from nextjs build
-COPY --from=build /app/dist /usr/share/nginx/html
+# Stage 3: Production Runner
+FROM node:18-alpine
+WORKDIR /app
 
-# Copy nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Install production dependencies for backend
+COPY backend/package*.json ./
+RUN npm install --production
 
-EXPOSE 80
+# Copy prisma client (requires schema)
+COPY --from=backend-build /app/backend/prisma ./prisma
+# Copy built backend code
+COPY --from=backend-build /app/backend/dist ./dist
+# Copy built frontend code to public folder
+COPY --from=frontend-build /app/frontend/dist ./public
 
-CMD ["nginx", "-g", "daemon off;"]
+# Copy uploads folder structure
+RUN mkdir -p uploads
+
+# Expose port
+EXPOSE 5000
+
+# Environment variables
+ENV NODE_ENV=production
+ENV PORT=5000
+
+# Start command
+# Need to run prisma migrate deploy? Maybe. For now, just start.
+# Ideally we use a startup script to migrate then start.
+CMD ["node", "dist/index.js"]
