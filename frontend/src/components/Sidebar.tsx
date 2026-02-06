@@ -59,16 +59,6 @@ const Sidebar: React.FC = () => {
          className="flex flex-col gap-4"
       >
          <Invitations compact />
-         {/* Add Friends */}
-         <div className="pb-4">
-            <h4 className="text-[#333] font-bold text-[11px] mb-2">Añadir amigos</h4>
-            <div className="text-[11px] text-[#888] mb-2">¿Amigos en Hotmail, Gmail o Yahoo!?</div>
-            <div className="flex gap-1">
-               <button className="flex items-center gap-1 bg-[#f2f6f9] border border-[#ccc] text-[#333] font-bold text-[11px] px-2 py-1 rounded-[2px] hover:bg-[#e1e9f0] w-full justify-center underline decoration-[#005599]">
-                  <Search size={12} className="text-[#005599]" /> Buscar amigos
-               </button>
-            </div>
-         </div>
 
          {/* Chat Widget */}
          <div className="">
