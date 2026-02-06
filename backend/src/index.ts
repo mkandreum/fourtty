@@ -18,6 +18,7 @@ import extraRoutes from './routes/extra.routes';
 import pageRoutes from './routes/page.routes';
 import invitationRoutes from './routes/invitation.routes';
 import { initSocketHandlers } from './socket';
+import { sendInvitationEmail } from './services/email.service';
 
 dotenv.config();
 
@@ -59,6 +60,18 @@ app.use('/api/pages', pageRoutes);
 app.use('/api/invitations', invitationRoutes);
 app.get('/api/health', (req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date(), version: '1.1.0' });
+});
+
+app.post('/api/test-email', async (req: Request, res: Response) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email is required' });
+
+    const success = await sendInvitationEmail(email, 'Admin Test', 'TEST-123');
+    if (success) {
+        return res.json({ message: 'Email sent successfully. Check your inbox.' });
+    } else {
+        return res.status(500).json({ error: 'Failed to send email. Check server logs for details.' });
+    }
 });
 
 app.use('/api', extraRoutes);

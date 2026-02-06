@@ -10,11 +10,20 @@ if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
+    secure: process.env.SMTP_SECURE === 'true' || false, // Support both true/false
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
+});
+
+// Verify connection configuration on startup
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('❌ SMTP Connection Error:', error);
+    } else {
+        console.log('✅ SMTP Server is ready to take our messages');
+    }
 });
 
 export const sendInvitationEmail = async (to: string, inviterName: string, inviteCode: string) => {
@@ -51,8 +60,13 @@ export const sendInvitationEmail = async (to: string, inviterName: string, invit
         const info = await transporter.sendMail(mailOptions);
         console.log('✉️ Invitation email sent: %s', info.messageId);
         return true;
-    } catch (error) {
-        console.error('❌ Error sending invitation email:', error);
+    } catch (error: any) {
+        console.error('❌ Error sending invitation email:', {
+            error: error.message,
+            stack: error.stack,
+            code: error.code,
+            command: error.command
+        });
         return false;
     }
 };
