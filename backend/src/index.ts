@@ -42,6 +42,12 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Basic Request Logging
+app.use((req: Request, _res: Response, next: NextFunction) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    next();
+});
+
 // Serve static files (uploads)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
@@ -71,6 +77,18 @@ app.post('/api/test-email', async (req: Request, res: Response) => {
         return res.json({ message: 'Email sent successfully. Check your inbox.' });
     } else {
         return res.status(500).json({ error: 'Failed to send email. Check server logs for details.' });
+    }
+});
+
+app.get('/api/test-email', async (req: Request, res: Response) => {
+    const { email } = req.query;
+    if (!email) return res.status(400).send('Email is required as query param: ?email=test@example.com');
+
+    const success = await sendInvitationEmail(email as string, 'Admin Test (GET)', 'TEST-456');
+    if (success) {
+        return res.send(`Email sent successfully to ${email}. Check your inbox.`);
+    } else {
+        return res.status(500).send(`Failed to send email to ${email}. Check server logs for details.`);
     }
 });
 
