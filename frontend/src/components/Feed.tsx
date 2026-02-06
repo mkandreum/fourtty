@@ -311,27 +311,29 @@ const Feed: React.FC = () => {
                            <div className="text-[#59B200] bg-[#59B200]/10 p-1 rounded-sm">
                               {item.icon}
                            </div>
-                           <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
-                              {item.count} {item.label}
-                           </span>
-                           {item.key === 'visits' && recentVisitors.length > 0 && (
-                              <div className="flex -space-x-1.5 overflow-hidden ml-1">
-                                 {recentVisitors.slice(0, 4).map((visitor, idx) => (
-                                    <img
-                                       key={visitor.id}
-                                       src={getAvatarUrl(visitor.avatar)}
-                                       className="inline-block h-5 w-5 rounded-full ring-2 ring-white object-cover shadow-sm"
-                                       alt={visitor.name}
-                                       style={{ zIndex: 10 - idx }}
-                                    />
-                                 ))}
-                                 {recentVisitors.length > 4 && (
-                                    <div className="flex items-center justify-center h-5 w-5 rounded-full bg-gray-100 ring-2 ring-white text-[8px] font-bold text-gray-500 z-0 shadow-sm">
-                                       +{recentVisitors.length - 4}
-                                    </div>
-                                 )}
-                              </div>
-                           )}
+                           <div className="flex flex-col">
+                              <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
+                                 {item.count} {item.label}
+                              </span>
+                              {item.key === 'visits' && recentVisitors.length > 0 && (
+                                 <div className="flex -space-x-1 overflow-hidden mt-1">
+                                    {recentVisitors.slice(0, 6).map((visitor, idx) => (
+                                       <img
+                                          key={visitor.id}
+                                          src={getAvatarUrl(visitor.avatar)}
+                                          className="inline-block h-6 w-6 rounded-full ring-1 ring-white object-cover shadow-sm"
+                                          alt={visitor.name}
+                                          style={{ zIndex: 10 - idx }}
+                                       />
+                                    ))}
+                                    {recentVisitors.length > 6 && (
+                                       <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 ring-1 ring-white text-[8px] font-bold text-gray-500 z-0 shadow-sm">
+                                          +{recentVisitors.length - 6}
+                                       </div>
+                                    )}
+                                 </div>
+                              )}
+                           </div>
                         </div>
                      ))}
                   </div>
@@ -392,36 +394,6 @@ const Feed: React.FC = () => {
             </div>
          </div>
 
-         {/* Recent Visitors - Home Sidebar Style (Desktop Only) */}
-         {recentVisitors.length > 0 && (
-            <div className="hidden md:block mb-6 bg-white border border-[#dce5ed] rounded-[4px] p-3 shadow-sm">
-               <h4 className="font-bold text-[#005599] text-[12px] mb-3 border-b border-[#eee] pb-1 flex items-center justify-between">
-                  <span>¿Quién ha visto tu perfil? <span className="text-[#888] font-normal">({recentVisitors.length})</span></span>
-                  <span className="text-[10px] text-[#005599] hover:underline cursor-pointer font-normal" onClick={() => navigate(`/profile/${user?.id}`)}>Ver todos</span>
-               </h4>
-               <div className="grid grid-cols-4 gap-2">
-                  {recentVisitors.map(visitor => (
-                     <div
-                        key={visitor.id}
-                        className="cursor-pointer group flex flex-col items-center"
-                        onClick={() => navigate(`/profile/${visitor.id}`)}
-                        title={`${visitor.name} ${visitor.lastName}`}
-                     >
-                        <div className="w-full aspect-square border border-[#ccc] p-[1px] bg-white group-hover:border-[#005599] transition-colors relative overflow-hidden">
-                           <img
-                              src={getAvatarUrl(visitor.avatar)}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                              alt={visitor.name}
-                           />
-                        </div>
-                        <div className="text-[9px] text-[#005599] mt-1 truncate w-full text-center group-hover:underline">
-                           {visitor.name}
-                        </div>
-                     </div>
-                  ))}
-               </div>
-            </div>
-         )}
 
          <div className="flex items-center justify-between mb-2 border-b border-[#EEE] pb-1">
             <h3 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1">
