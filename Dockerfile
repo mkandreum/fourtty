@@ -29,6 +29,10 @@ RUN npm install --production
 
 # Copy prisma client (requires schema)
 COPY --from=backend-build /app/backend/prisma ./prisma
+
+# Generate prisma client in production environment
+RUN npx prisma generate
+
 # Copy built backend code
 COPY --from=backend-build /app/backend/dist ./dist
 # Copy built frontend code to public folder
