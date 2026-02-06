@@ -52,5 +52,9 @@ EXPOSE 5000
 ENV NODE_ENV=production
 ENV PORT=5000
 
+# Copy startup script
+COPY start.sh ./
+RUN chmod +x start.sh
+
 # Start command
-CMD ["node", "dist/index.js"]
+CMD ["./start.sh"]

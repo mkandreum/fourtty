@@ -10,6 +10,9 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const [isRegister, setIsRegister] = useState(false);
+  const [name, setName] = useState('');
+
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,17 +21,27 @@ const Login: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.post<LoginResponse>('/auth/login', {
-        email,
-        password
-      });
-
-      login(response.data.token, response.data.user);
+      if (isRegister) {
+        // Register flow
+        const response = await api.post('/auth/register', {
+          name,
+          email,
+          password
+        });
+        login(response.data.token, response.data.user);
+      } else {
+        // Login flow
+        const response = await api.post<LoginResponse>('/auth/login', {
+          email,
+          password
+        });
+        login(response.data.token, response.data.user);
+      }
     } catch (err: any) {
       if (err.response && err.response.data && err.response.data.error) {
         setError(err.response.data.error);
       } else {
-        setError('Error al iniciar sesión. Inténtalo de nuevo.');
+        setError(isRegister ? 'Error al registrarse.' : 'Error al iniciar sesión.');
       }
     } finally {
       setIsLoading(false);
@@ -41,43 +54,77 @@ const Login: React.FC = () => {
       <div className="flex-1 bg-gradient-to-b from-[#5C95C4] via-[#5C95C4] to-[#6FA3CD] relative overflow-hidden">
 
         {/* Top Login Bar */}
-        <div className="absolute top-0 right-0 p-4 w-full max-w-4xl mx-auto left-0 right-0 flex justify-end items-start z-20">
-          <form onSubmit={handleSubmit} className="flex items-start gap-2 text-white text-[11px]">
-            <div className="flex flex-col">
-              <label className="mb-1 ml-1 opacity-90">Email</label>
-              <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
-                placeholder="laura@tuenti.com"
-              />
-              <div className="flex items-center mt-1">
-                <input type="checkbox" id="remember" className="mr-1 h-3 w-3" />
-                <label htmlFor="remember">Recordarme</label>
+        <div className="absolute top-0 w-full p-4 flex justify-center z-20">
+          <div className="max-w-[980px] w-full flex justify-end">
+            <form onSubmit={handleSubmit} className="flex items-start gap-3 text-white text-[11px]">
+              {isRegister && (
+                <div className="flex flex-col animate-in fade-in slide-in-from-top-2">
+                  <label className="mb-1 ml-1 opacity-90">Nombre</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                    placeholder="Tu nombre"
+                    required
+                  />
+                </div>
+              )}
+
+              <div className="flex flex-col">
+                <label className="mb-1 ml-1 opacity-90">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                  placeholder="laura@tuenti.com"
+                  required
+                />
+                {!isRegister && (
+                  <div className="flex items-center mt-1">
+                    <input type="checkbox" id="remember" className="mr-1 h-3 w-3" />
+                    <label htmlFor="remember">Recordarme</label>
+                  </div>
+                )}
               </div>
-            </div>
 
-            <div className="flex flex-col">
-              <label className="mb-1 ml-1 opacity-90">Contraseña</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
-                placeholder="password123"
-              />
-              <a href="#" className="mt-1 text-blue-100 hover:underline">¿Has olvidado tu contraseña?</a>
-            </div>
+              <div className="flex flex-col">
+                <label className="mb-1 ml-1 opacity-90">Contraseña</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                  placeholder="********"
+                  required
+                />
+                {!isRegister && (
+                  <a href="#" className="mt-1 text-blue-100 hover:underline">¿Has olvidado tu contraseña?</a>
+                )}
+              </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="mt-[19px] bg-[#2B7BB9] hover:bg-[#256ca3] text-white border border-[#205e8e] px-3 py-1 rounded-sm font-bold shadow-sm disabled:opacity-50"
-            >
-              {isLoading ? '...' : 'Entrar'}
-            </button>
-          </form>
+              <div className="flex flex-col">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="mt-[19px] bg-[#2B7BB9] hover:bg-[#256ca3] text-white border border-[#205e8e] px-3 py-1 rounded-sm font-bold shadow-sm disabled:opacity-50 min-w-20"
+                >
+                  {isLoading ? '...' : (isRegister ? 'Registrarse' : 'Entrar')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsRegister(!isRegister);
+                    setError('');
+                  }}
+                  className="mt-1 text-blue-100 hover:underline text-left"
+                >
+                  {isRegister ? 'Ya tengo cuenta' : '¡Regístrate ahora!'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
 
         {/* Error Message Toast */}
