@@ -455,6 +455,13 @@ const Profile: React.FC = () => {
                   )}
                </div>
 
+               {/* Desktop visits counter */}
+               {isOwnProfile && (
+                  <div className="hidden md:flex items-center justify-center gap-1.5 py-1 bg-[#f9fbfd] border border-[#dce5ed] rounded-[2px] mt-1">
+                     <span className="text-[11px] font-bold text-[#59B200]">{stats.visits} visitas al perfil</span>
+                  </div>
+               )}
+
                {isEditing ? (
                   <div className="bg-[#f2f6f9] border border-[#dce5ed] p-3 text-[11px] flex flex-col gap-2 overflow-hidden animate-in fade-in duration-200">
                      <div>
