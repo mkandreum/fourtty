@@ -29,13 +29,6 @@ const Feed: React.FC = () => {
    const [isInvitesExpanded, setIsInvitesExpanded] = useState(false); // Collapsed by default on mobile
    const [unreadNotifications, setUnreadNotifications] = useState<any[]>([]);
    const [stats, setStats] = useState({ visits: 0 });
-   const [expandedPostIds, setExpandedPostIds] = useState<number[]>([]);
-
-   const togglePostExpansion = (postId: number) => {
-      setExpandedPostIds(prev =>
-         prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]
-      );
-   };
 
    const fetchFeed = async (pageNum: number, isRefresh = false) => {
       try {
@@ -411,7 +404,7 @@ const Feed: React.FC = () => {
                            show: { opacity: 1, y: 0, scale: 1 }
                         }}
                         exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                        className="flex gap-2 group hover-lift p-3 mb-2 bg-white border border-[#dce5ed] rounded-[8px] shadow-sm transition-all"
+                        className="flex gap-2 group hover-lift p-1 rounded-sm"
                      >
                         {/* Avatar */}
                         <div className="w-[50px] shrink-0">
@@ -440,20 +433,30 @@ const Feed: React.FC = () => {
                                  <X size={14} />
                               </button>
                            )}
-                           <div className="flex items-center gap-1.5 mb-1.5 pr-6">
-                              <a href="#" className="text-[#005599] font-bold text-[13px] hover:underline whitespace-nowrap">{post.user.name} {post.user.lastName}</a>
-                              <span className="text-[#999] text-[10px]">&bull;</span>
-                              <span className="text-[#999] text-[10px]">{new Date(post.createdAt).toLocaleDateString()}</span>
+                           <div className="text-[12px] leading-snug mb-1">
+                              <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name} {post.user.lastName}</a>
+                              <span className="text-[#333] font-bold"> {post.content}</span>
                            </div>
 
-                           {/* Main Content Area */}
-                           <div className="text-[13px] text-[#333] leading-relaxed mb-3">
-                              {post.type === 'status' ? (
-                                 <span className="font-medium italic text-[#444]">"{post.content}"</span>
-                              ) : (
-                                 <span>{post.content}</span>
-                              )}
+                           <div className="text-[10px] text-[#999] mb-1 flex items-center gap-2">
+                              {new Date(post.createdAt).toLocaleString()}
+                              <span className="mx-1">·</span>
+                              <button
+                                 onClick={() => handleToggleLike(post.id)}
+                                 className={`font-bold hover:underline ${post.likedByMe ? 'text-[#59B200]' : 'text-[#005599]'}`}
+                              >
+                                 {post.likedByMe ? 'Ya no me mola' : '¡Me mola!'}
+                              </button>
+                              <span className="mx-1">·</span>
+                              <span className="text-[#005599] hover:underline cursor-pointer">Comentar</span>
                            </div>
+
+                           {post._count && post._count.likes > 0 && (
+                              <div className="flex items-center gap-1 text-[10px] text-[#59B200] font-bold mt-1 mb-1">
+                                 <ThumbsUp size={10} fill="#59B200" /> {post._count.likes} {post._count.likes === 1 ? 'persona le mola esto' : 'personas les mola esto'}
+                              </div>
+                           )}
+
 
                            {/* Video specific */}
                            {post.type === 'video' && post.videoUrl && (
@@ -499,45 +502,32 @@ const Feed: React.FC = () => {
                                        }}
                                        alt="attachment"
                                     />
+                                    <div className="mt-1 border-t border-[#eee] pt-1 flex justify-center">
+                                       <button
+                                          onClick={() => handleToggleLike(post.id)}
+                                          className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[#59B200] text-white' : 'bg-[#f2f6f9] text-[#555] border border-[#ccc] hover:bg-[#e1e9f0]'}`}
+                                       >
+                                          <ThumbsUp size={12} fill={post.likedByMe ? 'white' : 'transparent'} />
+                                          {post.likedByMe ? '¡Me mola!' : 'Me mola'}
+                                       </button>
+                                    </div>
                                  </motion.div>
                               </div>
                            )}
 
-                           {/* Modern Action Bar */}
-                           <div className="mt-4 flex items-center gap-3 pt-2 border-t border-[#f0f2f5]">
-                              <button
-                                 onClick={() => handleToggleLike(post.id)}
-                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[#59B200]/10 text-[#59B200]' : 'text-[#65676b] hover:bg-[#f0f2f5]'}`}
-                              >
-                                 <ThumbsUp size={14} className={post.likedByMe ? 'fill-current' : ''} />
-                                 {post.likedByMe ? 'Me mola' : 'Me mola'}
-                                 {post._count && post._count.likes > 0 && <span className="ml-1 opacity-70">({post._count.likes})</span>}
-                              </button>
-
-                              <button
-                                 onClick={() => togglePostExpansion(post.id)}
-                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${expandedPostIds.includes(post.id) ? 'bg-[#005599]/10 text-[#005599]' : 'text-[#65676b] hover:bg-[#f0f2f5]'}`}
-                              >
-                                 <MessageCircle size={14} />
-                                 Comentar
-                                 {post._count && post._count.comments > 0 && <span className="ml-1 opacity-70">({post._count.comments})</span>}
-                              </button>
-
-                              {post.type === 'photo' && (
-                                 <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold text-[#65676b] hover:bg-[#f0f2f5] transition-all">
-                                    <Tag size={14} />
-                                    Etiquetas
-                                 </button>
-                              )}
-                           </div>
-
-                           <div className="mt-2">
+                           {/* Interaction Summary */}
+                           <div className="mt-1 flex flex-col gap-0.5">
                               <CommentSection
                                  postId={post.id}
                                  initialCommentsCount={post._count?.comments || 0}
-                                 forceExpand={expandedPostIds.includes(post.id)}
-                                 onToggle={() => togglePostExpansion(post.id)}
                               />
+
+                              {post.type === 'photo' && (
+                                 <div className="flex items-center gap-1 text-[11px]">
+                                    <Tag size={10} className="text-[#59B200] fill-[#59B200]" />
+                                    <span className="text-[#59B200] font-bold">Etiquetas</span>
+                                 </div>
+                              )}
                            </div>
                         </div>
                      </motion.div>
