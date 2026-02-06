@@ -58,30 +58,36 @@ const Feed: React.FC = () => {
       setIsLoadingMore(false);
    };
 
+   const [isSubmitting, setIsSubmitting] = useState(false);
    const handleUpdateStatus = async () => {
-      if (!statusText.trim()) return;
+      if (!statusText.trim() || !user) return;
+      setIsSubmitting(true);
 
       try {
          // Update profile bio (status)
-         await api.put('/users/profile', { bio: statusText });
+         await api.put(`/users/${user.id}`, { bio: statusText });
 
          // Create a new post
-         await api.post('/posts', {
-            content: statusText,
-            type: 'status'
-         });
+         const formData = new FormData();
+         formData.append('content', statusText);
+         formData.append('type', 'status');
 
-         // Refresh user data
-         if (user) {
-            updateUser({ ...user, bio: statusText });
-         }
+         await api.post('/posts', formData);
+
+         // Refresh user data in context
+         updateUser({ ...user, bio: statusText });
 
          // Refresh feed (reset to page 1)
          setPage(1);
          await fetchFeed(1, true);
 
+         setHasMore(true); // Reset hasMore for fresh feed
+
       } catch (error) {
          console.error("Error updating status:", error);
+         alert("Error al actualizar el estado");
+      } finally {
+         setIsSubmitting(false);
       }
    };
 
@@ -117,9 +123,10 @@ const Feed: React.FC = () => {
                </div>
                <button
                   onClick={handleUpdateStatus}
-                  className="bg-[#2B7BB9] text-white text-[12px] font-bold px-6 py-1 rounded-[3px] border border-[#1e5a8c] hover:bg-[#256ca3] shadow-sm self-end sm:self-auto"
+                  disabled={isSubmitting || !statusText.trim()}
+                  className={`bg-[#2B7BB9] text-white text-[12px] font-bold px-6 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm self-end sm:self-auto ${isSubmitting || !statusText.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#256ca3]'}`}
                >
-                  Guardar
+                  {isSubmitting ? 'Guardando...' : 'Guardar'}
                </button>
             </div>
          </div>
