@@ -76,16 +76,8 @@ const LeftPanel: React.FC = () => {
                <img
                   src={getAvatarUrl(user?.avatar)}
                   alt="Profile"
-                  className="w-[60px] h-[60px] object-cover"
+                  className="w-[120px] h-[120px] object-cover"
                />
-            </div>
-            <div className="flex flex-col pt-1">
-               <div className="flex items-center gap-1 mb-1">
-                  <BarChart2 size={12} className="text-[#005599]" />
-                  <span className="text-[11px] font-bold text-[#333]">
-                     {stats.visits > 0 ? `${stats.visits} visitas a tu perfil` : 'Perfil activo'}
-                  </span>
-               </div>
             </div>
          </div>
 

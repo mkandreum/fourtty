@@ -271,22 +271,15 @@ const Feed: React.FC = () => {
 
             return (
                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="mb-6 bg-white border border-[#EEE] rounded-[4px] p-3 shadow-[0_4px_12px_rgba(0,0,0,0.05)]"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-4"
                >
-                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#F5F5F5]">
-                     <Bell size={14} className="text-[#59B200] animate-pulse" />
-                     <span className="text-[12px] font-bold text-[#333]">Centro de Notificaciones</span>
-                     <div className="ml-auto bg-[#cc0000] text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">
-                        {unreadNotifications.length}
-                     </div>
-                  </div>
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
                      {items.map(item => (
                         <div
                            key={item.key}
-                           className="flex items-center gap-3 group cursor-pointer hover:bg-[#F9FBFE] p-1.5 rounded-sm transition-colors"
+                           className="flex items-center gap-2 group cursor-pointer hover:bg-[#F9FBFE] p-1 rounded-sm transition-colors"
                            onClick={() => {
                               if (item.key === 'visits') navigate('/profile');
                               else if (item.key === 'friendships') navigate('/people');
@@ -294,10 +287,10 @@ const Feed: React.FC = () => {
                               else navigate('/');
                            }}
                         >
-                           <div className="text-[#59B200] bg-[#59B200]/10 p-1.5 rounded-sm">
+                           <div className="text-[#59B200] bg-[#59B200]/10 p-1 rounded-sm">
                               {item.icon}
                            </div>
-                           <span className="text-[13px] font-bold text-[#59B200] group-hover:underline">
+                           <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
                               {item.count} {item.label}
                            </span>
                         </div>
