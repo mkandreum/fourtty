@@ -140,6 +140,33 @@ const Profile: React.FC = () => {
       }
    };
 
+   const handleToggleLike = async (postId: number) => {
+      try {
+         const response = await api.post(`/posts/${postId}/like`);
+         const { liked } = response.data;
+
+         setWallPosts(prev => prev.map(p => {
+            if (p.id === postId) {
+               return {
+                  ...p,
+                  likedByMe: liked,
+                  _count: {
+                     ...p._count,
+                     likes: liked ? (p._count?.likes || 0) + 1 : Math.max(0, (p._count?.likes || 0) - 1)
+                  }
+               };
+            }
+            return p;
+         }));
+
+         if (liked) {
+            showToast("¡Te mola!", "success");
+         }
+      } catch (error) {
+         console.error("Error toggling like:", error);
+      }
+   };
+
    const handleAddFriend = async () => {
       if (!profileUser) return;
       try {
