@@ -135,7 +135,7 @@ const Profile: React.FC = () => {
       formData.append('avatar', e.target.files[0]);
 
       try {
-         const response = await api.put(`/users/${user!.id}/avatar`, formData, {
+         const response = await api.post(`/users/${user!.id}/avatar`, formData, {
             headers: {
                'Content-Type': 'multipart/form-data'
             }
