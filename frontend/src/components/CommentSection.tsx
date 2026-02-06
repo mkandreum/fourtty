@@ -5,11 +5,13 @@ import { Comment, User } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 
 interface CommentSectionProps {
-    postId: number;
+    postId?: number;
+    photoId?: number;
     initialCommentsCount: number;
+    isPhoto?: boolean;
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ postId, initialCommentsCount }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initialCommentsCount, isPhoto }) => {
     const { user } = useAuth();
     const [comments, setComments] = useState<Comment[]>([]);
     const [commentCount, setCommentCount] = useState(initialCommentsCount);
@@ -20,7 +22,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, initialComments
     const fetchComments = async () => {
         setIsLoading(true);
         try {
-            const response = await api.get(`/comments/post/${postId}`);
+            const endpoint = isPhoto ? `/comments/photo/${photoId}` : `/comments/post/${postId}`;
+            const response = await api.get(endpoint);
             setComments(response.data.comments);
         } catch (error) {
             console.error("Error fetching comments:", error);
@@ -30,7 +33,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, initialComments
     };
 
     const handleToggleComments = () => {
-        if (!isExpanded && comments.length === 0 && commentCount > 0) {
+        if (!isExpanded && comments.length === 0 && (commentCount > 0 || isPhoto)) {
             fetchComments();
         }
         setIsExpanded(!isExpanded);
@@ -41,18 +44,16 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, initialComments
         if (!newComment.trim()) return;
 
         try {
-            const response = await api.post('/comments', {
-                content: newComment,
-                postId
+            const endpoint = isPhoto ? `/comments/photo/${photoId}` : `/comments/post/${postId}`;
+            const response = await api.post(endpoint, {
+                content: newComment
             });
 
             const postedComment = response.data.comment;
-            // Append new comment
             setComments(prev => [...prev, postedComment]);
             setCommentCount(prev => prev + 1);
             setNewComment('');
 
-            // Should auto-expand if not already
             if (!isExpanded) setIsExpanded(true);
 
         } catch (error) {
@@ -130,7 +131,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, initialComments
                         <form onSubmit={handleSubmitComment} className="flex-1 flex gap-1">
                             <input
                                 type="text"
-                                className="flex-1 border border-[#b2c2d1] rounded-[2px] p-1 text-[11px] focus:outline-none focus:border-[#5C95C4]"
+                                className="flex-1 border border-[#b2c2d1] rounded-[2px] p-1 text-[11px] !bg-white focus:outline-none focus:border-[#5C95C4]"
                                 placeholder="Escribe un comentario..."
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}

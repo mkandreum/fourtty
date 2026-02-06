@@ -12,6 +12,7 @@ const Login: React.FC = () => {
 
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
 
   const { login } = useAuth();
 
@@ -26,7 +27,8 @@ const Login: React.FC = () => {
         const response = await api.post('/auth/register', {
           name,
           email,
-          password
+          password,
+          inviteCode
         });
         login(response.data.token, response.data.user);
       } else {
@@ -69,8 +71,22 @@ const Login: React.FC = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
                     placeholder="Tu nombre"
+                    required
+                  />
+                </div>
+              )}
+
+              {isRegister && (
+                <div className="flex flex-col animate-in fade-in slide-in-from-top-2">
+                  <label className="mb-1 ml-1 opacity-90">Código Invitación</label>
+                  <input
+                    type="text"
+                    value={inviteCode}
+                    onChange={(e) => setInviteCode(e.target.value)}
+                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
+                    placeholder="ABCD..."
                     required
                   />
                 </div>
@@ -82,7 +98,7 @@ const Login: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
                   placeholder="laura@tuenti.com"
                   required
                 />
@@ -100,7 +116,7 @@ const Login: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
                   placeholder="********"
                   required
                 />
@@ -122,6 +138,8 @@ const Login: React.FC = () => {
                   onClick={() => {
                     setIsRegister(!isRegister);
                     setError('');
+                    setName('');
+                    setInviteCode('');
                   }}
                   className="mt-1 text-blue-100 hover:underline text-left"
                 >

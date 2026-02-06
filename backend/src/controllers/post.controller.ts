@@ -43,8 +43,13 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
                 },
                 _count: {
                     select: {
-                        comments: true
+                        comments: true,
+                        likes: true
                     }
+                },
+                likes: {
+                    where: { userId: req.userId! },
+                    select: { id: true }
                 }
             },
             orderBy: {
@@ -63,7 +68,10 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
         });
 
         res.json({
-            posts,
+            posts: posts.map((p: any) => ({
+                ...p,
+                likedByMe: p.likes.length > 0
+            })),
             pagination: {
                 page,
                 limit,
@@ -146,7 +154,10 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
 
         res.status(201).json({
             message: 'Post created successfully',
-            post
+            post: {
+                ...post,
+                likedByMe: false
+            }
         });
     } catch (error) {
         console.error('Create post error:', error);
@@ -185,8 +196,13 @@ export const getPost = async (req: AuthRequest, res: Response): Promise<void> =>
                 },
                 _count: {
                     select: {
-                        comments: true
+                        comments: true,
+                        likes: true
                     }
+                },
+                likes: {
+                    where: { userId: req.userId! },
+                    select: { id: true }
                 }
             }
         });
@@ -196,7 +212,12 @@ export const getPost = async (req: AuthRequest, res: Response): Promise<void> =>
             return;
         }
 
-        res.json({ post });
+        res.json({
+            post: {
+                ...post,
+                likedByMe: post.likes.length > 0
+            }
+        });
     } catch (error) {
         console.error('Get post error:', error);
         res.status(500).json({ error: 'Failed to get post' });
@@ -253,8 +274,13 @@ export const getUserPosts = async (req: AuthRequest, res: Response): Promise<voi
                 },
                 _count: {
                     select: {
-                        comments: true
+                        comments: true,
+                        likes: true
                     }
+                },
+                likes: {
+                    where: { userId: req.userId! },
+                    select: { id: true }
                 }
             },
             orderBy: {
@@ -269,7 +295,10 @@ export const getUserPosts = async (req: AuthRequest, res: Response): Promise<voi
         });
 
         res.json({
-            posts,
+            posts: posts.map((p: any) => ({
+                ...p,
+                likedByMe: p.likes.length > 0
+            })),
             pagination: {
                 page,
                 limit,

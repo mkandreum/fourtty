@@ -7,12 +7,13 @@ import Sidebar from './components/Sidebar';
 import LeftPanel from './components/LeftPanel';
 import Profile from './components/Profile';
 import Gallery from './components/Gallery';
-import Inbox from './components/Inbox';
-import Pages from './components/Pages';
-import PageDetails from './components/PageDetails';
+import People from './components/People';
 import ChatBar from './components/ChatBar';
 import { ViewState } from './types';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { SocketProvider } from './contexts/SocketContext';
+import { ToastProvider } from './contexts/ToastContext';
+import ToastContainer from './components/ToastContainer';
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentView, setCurrentView] = useState<ViewState>(ViewState.HOME);
@@ -72,127 +73,111 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 // Wrapper to handle conditional rendering based on view state
 // Ideally we would use proper routes like /profile/:id, but adhering to current structure for now
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
+
 const AppContent = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#eef4f9] text-[#005599] font-bold">Cargando Twenty...</div>;
   }
 
-  // Common Layout with Header, ChatBar and standard 3-column or 2-column grid
   const Layout = ({ children, view }: { children: React.ReactNode, view: ViewState }) => (
     <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
       <Header currentView={view} />
-
-      <div className="max-w-[980px] mx-auto mt-[42px] px-0 sm:px-2 flex flex-col md:flex-row gap-4 items-start">
-
-        {/* Left Side: Hidden on mobile, visible from md up */}
+      <ToastContainer />
+      <div className="main-content-container max-w-[980px] mx-auto px-0 sm:px-2 flex flex-col md:flex-row gap-4 items-start">
         {view === ViewState.HOME && (
-          <aside className="hidden md:block w-[190px] shrink-0 sticky top-[54px]">
+          <aside className="hidden md:block w-[190px] shrink-0 sticky top-[64px]">
             <LeftPanel />
           </aside>
         )}
-
-        {/* Main Content: Full width on mobile */}
         <main className={`flex-1 min-w-0 w-full bg-white md:bg-transparent ${view === ViewState.PROFILE ? 'max-w-4xl mx-auto' : ''}`}>
           {children}
         </main>
-
-        {/* Right Side: Hidden on mobile/tablet, visible from lg up or md up depending on space */}
-        {view === ViewState.HOME && (
-          <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[54px]">
+        {(view === ViewState.HOME || view === ViewState.PEOPLE) && (
+          <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[64px]">
             <Sidebar />
           </aside>
         )}
       </div>
-
       <ChatBar />
     </div>
   );
 
   return (
-    <Routes>
-      <Route path="/login" element={
-        isAuthenticated ? <Navigate to="/" /> : <Login />
-      } />
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/login" element={
+          isAuthenticated ? <Navigate to="/" /> : <Login />
+        } />
 
-      {/* Home Route */}
-      <Route path="/" element={
-        isAuthenticated ? (
-          <Layout view={ViewState.HOME}>
-            <Feed />
-          </Layout>
-        ) : <Navigate to="/login" />
-      } />
+        <Route path="/" element={
+          isAuthenticated ? (
+            <Layout view={ViewState.HOME}>
+              <Feed />
+            </Layout>
+          ) : <Navigate to="/login" />
+        } />
 
-      {/* Profile Routes */}
-      <Route path="/profile" element={
-        isAuthenticated ? (
-          <Layout view={ViewState.PROFILE}>
-            <Profile />
-          </Layout>
-        ) : <Navigate to="/login" />
-      } />
+        <Route path="/profile" element={
+          isAuthenticated ? (
+            <Layout view={ViewState.PROFILE}>
+              <Profile />
+            </Layout>
+          ) : <Navigate to="/login" />
+        } />
 
-      <Route path="/profile/:id" element={
-        isAuthenticated ? (
-          <Layout view={ViewState.PROFILE}>
-            <Profile />
-          </Layout>
-        ) : <Navigate to="/login" />
-      } />
+        <Route path="/profile/:id" element={
+          isAuthenticated ? (
+            <Layout view={ViewState.PROFILE}>
+              <Profile />
+            </Layout>
+          ) : <Navigate to="/login" />
+        } />
 
-      <Route path="/profile/photos/:id" element={
-        isAuthenticated ? (
-          <Layout view={ViewState.PROFILE}>
-            <Gallery />
-          </Layout>
-        ) : <Navigate to="/login" />
-      } />
+        <Route path="/profile/photos/:id" element={
+          isAuthenticated ? (
+            <Layout view={ViewState.PROFILE}>
+              <Gallery />
+            </Layout>
+          ) : <Navigate to="/login" />
+        } />
 
-      <Route path="/profile/photos" element={
-        isAuthenticated ? (
-          <Layout view={ViewState.PROFILE}>
-            <Gallery />
-          </Layout>
-        ) : <Navigate to="/login" />
-      } />
+        <Route path="/profile/photos" element={
+          isAuthenticated ? (
+            <Layout view={ViewState.PROFILE}>
+              <Gallery />
+            </Layout>
+          ) : <Navigate to="/login" />
+        } />
 
-      <Route path="/messages" element={
-        isAuthenticated ? (
-          <Layout view={ViewState.PROFILE}>
-            <Inbox />
-          </Layout>
-        ) : <Navigate to="/login" />
-      } />
+        <Route path="/people" element={
+          isAuthenticated ? (
+            <Layout view={ViewState.PEOPLE}>
+              <People />
+            </Layout>
+          ) : <Navigate to="/login" />
+        } />
 
-      <Route path="/pages" element={
-        isAuthenticated ? (
-          <Layout view={ViewState.HOME}>
-            <Pages />
-          </Layout>
-        ) : <Navigate to="/login" />
-      } />
-
-      <Route path="/pages/:id" element={
-        isAuthenticated ? (
-          <Layout view={ViewState.HOME}>
-            <PageDetails />
-          </Layout>
-        ) : <Navigate to="/login" />
-      } />
-
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </AnimatePresence>
   );
 }
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <SocketProvider>
+        <ToastProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </ToastProvider>
+      </SocketProvider>
     </AuthProvider>
   );
 }

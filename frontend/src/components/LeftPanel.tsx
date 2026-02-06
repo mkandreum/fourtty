@@ -1,7 +1,9 @@
 import React from 'react';
 import { Mail, MessageSquare, BarChart2, UserPlus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 import api from '../api';
+import { motion } from 'framer-motion';
 
 const MenuItem = ({ icon: Icon, count, text }: { icon: any, count: number, text: string }) => (
    <div className="flex items-center gap-2 mb-1 cursor-pointer group">
@@ -13,7 +15,8 @@ const MenuItem = ({ icon: Icon, count, text }: { icon: any, count: number, text:
 );
 
 const LeftPanel: React.FC = () => {
-   const { user } = useAuth();
+   const { user, updateUser } = useAuth();
+   const { showToast } = useToast();
    const [stats, setStats] = React.useState({
       messages: 0,
       statusComments: 0,
@@ -24,7 +27,19 @@ const LeftPanel: React.FC = () => {
       photos: 0
    });
    const [events, setEvents] = React.useState<any[]>([]);
+   const [myInvitations, setMyInvitations] = React.useState<any[]>([]);
    const [isLoading, setIsLoading] = React.useState(true);
+   const [inviteEmail, setInviteEmail] = React.useState('');
+   const [isInviting, setIsInviting] = React.useState(false);
+
+   const fetchInvitations = async () => {
+      try {
+         const res = await api.get('/invitations/my');
+         setMyInvitations(res.data.invitations);
+      } catch (error) {
+         console.error("Error fetching invitations:", error);
+      }
+   };
 
    React.useEffect(() => {
       const fetchData = async () => {
@@ -48,7 +63,10 @@ const LeftPanel: React.FC = () => {
             setIsLoading(false);
          }
       };
-      if (user) fetchData();
+      if (user) {
+         fetchData();
+         fetchInvitations();
+      }
    }, [user]);
 
    const getAvatarUrl = (avatar?: string) => {
@@ -58,7 +76,11 @@ const LeftPanel: React.FC = () => {
    };
 
    return (
-      <div className="flex flex-col gap-4">
+      <motion.div
+         initial={{ opacity: 0, x: -20 }}
+         animate={{ opacity: 1, x: 0 }}
+         className="flex flex-col gap-4"
+      >
          {/* Profile Summary */}
          <div className="flex gap-3">
             <div className="bg-white p-1 border border-[#ccc] shadow-sm">
@@ -78,9 +100,7 @@ const LeftPanel: React.FC = () => {
             </div>
          </div>
 
-         {/* Menu Links */}
          <div className="mb-4">
-            {stats.messages > 0 && <MenuItem icon={Mail} count={stats.messages} text="mensajes privados" />}
             <div className="flex items-center gap-2 mb-1 cursor-pointer group">
                <UserPlus size={14} className="text-[#59B200] fill-[#59B200]" strokeWidth={2} />
                <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
@@ -94,14 +114,58 @@ const LeftPanel: React.FC = () => {
          {/* Invite Friends */}
          <div className="mb-6">
             <h4 className="font-bold text-[#333] text-[11px] mb-2">Invita a tus amigos</h4>
-            <div className="text-[10px] text-[#999] mb-1">7 invitaciones</div>
-            <div className="flex gap-1">
-               <input type="text" placeholder="Email" className="w-[110px] border border-[#ccc] rounded-[2px] px-1 py-0.5 text-[11px]" />
-               <button className="bg-[#2B7BB9] text-white font-bold text-[11px] px-2 py-0.5 rounded-[2px] border border-[#1e5a8c] hover:bg-[#256ca3]">Invitar</button>
+            <div className="text-[10px] text-[#999] mb-1">
+               {user?.invitationsCount || 0} invitaciones restantes
+            </div>
+
+            {user?.invitationsCount !== undefined && user.invitationsCount > 0 && (
+               <div className="flex flex-col gap-1 mb-2">
+                  <input
+                     type="email"
+                     placeholder="Email de tu amigo/a"
+                     className="w-full p-1 text-[10px] border border-[#ccc] rounded-sm bg-white"
+                     value={inviteEmail}
+                     onChange={(e) => setInviteEmail(e.target.value)}
+                  />
+                  <button
+                     disabled={isInviting}
+                     onClick={async () => {
+                        setIsInviting(true);
+                        try {
+                           const res = await api.post('/invitations/generate', { email: inviteEmail });
+                           showToast(res.data.message || "Invitación enviada", "success");
+                           const userRes = await api.get('/auth/me');
+                           updateUser(userRes.data.user);
+                           setInviteEmail('');
+                           fetchInvitations();
+                        } catch (e: any) {
+                           showToast(e.response?.data?.error || "Error al generar invitación", "error");
+                        } finally {
+                           setIsInviting(false);
+                        }
+                     }}
+                     className="bg-[#2B7BB9] text-white font-bold text-[10px] px-2 py-0.5 rounded-[2px] border border-[#1e5a8c] hover:bg-[#256ca3] w-full disabled:opacity-50"
+                  >
+                     {isInviting ? 'Enviando...' : 'Enviar invitación'}
+                  </button>
+               </div>
+            )}
+
+            <div className="flex flex-col gap-1 max-h-[100px] overflow-y-auto mt-2">
+               {myInvitations.map(inv => (
+                  <div key={inv.id} className="text-[10px] border-b border-[#eee] pb-1 flex justify-between items-center">
+                     <span className={`font-mono font-bold ${inv.used ? 'text-gray-400 line-through' : 'text-[#59B200]'}`}>
+                        {inv.code}
+                     </span>
+                     <span className="text-[8px] text-gray-400">
+                        {inv.used ? `Usado por ${inv.usedBy?.name}` : 'Disponible'}
+                     </span>
+                  </div>
+               ))}
             </div>
          </div>
 
-         {/* Sponsored Events (Using real events for now) */}
+         {/* Sponsored Events */}
          <div className="mb-6">
             <h4 className="font-bold text-[#333] text-[11px] mb-2 border-b border-[#eee] pb-1">Eventos</h4>
             <div className="flex flex-col gap-3">
@@ -129,7 +193,7 @@ const LeftPanel: React.FC = () => {
                <span>Calendario</span>
                <span
                   className="text-[#005599] text-[9px] font-normal hover:underline cursor-pointer"
-                  onClick={() => alert("Función de crear evento en desarrollo.")} // Could create a modal later
+                  onClick={() => alert("Función de crear evento en desarrollo.")}
                >
                   Crear evento
                </span>
@@ -153,11 +217,11 @@ const LeftPanel: React.FC = () => {
                   </>
                );
             })()}
-            <div className="mt-2">
-               <span className="text-[#005599] text-[10px] hover:underline cursor-pointer">Ver todos</span>
+            <div className="mt-2 text-[#005599] text-[10px] hover:underline cursor-pointer">
+               Ver todos
             </div>
          </div>
-      </div>
+      </motion.div>
    );
 };
 

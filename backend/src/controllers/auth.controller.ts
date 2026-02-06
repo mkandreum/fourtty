@@ -7,11 +7,21 @@ import { AuthRequest } from '../middleware/auth';
 // Register new user
 export const register = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { email, password, name } = req.body;
+        const { email, password, name, inviteCode } = req.body;
 
         // Validation
-        if (!email || !password || !name) {
-            res.status(400).json({ error: 'Email, password, and name are required' });
+        if (!email || !password || !name || !inviteCode) {
+            res.status(400).json({ error: 'Email, password, name, and invite code are required' });
+            return;
+        }
+
+        // Check if invitation is valid
+        const invitation = await prisma.invitation.findUnique({
+            where: { code: inviteCode.toUpperCase() }
+        });
+
+        if (!invitation || invitation.used) {
+            res.status(400).json({ error: 'Código de invitación inválido o ya usado' });
             return;
         }
 
@@ -35,7 +45,21 @@ export const register = async (req: Request, res: Response): Promise<void> => {
                 password: hashedPassword,
                 name,
                 avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=005599&color=fff&size=200`
-            },
+            }
+        });
+
+        // Mark invitation as used
+        await prisma.invitation.update({
+            where: { id: invitation.id },
+            data: {
+                used: true,
+                usedById: user.id
+            }
+        });
+
+        // Get fresh user data with selection (including invitationsCount)
+        const userDetails = await prisma.user.findUnique({
+            where: { id: user.id },
             select: {
                 id: true,
                 email: true,
@@ -47,6 +71,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
                 relationshipStatus: true,
                 location: true,
                 occupation: true,
+                invitationsCount: true,
                 createdAt: true
             }
         });
@@ -60,7 +85,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
         res.status(201).json({
             message: 'User registered successfully',
-            user,
+            user: userDetails,
             token
         });
     } catch (error) {
@@ -134,6 +159,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response): Promise<v
                 relationshipStatus: true,
                 location: true,
                 occupation: true,
+                invitationsCount: true,
                 createdAt: true,
                 updatedAt: true
             }

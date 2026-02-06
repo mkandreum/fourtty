@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Minus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useSocket } from '../contexts/SocketContext';
 import { User } from '../types';
 import api from '../api';
 
@@ -13,22 +15,51 @@ const ChatWindow = ({
    onClose: () => void,
    currentUser: User
 }) => {
+   const { socket } = useSocket();
    const [messages, setMessages] = useState<any[]>([]);
    const [inputText, setInputText] = useState('');
+   const [isFriendTyping, setIsFriendTyping] = useState(false);
    const scrollRef = React.useRef<HTMLDivElement>(null);
 
    useEffect(() => {
       fetchMessages();
-      const interval = setInterval(fetchMessages, 3000); // Poll every 3s
-      return () => clearInterval(interval);
-   }, [friend.id]);
+
+      if (!socket) return;
+
+      const handleNewMessage = (message: any) => {
+         // Only add message if it belongs to this chat
+         if (message.senderId === friend.id || message.receiverId === friend.id) {
+            setMessages(prev => [...prev, message]);
+         }
+      };
+
+      const handleTyping = (data: { senderId: number }) => {
+         if (data.senderId === friend.id) setIsFriendTyping(true);
+      };
+
+      const handleStopTyping = (data: { senderId: number }) => {
+         if (data.senderId === friend.id) setIsFriendTyping(false);
+      };
+
+      socket.on('new_message', handleNewMessage);
+      socket.on('message_sent', handleNewMessage);
+      socket.on('user_typing', handleTyping);
+      socket.on('user_stop_typing', handleStopTyping);
+
+      return () => {
+         socket.off('new_message', handleNewMessage);
+         socket.off('message_sent', handleNewMessage);
+         socket.off('user_typing', handleTyping);
+         socket.off('user_stop_typing', handleStopTyping);
+      };
+   }, [friend.id, socket]);
 
    useEffect(() => {
       // Scroll to bottom on new messages
       if (scrollRef.current) {
          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       }
-   }, [messages]);
+   }, [messages, isFriendTyping]);
 
    const fetchMessages = async () => {
       try {
@@ -41,17 +72,25 @@ const ChatWindow = ({
 
    const handleSend = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!inputText.trim()) return;
+      if (!inputText.trim() || !socket) return;
 
-      try {
-         await api.post('/messages', {
-            receiverId: friend.id,
-            content: inputText
-         });
-         setInputText('');
-         fetchMessages(); // Immediate refresh
-      } catch (e) {
-         console.error(e);
+      socket.emit('send_message', {
+         senderId: currentUser.id,
+         recipientId: friend.id,
+         content: inputText
+      });
+      setInputText('');
+      socket.emit('stop_typing', { recipientId: friend.id, senderId: currentUser.id });
+   };
+
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputText(e.target.value);
+      if (socket) {
+         if (e.target.value.length > 0) {
+            socket.emit('typing', { recipientId: friend.id, senderId: currentUser.id });
+         } else {
+            socket.emit('stop_typing', { recipientId: friend.id, senderId: currentUser.id });
+         }
       }
    };
 
@@ -94,6 +133,16 @@ const ChatWindow = ({
                   </div>
                );
             })}
+            {isFriendTyping && (
+               <div className="flex items-start">
+                  <div className="bg-[#f0f0f0] rounded-[4px] p-1 px-2 flex gap-1 items-baseline">
+                     <span className="text-[10px] text-[#005599] italic font-bold">Escribiendo</span>
+                     <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>.</motion.span>
+                     <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }}>.</motion.span>
+                     <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.6 }}>.</motion.span>
+                  </div>
+               </div>
+            )}
          </div>
 
          {/* Input */}
@@ -103,7 +152,8 @@ const ChatWindow = ({
                className="w-full border border-[#b2c2d1] rounded-[2px] p-1 text-[11px] focus:outline-none focus:border-[#005599]"
                autoFocus
                value={inputText}
-               onChange={(e) => setInputText(e.target.value)}
+               onChange={handleInputChange}
+               onBlur={() => socket?.emit('stop_typing', { recipientId: friend.id, senderId: currentUser.id })}
                placeholder="Escribe un mensaje..."
             />
          </form>

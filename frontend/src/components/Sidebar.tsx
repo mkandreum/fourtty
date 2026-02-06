@@ -3,6 +3,7 @@ import { Search } from 'lucide-react';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import { User } from '../types';
+import { motion } from 'framer-motion';
 
 const Sidebar: React.FC = () => {
    const { user } = useAuth();
@@ -31,20 +32,23 @@ const Sidebar: React.FC = () => {
    );
 
    return (
-      <div className="flex flex-col gap-4">
-
+      <motion.div
+         initial={{ opacity: 0, x: 20 }}
+         animate={{ opacity: 1, x: 0 }}
+         className="flex flex-col gap-4"
+      >
          {/* Add Friends */}
          <div className="bg-[#fff] border-b border-[#dce5ed] pb-4">
             <h4 className="text-[#333] font-bold text-[11px] mb-2">Añadir amigos</h4>
             <div className="text-[11px] text-[#888] mb-2">¿Amigos en Hotmail, Gmail o Yahoo!?</div>
             <div className="flex gap-1">
-               <button className="flex items-center gap-1 bg-[#f2f6f9] border border-[#ccc] text-[#333] font-bold text-[11px] px-2 py-1 rounded-[2px] hover:bg-[#e1e9f0] w-full justify-center">
-                  <Search size={12} /> Buscar amigos
+               <button className="flex items-center gap-1 bg-[#f2f6f9] border border-[#ccc] text-[#333] font-bold text-[11px] px-2 py-1 rounded-[2px] hover:bg-[#e1e9f0] w-full justify-center underline decoration-[#005599]">
+                  <Search size={12} className="text-[#005599]" /> Buscar amigos
                </button>
             </div>
          </div>
 
-         {/* Chat Widget (Right Side Static) */}
+         {/* Chat Widget */}
          <div className="bg-[#fff]">
             <h4 className="text-[#333] font-bold text-[11px] mb-2 flex items-center justify-between border-b border-[#eee] pb-1">
                <div className="flex items-center gap-1">
@@ -80,8 +84,7 @@ const Sidebar: React.FC = () => {
                )}
             </div>
          </div>
-
-      </div>
+      </motion.div>
    );
 };
 

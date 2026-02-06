@@ -24,10 +24,14 @@ model User {
   location           String?        @default("")
   occupation         String?        @default("")
   privacy            String?        @default("public") // public, friends, private
+  invitationsCount   Int            @default(2)
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
 
   // Relations
+  invitationsCreated Invitation[]   @relation("InvitationCreator")
+  usedInvitation     Invitation?    @relation("InvitationUser")
+
   posts              Post[]
   comments           Comment[]
   photos             Photo[]
@@ -58,7 +62,24 @@ model User {
   // Real Tagging
   photoTags          PhotoTag[]
 
+  // Social
+  likes              Like[]
+
   @@map("users")
+}
+
+model Invitation {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  inviterId Int
+  used      Boolean  @default(false)
+  usedById  Int?     @unique
+  createdAt DateTime @default(now())
+
+  inviter   User     @relation("InvitationCreator", fields: [inviterId], references: [id])
+  usedBy    User?    @relation("InvitationUser", fields: [usedById], references: [id])
+
+  @@map("invitations")
 }
 
 model Visit {
@@ -118,6 +139,7 @@ model Post {
   // Relations
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   comments      Comment[]
+  likes         Like[]
 
   @@map("posts")
   @@index([userId])
@@ -126,17 +148,20 @@ model Post {
 
 model Comment {
   id            Int       @id @default(autoincrement())
-  postId        Int
+  postId        Int?
+  photoId       Int?
   userId        Int
   content       String
   createdAt     DateTime  @default(now())
 
   // Relations
-  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post          Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  photo         Photo?    @relation(fields: [photoId], references: [id], onDelete: Cascade)
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("comments")
   @@index([postId])
+  @@index([photoId])
   @@index([userId])
 }
 
@@ -187,6 +212,8 @@ model Photo {
   // Relations
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   photoTags     PhotoTag[]
+  likes         Like[]
+  comments      Comment[]
 
   @@map("photos")
   @@index([userId])
@@ -266,4 +293,20 @@ model Notification {
   @@index([userId])
   @@index([read])
   @@index([createdAt])
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int?
+  photoId   Int?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  photo     Photo?   @relation(fields: [photoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@unique([userId, photoId])
+  @@map("likes")
 }

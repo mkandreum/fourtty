@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ChevronDown, LogOut, Bell, Flag } from 'lucide-react';
+import { Search, ChevronDown, LogOut, Bell, Flag, Image as ImageIcon, MessageSquare } from 'lucide-react';
 import { ViewState, User } from '../types';
 import { useAuth } from '../contexts/AuthContext';
+import { useSocket } from '../contexts/SocketContext';
+import { useToast } from '../contexts/ToastContext';
 import api from '../api';
+import PhotoUploadModal from './PhotoUploadModal';
 
 interface HeaderProps {
   currentView: ViewState;
@@ -21,6 +24,8 @@ interface Notification {
 
 const Header: React.FC<HeaderProps> = ({ currentView }) => {
   const { logout, user } = useAuth();
+  const { socket } = useSocket();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [unreadMessages, setUnreadMessages] = useState(0); // For Chat
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -36,7 +41,11 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
   const [unreadNotifsCount, setUnreadNotifsCount] = useState(0);
   const [showNotifs, setShowNotifs] = useState(false);
 
-  // Poll for notifications
+  // Photo Upload Modal
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+
+  // Notifications & Socket logic
   useEffect(() => {
     if (!user) return;
 
@@ -51,9 +60,26 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
     };
 
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 10000); // Poll every 10s
-    return () => clearInterval(interval);
-  }, [user]);
+
+    if (!socket) return;
+
+    socket.on('notification', (data: any) => {
+      console.log('🔔 New real-time notification:', data);
+      showToast(data.content, 'info');
+      fetchNotifications(); // Refresh list to get the new one
+    });
+
+    socket.on('new_message', (message: any) => {
+      // Only show toast if not chatting with this user? 
+      // For now keep it simple: refresh counts
+      fetchNotifications();
+    });
+
+    return () => {
+      socket.off('notification');
+      socket.off('new_message');
+    };
+  }, [user, socket]);
 
   // Search effect
   useEffect(() => {
@@ -132,12 +158,21 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
             </Link>
 
             <Link
-              to="/pages"
+              to="/profile/photos"
               className="flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white hover:bg-white/10 transition-colors shrink-0"
-              title="Páginas"
+              title="Mis Fotos"
             >
-              <Flag size={16} className="opacity-80" />
-              <span className="text-[12px] font-bold hidden md:inline">Páginas</span>
+              <ImageIcon size={16} className="opacity-80" />
+              <span className="text-[12px] font-bold hidden md:inline">Fotos</span>
+            </Link>
+
+            <Link
+              to="/people"
+              className="flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white hover:bg-white/10 transition-colors shrink-0"
+              title="Gente"
+            >
+              <Search size={16} className="opacity-80" />
+              <span className="text-[12px] font-bold hidden md:inline">Gente</span>
             </Link>
 
             <Link
@@ -149,26 +184,13 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
               <span className="sm:hidden text-[12px] font-bold">P</span>
             </Link>
 
-            <Link
-              to="/messages"
-              className="flex items-center px-1.5 md:px-3 py-1 rounded-md text-white hover:bg-white/10 transition-colors shrink-0 relative"
-              title="Mensajes"
-            >
-              <span className="text-[12px] font-bold hidden sm:inline">Mensajes</span>
-              <span className="sm:hidden text-[12px] font-bold">M</span>
-              {unreadMessages > 0 &&
-                <span className="absolute top-0 right-0 bg-[#cc0000] text-white text-[8px] font-bold px-1 rounded-full shadow-sm">
-                  {unreadMessages}
-                </span>
-              }
-            </Link>
-
             {/* Search Bar - Compact */}
             <div className="relative mx-1 shrink-1 min-w-[50px] md:min-w-[100px]">
               <input
                 type="text"
                 placeholder="Buscar"
                 className="w-full h-[22px] md:h-[24px] pl-2 pr-5 rounded-[2px] border-none text-[10px] md:text-[11px] text-gray-700 placeholder-gray-400 outline-none"
+                style={{ backgroundColor: 'white' }}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -212,25 +234,35 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
                 id="photo-upload"
                 className="hidden"
                 accept="image/*"
-                onChange={async (e) => {
+                onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
-                  const formData = new FormData();
-                  formData.append('image', file);
-                  try {
-                    await api.post('/photos', formData);
-                    alert('¡Foto subida!');
-                  } catch (err) {
-                    alert('Error al subir');
-                  }
+                  setSelectedFile(file);
+                  setShowUploadModal(true);
+                  // Reset input so same file can be selected again
+                  e.target.value = '';
                 }}
               />
               <button
                 onClick={() => document.getElementById('photo-upload')?.click()}
-                className="bg-[#2B7BB9] text-white text-[10px] md:text-[11px] font-bold px-1.5 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm shrink-0"
+                className="bg-[#2B7BB9] text-white text-[10px] md:text-[11px] font-bold px-1.5 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm shrink-0 hover:bg-[#256ca3] active:scale-95 transition-all"
               >
                 <span className="hidden sm:inline">Subir</span> ↑
               </button>
+
+              {showUploadModal && selectedFile && (
+                <PhotoUploadModal
+                  file={selectedFile}
+                  onClose={() => {
+                    setShowUploadModal(false);
+                    setSelectedFile(null);
+                  }}
+                  onSuccess={() => {
+                    // Logic to refresh gallery if on gallery page could go here
+                    // For now, just a toast is fine (handled in modal)
+                  }}
+                />
+              )}
 
               {unreadNotifsCount >= 0 && (
                 <button

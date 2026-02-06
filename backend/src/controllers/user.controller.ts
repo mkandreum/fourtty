@@ -139,31 +139,48 @@ export const uploadUserAvatar = async (req: AuthRequest, res: Response): Promise
 // Search users
 export const searchUsers = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const query = req.query.q as string;
+        const { q, gender, location, ageMin, ageMax } = req.query;
+        const query = q as string;
 
-        if (!query || query.trim().length < 2) {
-            res.status(400).json({ error: 'Search query must be at least 2 characters' });
-            return;
+        const where: any = {
+            NOT: {
+                id: req.userId
+            }
+        };
+
+        if (query && query.trim().length >= 2) {
+            where.OR = [
+                { name: { contains: query } },
+                { email: { contains: query } }
+            ];
+        }
+
+        if (gender) {
+            where.gender = gender as string;
+        }
+
+        if (location) {
+            where.location = { contains: location as string };
+        }
+
+        if (ageMin || ageMax) {
+            where.age = {};
+            if (ageMin) where.age.gte = parseInt(ageMin as string);
+            if (ageMax) where.age.lte = parseInt(ageMax as string);
         }
 
         const users = await prisma.user.findMany({
-            where: {
-                OR: [
-                    { name: { contains: query } },
-                    { email: { contains: query } }
-                ],
-                NOT: {
-                    id: req.userId
-                }
-            },
+            where,
             select: {
                 id: true,
                 name: true,
                 avatar: true,
                 location: true,
-                occupation: true
+                occupation: true,
+                gender: true,
+                age: true
             },
-            take: 20
+            take: 50
         });
 
         res.json({ users });

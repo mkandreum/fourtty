@@ -30,34 +30,13 @@ export const getPostComments = async (req: AuthRequest, res: Response): Promise<
     }
 };
 
-// Create comment
-export const createComment = async (req: AuthRequest, res: Response): Promise<void> => {
+// Get comments for a photo
+export const getPhotoComments = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const postId = parseInt(req.params.postId as string);
-        const { content } = req.body;
+        const photoId = parseInt(req.params.photoId as string);
 
-        if (!content || !content.trim()) {
-            res.status(400).json({ error: 'Content is required' });
-            return;
-        }
-
-        // Check if post exists
-        const post = await prisma.post.findUnique({
-            where: { id: postId },
-            include: { user: true }
-        });
-
-        if (!post) {
-            res.status(404).json({ error: 'Post not found' });
-            return;
-        }
-
-        const comment = await prisma.comment.create({
-            data: {
-                postId,
-                userId: req.userId!,
-                content
-            },
+        const comments = await prisma.comment.findMany({
+            where: { photoId },
             include: {
                 user: {
                     select: {
@@ -66,26 +45,86 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
                         avatar: true
                     }
                 }
+            },
+            orderBy: {
+                createdAt: 'asc'
             }
         });
 
-        // Create notification for post author (if not commenting on own post)
-        if (post.userId !== req.userId) {
-            await prisma.notification.create({
-                data: {
-                    userId: post.userId,
-                    type: 'comment',
-                    content: `${comment.user.name} ha comentado en tu publicación`,
-                    relatedId: postId,
-                    relatedUserId: req.userId!
-                }
-            });
+        res.json({ comments });
+    } catch (error) {
+        console.error('Get photo comments error:', error);
+        res.status(500).json({ error: 'Failed to get comments' });
+    }
+};
+
+// Create comment
+export const createComment = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { postId, photoId } = req.params;
+        const { content } = req.body;
+        const userId = req.userId!;
+
+        if (!content || !content.trim()) {
+            res.status(400).json({ error: 'Content is required' });
+            return;
         }
 
-        res.status(201).json({
-            message: 'Comment created successfully',
-            comment
-        });
+        if (postId) {
+            const pid = parseInt(postId as string);
+            const post = await prisma.post.findUnique({ where: { id: pid } });
+            if (!post) {
+                res.status(404).json({ error: 'Post not found' });
+                return;
+            }
+
+            const comment = await prisma.comment.create({
+                data: { postId: pid, userId, content },
+                include: { user: { select: { id: true, name: true, avatar: true } } }
+            });
+
+            if (post.userId !== userId) {
+                await prisma.notification.create({
+                    data: {
+                        userId: post.userId,
+                        type: 'comment',
+                        content: `${comment.user.name} ha comentado en tu publicación`,
+                        relatedId: pid,
+                        relatedUserId: userId
+                    }
+                });
+            }
+            res.status(201).json({ message: 'Comment created successfully', comment });
+
+        } else if (photoId) {
+            const phid = parseInt(photoId as string);
+            const photo = await prisma.photo.findUnique({ where: { id: phid } });
+            if (!photo) {
+                res.status(404).json({ error: 'Photo not found' });
+                return;
+            }
+
+            const comment = await prisma.comment.create({
+                data: { photoId: phid, userId, content },
+                include: { user: { select: { id: true, name: true, avatar: true } } }
+            });
+
+            if (photo.userId !== userId) {
+                await prisma.notification.create({
+                    data: {
+                        userId: photo.userId,
+                        type: 'comment',
+                        content: `${comment.user.name} ha comentado en tu foto`,
+                        relatedId: phid,
+                        relatedUserId: userId
+                    }
+                });
+            }
+            res.status(201).json({ message: 'Comment created successfully', comment });
+        } else {
+            res.status(400).json({ error: 'Target ID is required' });
+        }
+
     } catch (error) {
         console.error('Create comment error:', error);
         res.status(500).json({ error: 'Failed to create comment' });

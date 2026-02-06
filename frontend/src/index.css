@@ -19,3 +19,21 @@ body {
     scrollbar-width: none;
     /* Firefox */
 }
+
+/* GLOBAL FORCED WHITE BACKGROUND */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+    background-color: white !important;
+    background: white !important;
+    color: black !important;
+}
+
+/* Fix browser autofill blue color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: black !important;
+}

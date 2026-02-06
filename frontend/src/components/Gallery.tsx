@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Tag, X, User as UserIcon, MessageSquare, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Tag, X, User as UserIcon, MessageSquare, ThumbsUp, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import CommentSection from './CommentSection';
+import { Photo } from '../types';
 
 const Gallery: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { user } = useAuth();
-    const [photos, setPhotos] = useState<any[]>([]);
+    const [photos, setPhotos] = useState<Photo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [userName, setUserName] = useState('');
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
@@ -83,6 +84,29 @@ const Gallery: React.FC = () => {
         } catch (e) {
             console.error(e);
             alert('Este usuario ya está etiquetado o ha ocurrido un error.');
+        }
+    };
+
+    const handleToggleLike = async (photoId: number) => {
+        try {
+            const res = await api.post(`/photos/${photoId}/like`);
+            const { liked } = res.data;
+
+            setPhotos(prev => prev.map(p => {
+                if (p.id === photoId) {
+                    return {
+                        ...p,
+                        likedByMe: liked,
+                        _count: {
+                            ...p._count,
+                            likes: liked ? (p._count?.likes || 0) + 1 : Math.max(0, (p._count?.likes || 0) - 1)
+                        }
+                    };
+                }
+                return p;
+            }));
+        } catch (e) {
+            console.error(e);
         }
     };
 
@@ -251,6 +275,17 @@ const Gallery: React.FC = () => {
                                 </div>
 
                                 <div className="flex flex-wrap gap-2 mb-4">
+                                    <button
+                                        onClick={() => handleToggleLike(currentPhoto.id)}
+                                        className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${currentPhoto.likedByMe
+                                            ? 'bg-[#59B200] text-white border border-[#4a9400]'
+                                            : 'bg-white text-[#555] border border-[#ccc] hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        <ThumbsUp size={12} fill={currentPhoto.likedByMe ? 'white' : 'transparent'} />
+                                        {currentPhoto.likedByMe ? '¡Me mola!' : 'Me mola'}
+                                    </button>
+
                                     {user?.id === Number(targetUserId) && (
                                         <button
                                             onClick={() => setIsTagging(!isTagging)}
@@ -264,6 +299,13 @@ const Gallery: React.FC = () => {
                                         </button>
                                     )}
                                 </div>
+
+                                {currentPhoto._count?.likes > 0 && (
+                                    <div className="mb-4 flex items-center gap-2 text-[11px] text-[#59B200] font-bold bg-[#f6fff0] p-2 rounded border border-[#e2efd9]">
+                                        <ThumbsUp size={14} fill="#59B200" />
+                                        <span>A {currentPhoto._count.likes} {currentPhoto._count.likes === 1 ? 'persona le mola esto' : 'personas les mola esto'}</span>
+                                    </div>
+                                )}
 
                                 {currentPhoto.photoTags?.length > 0 && (
                                     <div className="mb-4">
@@ -289,7 +331,7 @@ const Gallery: React.FC = () => {
                                 <h5 className="text-[11px] font-bold text-[#333] mb-4 flex items-center gap-1">
                                     <MessageSquare size={14} className="text-[#59B200]" /> Comentarios
                                 </h5>
-                                <CommentSection postId={currentPhoto.id} initialCommentsCount={0} />
+                                <CommentSection photoId={currentPhoto.id} isPhoto={true} initialCommentsCount={0} />
                             </div>
                         </div>
 

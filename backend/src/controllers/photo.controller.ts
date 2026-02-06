@@ -13,15 +13,53 @@ export const uploadPhoto = async (req: AuthRequest, res: Response): Promise<void
         }
 
         const photoUrl = `/uploads/${req.file.filename}`;
-        const { caption } = req.body;
+        const { caption, tags, initialComment } = req.body;
 
         const photo = await prisma.photo.create({
             data: {
                 userId,
                 url: photoUrl,
                 caption
+            },
+            include: {
+                user: { select: { name: true } }
             }
         });
+
+        // Add tags if provided
+        if (tags && Array.isArray(JSON.parse(tags))) {
+            const parsedTags = JSON.parse(tags);
+            for (const taggedUid of parsedTags) {
+                await prisma.photoTag.create({
+                    data: {
+                        photoId: photo.id,
+                        userId: parseInt(taggedUid)
+                    }
+                });
+
+                // Notify tagged user
+                await prisma.notification.create({
+                    data: {
+                        userId: parseInt(taggedUid),
+                        type: 'tag',
+                        content: `${photo.user.name} te ha etiquetado en una foto`,
+                        relatedId: photo.id,
+                        relatedUserId: userId
+                    }
+                });
+            }
+        }
+
+        // Add initial comment if provided
+        if (initialComment && initialComment.trim()) {
+            await prisma.comment.create({
+                data: {
+                    photoId: photo.id,
+                    userId,
+                    content: initialComment
+                }
+            });
+        }
 
         res.status(201).json({ photo });
     } catch (error) {
@@ -44,12 +82,26 @@ export const getUserPhotos = async (req: AuthRequest, res: Response): Promise<vo
                             select: { id: true, name: true }
                         }
                     }
+                },
+                _count: {
+                    select: {
+                        likes: true
+                    }
+                },
+                likes: {
+                    where: { userId: (req as any).userId },
+                    select: { id: true }
                 }
             },
             orderBy: { createdAt: 'desc' }
         });
 
-        res.json({ photos });
+        res.json({
+            photos: photos.map(p => ({
+                ...p,
+                likedByMe: p.likes.length > 0
+            }))
+        });
     } catch (error) {
         console.error('Get user photos error:', error);
         res.status(500).json({ error: 'Failed to get photos' });

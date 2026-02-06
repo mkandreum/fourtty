@@ -12,6 +12,7 @@ export interface User {
   location?: string;
   occupation?: string;
   privacy?: string;
+  invitationsCount?: number;
   createdAt?: string;
   _count?: {
     friendships?: number;
@@ -31,8 +32,24 @@ export interface Post {
   createdAt: string;
   updatedAt?: string;
   comments?: Comment[];
+  likedByMe?: boolean;
   _count?: {
     comments: number;
+    likes?: number;
+  };
+}
+
+export interface Photo {
+  id: number;
+  userId: number;
+  user: User;
+  url: string;
+  caption?: string;
+  createdAt: string;
+  likedByMe?: boolean;
+  photoTags?: any[];
+  _count?: {
+    likes?: number;
   };
 }
 
@@ -56,7 +73,8 @@ export interface SidebarItem {
 export enum ViewState {
   LOGIN = 'LOGIN',
   HOME = 'HOME',
-  PROFILE = 'PROFILE'
+  PROFILE = 'PROFILE',
+  PEOPLE = 'PEOPLE'
 }
 
 export interface LoginResponse {
