@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Seed the database or run migrations
-echo "Running database migrations..."
-npx prisma migrate deploy
+echo "Running database schema sync..."
+npx prisma db push --accept-data-loss
 
 # Start the application
 echo "Starting application..."
