@@ -44,7 +44,7 @@ export const createPage = async (req: AuthRequest, res: Response): Promise<void>
 export const followPage = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const userId = req.userId!;
-        const pageId = parseInt(req.params.id);
+        const pageId = parseInt(req.params.id as string);
 
         const follow = await prisma.pageFollower.upsert({
             where: {
@@ -68,7 +68,7 @@ export const followPage = async (req: AuthRequest, res: Response): Promise<void>
 export const unfollowPage = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const userId = req.userId!;
-        const pageId = parseInt(req.params.id);
+        const pageId = parseInt(req.params.id as string);
 
         await prisma.pageFollower.delete({
             where: {
@@ -103,7 +103,7 @@ export const getPages = async (req: AuthRequest, res: Response): Promise<void> =
 // Get single page with posts
 export const getPageDetails = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const pageId = parseInt(req.params.id);
+        const pageId = parseInt(req.params.id as string);
 
         const page = await prisma.page.findUnique({
             where: { id: pageId },
@@ -142,7 +142,7 @@ export const getPageDetails = async (req: AuthRequest, res: Response): Promise<v
 // Create a post for a page (only creator)
 export const createPagePost = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const pageId = parseInt(req.params.id);
+        const pageId = parseInt(req.params.id as string);
         const { content, videoUrl } = req.body;
         const userId = req.userId!;
 

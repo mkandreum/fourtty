@@ -59,7 +59,7 @@ export const getUserPhotos = async (req: AuthRequest, res: Response): Promise<vo
 // Add tag to photo
 export const tagPhoto = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const photoId = parseInt(req.params.id);
+        const photoId = parseInt(req.params.id as string);
         const { userId, x, y } = req.body;
 
         const tag = await prisma.photoTag.create({
