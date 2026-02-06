@@ -123,7 +123,7 @@ const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 w-full h-[48px] bg-[#005599] z-50 border-b border-[#003366] shadow-sm">
+    <header className="fixed top-0 left-0 w-full h-[60px] glass z-50 border-b border-white/20 transition-smooth">
       <div className="max-w-[980px] mx-auto h-full flex items-center justify-between px-2">
 
         {/* Left Side: Logo + Navigation */}
@@ -132,10 +132,12 @@ const Header: React.FC = () => {
             className="flex items-center cursor-pointer group"
             onClick={() => handleNavigate('/')}
           >
-            <span className="text-white text-[18px] md:text-[22px] font-bold tracking-tighter flex items-center gap-0.5 mr-1 md:mr-2">
-              <span className="text-lg md:text-xl">;)</span>
+            <div className="bg-white/20 p-1.5 rounded-md group-hover:bg-[#59B200] transition-smooth rotate-[-5deg] group-hover:rotate-0 shadow-sm mr-2 transition-all">
+              <ImageIcon size={20} className="text-white" />
+            </div>
+            <span className="text-white text-[18px] md:text-[22px] font-black tracking-tighter drop-shadow-md">
               twentty
-              <span className="text-[7px] md:text-[8px] font-normal align-top ml-0.5 mt-[-8px] md:mt-[-12px] opacity-60">TM</span>
+              <span className="text-[7px] md:text-[8px] font-normal align-top ml-0.5 mt-[-12px] opacity-60">TM</span>
             </span>
           </div>
 
