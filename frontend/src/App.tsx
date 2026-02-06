@@ -90,9 +90,9 @@ const AppContent = () => {
     <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
       <Header />
       <ToastContainer />
-      <div className="main-content-container max-w-[980px] mx-auto px-0 sm:px-2 flex flex-col md:flex-row gap-4 items-start">
+      <div className="main-content-container max-w-[980px] mx-auto px-0 sm:px-2 flex flex-col md:flex-row md:gap-4 items-start">
         {view === ViewState.HOME && (
-          <aside className="hidden md:block w-[190px] shrink-0 sticky top-[64px]">
+          <aside className="hidden md:block w-[190px] shrink-0 sticky top-[62px]">
             <LeftPanel />
           </aside>
         )}
@@ -100,7 +100,7 @@ const AppContent = () => {
           {children}
         </main>
         {(view === ViewState.HOME || view === ViewState.PEOPLE) && (
-          <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[64px]">
+          <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[62px]">
             <Sidebar />
           </aside>
         )}
