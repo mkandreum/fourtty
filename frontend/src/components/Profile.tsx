@@ -395,10 +395,26 @@ const Profile: React.FC = () => {
             <h1 className="text-[18px] md:text-[20px] font-bold text-[#333] mb-1">
                {profileUser.name} {profileUser.lastName}
             </h1>
-            <div className="text-[#555] text-[12px] md:text-[13px] mb-3 border-b border-[#eee] pb-3 pr-[80px] md:pr-0">
-               {profileUser.bio || 'Sin estado'}
-               {/* Mobile visits counter */}
-               {isOwnProfile && (
+            {profileUser.bio && (
+               <div className="text-[#555] text-[12px] md:text-[13px] mb-3 border-b border-[#eee] pb-3 pr-[80px] md:pr-0">
+                  {profileUser.bio}
+                  {/* Mobile visits counter */}
+                  {isOwnProfile && (
+                     <div className="md:hidden mt-2 flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 bg-[#59B200]/10 px-2 py-0.5 rounded-full border border-[#59B200]/20">
+                           <div className="w-1.5 h-1.5 bg-[#59B200] rounded-full animate-pulse"></div>
+                           <span className="text-[11px] font-bold text-[#59B200]">
+                              {stats.visits} visitas al perfil
+                           </span>
+                        </div>
+                     </div>
+                  )}
+               </div>
+            )}
+            {!profileUser.bio && isOwnProfile && (
+               <div className="text-[#999] text-[12px] md:text-[13px] mb-3 border-b border-[#eee] pb-3 italic">
+                  Escribe algo sobre ti...
+                  {/* Mobile visits counter even without bio */}
                   <div className="md:hidden mt-2 flex items-center gap-2">
                      <div className="flex items-center gap-1.5 bg-[#59B200]/10 px-2 py-0.5 rounded-full border border-[#59B200]/20">
                         <div className="w-1.5 h-1.5 bg-[#59B200] rounded-full animate-pulse"></div>
@@ -407,8 +423,8 @@ const Profile: React.FC = () => {
                         </span>
                      </div>
                   </div>
-               )}
-            </div>
+               </div>
+            )}
             <div className="absolute top-0 right-0">
                {renderActionButtons()}
             </div>
@@ -535,24 +551,38 @@ const Profile: React.FC = () => {
                      </button>
                   </motion.div>
                ) : (
-                  <div className="bg-[#f9fbfd] border-t border-b border-[#e1e9f0] p-2 text-[11px] text-[#333]">
-                     <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
-                        <UserIcon size={12} className="text-[#888]" />
-                        <span>{profileUser.gender || 'No especificado'}, {profileUser.age || '?'} años</span>
+                  (profileUser.gender || profileUser.age || profileUser.relationshipStatus || profileUser.location || profileUser.occupation) ? (
+                     <div className="bg-[#f9fbfd] border-t border-b border-[#e1e9f0] p-2 text-[11px] text-[#333]">
+                        {(profileUser.gender || profileUser.age) && (
+                           <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
+                              <UserIcon size={12} className="text-[#888]" />
+                              <span>{profileUser.gender || '?'}{profileUser.age ? `, ${profileUser.age} años` : ''}</span>
+                           </div>
+                        )}
+                        {profileUser.relationshipStatus && (
+                           <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
+                              <Heart size={12} className="text-[#888]" />
+                              <span>{profileUser.relationshipStatus}</span>
+                           </div>
+                        )}
+                        {profileUser.location && (
+                           <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
+                              <MapPin size={12} className="text-[#888]" />
+                              <span>{profileUser.location}</span>
+                           </div>
+                        )}
+                        {profileUser.occupation && (
+                           <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
+                              <Briefcase size={12} className="text-[#888]" />
+                              <span>{profileUser.occupation}</span>
+                           </div>
+                        )}
                      </div>
-                     <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
-                        <Heart size={12} className="text-[#888]" />
-                        <span>{profileUser.relationshipStatus || 'No especificado'}</span>
+                  ) : isOwnProfile ? (
+                     <div className="bg-[#f9fbfd] border-t border-b border-[#e1e9f0] p-2 text-[10px] text-[#999] italic">
+                        Completa tu información personal...
                      </div>
-                     <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
-                        <MapPin size={12} className="text-[#888]" />
-                        <span>{profileUser.location || 'No especificado'}</span>
-                     </div>
-                     <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
-                        <Briefcase size={12} className="text-[#888]" />
-                        <span>{profileUser.occupation || 'No especificado'}</span>
-                     </div>
-                  </div>
+                  ) : null
                )}
 
                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
