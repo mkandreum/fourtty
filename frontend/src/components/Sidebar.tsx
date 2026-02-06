@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useSocket } from '../contexts/SocketContext';
 import { User } from '../types';
 import { motion } from 'framer-motion';
+import Invitations from './Invitations';
 
 const Sidebar: React.FC = () => {
    const { user } = useAuth();
@@ -57,6 +58,7 @@ const Sidebar: React.FC = () => {
          animate={{ opacity: 1, x: 0 }}
          className="flex flex-col gap-4"
       >
+         <Invitations compact />
          {/* Add Friends */}
          <div className="pb-4">
             <h4 className="text-[#333] font-bold text-[11px] mb-2">Añadir amigos</h4>
