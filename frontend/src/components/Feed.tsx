@@ -29,6 +29,13 @@ const Feed: React.FC = () => {
    const [isInvitesExpanded, setIsInvitesExpanded] = useState(false); // Collapsed by default on mobile
    const [unreadNotifications, setUnreadNotifications] = useState<any[]>([]);
    const [stats, setStats] = useState({ visits: 0 });
+   const [expandedPostIds, setExpandedPostIds] = useState<number[]>([]);
+
+   const togglePostExpansion = (postId: number) => {
+      setExpandedPostIds(prev =>
+         prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]
+      );
+   };
 
    const fetchFeed = async (pageNum: number, isRefresh = false) => {
       try {

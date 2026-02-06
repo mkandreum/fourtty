@@ -28,6 +28,13 @@ const Profile: React.FC = () => {
    const [isRestricted, setIsRestricted] = useState(false);
    const [editData, setEditData] = useState<Partial<User>>({});
    const [stats, setStats] = useState({ visits: 0 });
+   const [expandedPostIds, setExpandedPostIds] = useState<number[]>([]);
+
+   const togglePostExpansion = (postId: number) => {
+      setExpandedPostIds(prev =>
+         prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]
+      );
+   };
 
    // Cropping states
    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
@@ -751,9 +758,10 @@ const Profile: React.FC = () => {
                                  {/* Modern Action Bar */}
                                  <div className="mt-3 flex items-center gap-2 pt-2 border-t border-[#f0f2f5]">
                                     <button
-                                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold text-[#65676b] hover:bg-[#f0f2f5] transition-all"
+                                       onClick={() => handleToggleLike(post.id)}
+                                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[#59B200]/10 text-[#59B200]' : 'text-[#65676b] hover:bg-[#f0f2f5]'}`}
                                     >
-                                       <ThumbsUp size={14} />
+                                       <ThumbsUp size={14} className={post.likedByMe ? 'fill-current' : ''} />
                                        Me mola
                                        {post._count && post._count.likes > 0 && <span className="ml-1 opacity-70">({post._count.likes})</span>}
                                     </button>
