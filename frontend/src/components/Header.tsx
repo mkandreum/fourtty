@@ -123,7 +123,7 @@ const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 w-full h-[60px] glass z-50 border-b border-white/20 transition-smooth">
+    <header className="fixed top-0 left-0 w-full h-[60px] bg-[#005599] z-50 border-b border-[#003366] shadow-sm">
       <div className="max-w-[980px] mx-auto h-full flex items-center justify-between px-2">
 
         {/* Left Side: Logo + Navigation */}
@@ -132,19 +132,17 @@ const Header: React.FC = () => {
             className="flex items-center cursor-pointer group"
             onClick={() => handleNavigate('/')}
           >
-            <div className="bg-white/20 p-1.5 rounded-md group-hover:bg-[#59B200] transition-smooth rotate-[-5deg] group-hover:rotate-0 shadow-sm mr-2 transition-all">
-              <ImageIcon size={20} className="text-white" />
-            </div>
-            <span className="text-white text-[18px] md:text-[22px] font-black tracking-tighter drop-shadow-md">
+            <span className="text-white text-[20px] md:text-[24px] font-black tracking-tighter drop-shadow-md flex items-center gap-1.5">
+              <span className="text-xl md:text-2xl">;)</span>
               twentty
               <span className="text-[7px] md:text-[8px] font-normal align-top ml-0.5 mt-[-12px] opacity-60">TM</span>
             </span>
           </div>
 
-          <nav className="flex items-center gap-0.5 md:gap-1 border-l border-white/20 pl-2 md:pl-4 overflow-x-auto no-scrollbar">
+          <nav className="flex items-center gap-0.5 md:gap-1 border-l border-white/10 pl-2 md:pl-4 overflow-x-auto no-scrollbar">
             <Link
               to="/"
-              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/') ? 'bg-white/20' : 'hover:bg-white/10'}`}
+              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/') ? 'bg-black/10' : 'hover:bg-white/10'}`}
               title="Inicio"
             >
               <div className="w-5 h-5 flex items-center justify-center bg-white/10 rounded">
@@ -155,7 +153,7 @@ const Header: React.FC = () => {
 
             <Link
               to="/profile/photos"
-              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile/photos') ? 'bg-white/20' : 'hover:bg-white/10'}`}
+              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile/photos') ? 'bg-black/10' : 'hover:bg-white/10'}`}
               title="Mis Fotos"
             >
               <ImageIcon size={16} className="opacity-80" />
@@ -164,7 +162,7 @@ const Header: React.FC = () => {
 
             <Link
               to="/people"
-              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/people') ? 'bg-white/20' : 'hover:bg-white/10'}`}
+              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/people') ? 'bg-black/10' : 'hover:bg-white/10'}`}
               title="Gente"
             >
               <Search size={16} className="opacity-80" />
@@ -173,7 +171,7 @@ const Header: React.FC = () => {
 
             <Link
               to="/profile"
-              className={`flex items-center px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile') ? 'bg-white/20' : 'hover:bg-white/10'}`}
+              className={`flex items-center px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile') ? 'bg-black/10' : 'hover:bg-white/10'}`}
               title="Mi Perfil"
             >
               <User size={16} className="sm:hidden opacity-80" />
@@ -255,7 +253,7 @@ const Header: React.FC = () => {
 
                 <button
                   onClick={() => setShowNotifs(!showNotifs)}
-                  className={`${unreadNotifsCount > 0 ? 'bg-[#cc0000]' : 'bg-white/20'} text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center hover:scale-110 transition-transform`}
+                  className={`${unreadNotifsCount > 0 ? 'bg-[#cc0000]' : 'bg-black/10'} text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center hover:scale-110 transition-transform`}
                   title="Notificaciones"
                 >
                   <Bell size={10} className="mr-0.5" />
@@ -264,7 +262,7 @@ const Header: React.FC = () => {
 
                 {/* Notifications Dropdown */}
                 {showNotifs && (
-                  <div className="absolute top-[35px] right-0 w-[300px] md:w-[340px] bg-white/95 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/20 rounded-[4px] z-[100] animate-in fade-in slide-in-from-top-2 duration-300 text-left overflow-hidden ring-1 ring-black/5">
+                  <div className="absolute top-[35px] right-0 w-[300px] md:w-[340px] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-[#ccc] rounded-[4px] z-[100] animate-in fade-in slide-in-from-top-2 duration-300 text-left overflow-hidden ring-1 ring-black/5">
                     <div className="bg-[#005599] text-white p-3 flex justify-between items-center">
                       <div className="flex items-center gap-2">
                         <Bell size={14} className="animate-pulse" />
