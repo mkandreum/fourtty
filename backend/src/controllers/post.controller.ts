@@ -26,7 +26,7 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
 
         // Include own posts and friends' posts
         const userIds = [req.userId!, ...friendIds];
-        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
         const posts = await prisma.post.findMany({
             where: {
@@ -37,7 +37,7 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
                     { type: { not: 'status' } },
                     {
                         type: 'status',
-                        createdAt: { gte: twentyFourHoursAgo }
+                        createdAt: { gte: oneDayAgo }
                     }
                 ]
             },
@@ -76,7 +76,7 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
                     { type: { not: 'status' } },
                     {
                         type: 'status',
-                        createdAt: { gte: twentyFourHoursAgo }
+                        createdAt: { gte: oneDayAgo }
                     }
                 ]
             }
@@ -277,7 +277,7 @@ export const getUserPosts = async (req: AuthRequest, res: Response): Promise<voi
         const limit = parseInt(req.query.limit as string) || 20;
         const skip = (page - 1) * limit;
 
-        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
         const posts = await prisma.post.findMany({
             where: {
@@ -286,7 +286,7 @@ export const getUserPosts = async (req: AuthRequest, res: Response): Promise<voi
                     { type: { not: 'status' } },
                     {
                         type: 'status',
-                        createdAt: { gte: twentyFourHoursAgo }
+                        createdAt: { gte: oneDayAgo }
                     }
                 ]
             },
@@ -323,7 +323,7 @@ export const getUserPosts = async (req: AuthRequest, res: Response): Promise<voi
                     { type: { not: 'status' } },
                     {
                         type: 'status',
-                        createdAt: { gte: twentyFourHoursAgo }
+                        createdAt: { gte: oneDayAgo }
                     }
                 ]
             }

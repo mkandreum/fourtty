@@ -210,7 +210,7 @@ const Header: React.FC = () => {
                       onClick={() => handleNavigate(`/profile/${result.id}`)}
                     >
                       <img
-                        src={result.avatar || `https://ui-avatars.com/api/?name=${result.name}`}
+                        src={result.avatar || `/api/proxy/avatar?name=${encodeURIComponent(result.name)}`}
                         className="w-5 h-5 rounded-[2px] object-cover"
                         alt={result.name}
                       />

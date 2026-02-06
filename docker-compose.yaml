@@ -14,8 +14,8 @@ services:
       - JWT_SECRET=${JWT_SECRET:-supersecretkey}
       - PORT=5000
       - NODE_ENV=production
-      - FRONTEND_URL=https://twenty.xyoncloud.win
-      - VITE_SOCKET_URL=https://twenty.xyoncloud.win
+      - FRONTEND_URL=https://twentty.net
+      - VITE_SOCKET_URL=https://twentty.net
       - SMTP_HOST=smtp.gmail.com
       - SMTP_PORT=587
       - SMTP_USER=${SMTP_USER}

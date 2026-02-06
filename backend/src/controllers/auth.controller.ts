@@ -18,7 +18,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         }
 
         // Check if invitation is valid
-        const masterCode = process.env.MASTER_INVITE_CODE || 'TWENTY2025';
+        const masterCode = process.env.MASTER_INVITE_CODE || 'TWENTTY2025';
         const isMaster = inviteCode.toUpperCase() === masterCode.toUpperCase();
 
         let invitation: any = null;
@@ -53,7 +53,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
                 password: hashedPassword,
                 name,
                 lastName: lastName || '',
-                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name + ' ' + (lastName || ''))}&background=005599&color=fff&size=200`,
+                avatar: `/api/proxy/avatar?name=${encodeURIComponent(name + ' ' + (lastName || ''))}&background=005599&color=fff&size=200`,
                 invitationsCount: 10 // Give some initial invitations
             }
         });

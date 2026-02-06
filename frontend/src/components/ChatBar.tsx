@@ -270,7 +270,7 @@ const ChatBar: React.FC = () => {
                         >
                            <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-300'}`}></div>
                            <img
-                              src={friend.avatar || `https://ui-avatars.com/api/?name=${friend.name}`}
+                              src={friend.avatar || `/api/proxy/avatar?name=${encodeURIComponent(friend.name)}`}
                               className={`w-5 h-5 rounded-sm object-cover ${!isOnline ? 'grayscale opacity-70' : ''}`}
                               alt={friend.name}
                            />

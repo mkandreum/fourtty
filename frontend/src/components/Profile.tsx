@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
+import { usePhotoModal } from '../contexts/PhotoModalContext';
 import api from '../api';
 import { User, Post } from '../types';
 import CommentSection from './CommentSection';
@@ -14,6 +15,7 @@ const Profile: React.FC = () => {
    const { showToast } = useToast();
    const { id } = useParams<{ id: string }>();
    const navigate = useNavigate();
+   const { openPhoto } = usePhotoModal();
    const [profileUser, setProfileUser] = useState<User | null>(null);
    const [friends, setFriends] = useState<User[]>([]);
    const [friendStatus, setFriendStatus] = useState<'none' | 'pending_sent' | 'pending_received' | 'accepted' | 'self'>('self');
@@ -250,7 +252,7 @@ const Profile: React.FC = () => {
    };
 
    const getAvatarUrl = (avatar?: string) => {
-      if (!avatar) return 'https://ui-avatars.com/api/?name=' + (profileUser?.name || 'User');
+      if (!avatar) return `/api/proxy/avatar?name=${encodeURIComponent(profileUser?.name || 'User')}`;
       if (avatar.startsWith('http')) return avatar;
       return `${import.meta.env.VITE_API_URL?.replace('/api', '')}${avatar}`;
    };
@@ -704,7 +706,19 @@ const Profile: React.FC = () => {
                                     >
                                        <img
                                           src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
-                                          className="max-w-full max-h-[300px] rounded-[2px] border border-[#eee]"
+                                          className="max-w-full max-h-[300px] rounded-[2px] border border-[#eee] cursor-pointer"
+                                          onClick={() => {
+                                             const photoObj = {
+                                                id: post.id,
+                                                url: post.image!,
+                                                userId: post.userId,
+                                                createdAt: post.createdAt,
+                                                user: post.user,
+                                                _count: post._count,
+                                                photoTags: []
+                                             } as any;
+                                             openPhoto(photoObj, [photoObj]);
+                                          }}
                                           alt="Post"
                                        />
                                     </motion.div>

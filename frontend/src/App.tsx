@@ -15,7 +15,9 @@ import { ViewState } from './types';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 import { ToastProvider } from './contexts/ToastContext';
+import { PhotoModalProvider } from './contexts/PhotoModalContext';
 import ToastContainer from './components/ToastContainer';
+import PhotoModal from './components/PhotoModal';
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentView, setCurrentView] = useState<ViewState>(ViewState.HOME);
@@ -188,11 +190,13 @@ function App() {
   return (
     <AuthProvider>
       <SocketProvider>
-        <ToastProvider>
-          <Router>
-            <AppContent />
-          </Router>
-        </ToastProvider>
+        <PhotoModalProvider>
+          <ToastProvider>
+            <Router>
+              <AppContent />
+            </Router>
+          </ToastProvider>
+        </PhotoModalProvider>
       </SocketProvider>
     </AuthProvider>
   );

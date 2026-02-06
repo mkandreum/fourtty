@@ -160,7 +160,7 @@ const People: React.FC = () => {
                                         >
                                             <div className="w-[60px] h-[60px] shrink-0 bg-white border border-[#ccc] p-[1px] shadow-sm">
                                                 <img
-                                                    src={u.avatar || `https://ui-avatars.com/api/?name=${u.name}`}
+                                                    src={u.avatar || `/api/proxy/avatar?name=${encodeURIComponent(u.name)}`}
                                                     alt={u.name}
                                                     className="w-full h-full object-cover rounded-[2px]"
                                                 />

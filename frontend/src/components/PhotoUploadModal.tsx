@@ -146,7 +146,7 @@ const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({ file, onClose, onSu
                               onClick={() => handleToggleTag(friend.id)}
                               className={`flex items-center gap-2 p-1.5 border-b border-[#f5f5f5] last:border-0 cursor-pointer hover:bg-[#f0f7ff] transition-colors ${selectedTags.includes(friend.id) ? 'bg-[#e7f3ff] border-l-2 border-l-[#005599]' : ''}`}
                            >
-                              <img src={friend.avatar || `https://ui-avatars.com/api/?name=${friend.name}`} className="w-5 h-5 rounded-full" />
+                              <img src={friend.avatar || `/api/proxy/avatar?name=${encodeURIComponent(friend.name)}`} className="w-5 h-5 rounded-full" />
                               <span className={`text-[11px] flex-1 ${selectedTags.includes(friend.id) ? 'font-bold text-[#005599]' : 'text-gray-700'}`}>{friend.name}</span>
                               {selectedTags.includes(friend.id) && <div className="w-2 h-2 rounded-full bg-[#59B200]"></div>}
                            </div>

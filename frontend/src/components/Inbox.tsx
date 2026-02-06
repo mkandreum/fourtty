@@ -25,7 +25,7 @@ const Inbox: React.FC = () => {
     }, []);
 
     const getAvatarUrl = (avatar?: string) => {
-        if (!avatar) return 'https://ui-avatars.com/api/?name=User';
+        if (!avatar) return `/api/proxy/avatar?name=${encodeURIComponent('User')}`;
         if (avatar.startsWith('http')) return avatar;
         return `${import.meta.env.VITE_API_URL?.replace('/api', '')}${avatar}`;
     };

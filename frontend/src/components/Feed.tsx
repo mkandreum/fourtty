@@ -6,12 +6,14 @@ import { useToast } from '../contexts/ToastContext';
 import api from '../api';
 import { Post } from '../types';
 import CommentSection from './CommentSection';
+import { usePhotoModal } from '../contexts/PhotoModalContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Feed: React.FC = () => {
    const { user, updateUser } = useAuth();
    const { showToast } = useToast();
    const navigate = useNavigate();
+   const { openPhoto } = usePhotoModal();
    const [statusText, setStatusText] = useState('');
    const [posts, setPosts] = useState<Post[]>([]);
    const [isLoading, setIsLoading] = useState(true);
@@ -474,6 +476,18 @@ const Feed: React.FC = () => {
                                     <img
                                        src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
                                        className="h-[180px] md:h-[300px] w-auto max-w-full object-contain"
+                                       onClick={() => {
+                                          const photoObj = {
+                                             id: post.id,
+                                             url: post.image!,
+                                             userId: post.userId,
+                                             createdAt: post.createdAt,
+                                             user: post.user,
+                                             _count: post._count,
+                                             photoTags: [] // Posts might not have tags directly in the same way, but we pass what we have
+                                          } as any;
+                                          openPhoto(photoObj, [photoObj]);
+                                       }}
                                        alt="attachment"
                                     />
                                  </motion.div>

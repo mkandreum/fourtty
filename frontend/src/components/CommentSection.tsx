@@ -109,7 +109,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
     };
 
     const getAvatarUrl = (avatar?: string, name?: string) => {
-        if (!avatar) return `https://ui-avatars.com/api/?name=${name || 'User'}`;
+        if (!avatar) return `/api/proxy/avatar?name=${encodeURIComponent(name || 'User')}`;
         if (avatar.startsWith('http')) return avatar;
         return `${import.meta.env.VITE_API_URL?.replace('/api', '')}${avatar}`;
     };

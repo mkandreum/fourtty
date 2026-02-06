@@ -29,31 +29,31 @@ transporter.verify((error, success) => {
 export const sendInvitationEmail = async (to: string, inviterName: string, inviteCode: string): Promise<{ success: boolean; error?: any }> => {
     const mailOptions = {
         from: {
-            name: "Twenty",
+            name: "Twentty",
             address: process.env.SMTP_USER || ""
         },
         to,
-        subject: `¡${inviterName} te ha invitado a Twenty!`,
-        text: `Hola,\n\n${inviterName} te ha invitado a unirte a Twenty, la red social privada.\n\nTu código de invitación es: ${inviteCode}\n\nRegístrate en: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/login\n\n¡Te esperamos!`,
+        subject: `¡${inviterName} te ha invitado a Twentty!`,
+        text: `Hola,\n\n${inviterName} te ha invitado a unirte a Twentty, la red social privada.\n\nTu código de invitación es: ${inviteCode}\n\nRegístrate en: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/login\n\n¡Te esperamos!`,
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #dce5ed; border-radius: 8px; overflow: hidden;">
                 <div style="background-color: #005599; padding: 20px; text-align: center;">
-                    <h1 style="color: white; margin: 0; font-size: 28px;">;) twenty</h1>
+                    <h1 style="color: white; margin: 0; font-size: 28px;">;) twentty</h1>
                 </div>
                 <div style="padding: 30px; background-color: white;">
                     <p style="font-size: 16px; color: #333;">Hola,</p>
-                    <p style="font-size: 16px; color: #333;"><strong>${inviterName}</strong> te ha invitado a unirte a <strong>Twenty</strong>, la red social privada que revive los mejores momentos.</p>
+                    <p style="font-size: 16px; color: #333;"><strong>${inviterName}</strong> te ha invitado a unirte a <strong>Twentty</strong>, la red social privada que revive los mejores momentos.</p>
                     <div style="background-color: #f2f6f9; border: 1px dashed #005599; padding: 20px; text-align: center; margin: 30px 0;">
                         <p style="margin: 0; font-size: 14px; color: #555;">Tu código de invitación exclusivo:</p>
                         <p style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; color: #005599; letter-spacing: 5px;">${inviteCode}</p>
                     </div>
                     <p style="font-size: 14px; color: #555; text-align: center;">Usa este código en la pantalla de registro.</p>
                     <div style="text-align: center; margin-top: 40px;">
-                        <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background-color: #59B200; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 16px;">Unirse a Twenty</a>
+                        <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background-color: #59B200; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 16px;">Unirse a Twentty</a>
                     </div>
                 </div>
                 <div style="background-color: #f9fbfd; padding: 15px; text-align: center; border-top: 1px solid #dce5ed;">
-                    <p style="margin: 0; font-size: 12px; color: #999;">© Twenty 2026. Todos los derechos reservados.</p>
+                    <p style="margin: 0; font-size: 12px; color: #999;">© Twentty 2026. Todos los derechos reservados.</p>
                 </div>
             </div>
         `,
@@ -77,20 +77,20 @@ export const sendInvitationEmail = async (to: string, inviterName: string, invit
 export const sendResetPasswordEmail = async (to: string, resetUrl: string): Promise<{ success: boolean; error?: any }> => {
     const mailOptions = {
         from: {
-            name: "Twenty",
+            name: "Twentty",
             address: process.env.SMTP_USER || ""
         },
         to,
-        subject: 'Restablece tu contraseña de Twenty',
+        subject: 'Restablece tu contraseña de Twentty',
         text: `Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para hacerlo: ${resetUrl}\n\nSi no has solicitado esto, ignora este email.`,
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #dce5ed; border-radius: 8px; overflow: hidden;">
                 <div style="background-color: #005599; padding: 20px; text-align: center;">
-                    <h1 style="color: white; margin: 0; font-size: 28px;">;) twenty</h1>
+                    <h1 style="color: white; margin: 0; font-size: 28px;">;) twentty</h1>
                 </div>
                 <div style="padding: 30px; background-color: white;">
                     <p style="font-size: 16px; color: #333;">Hola,</p>
-                    <p style="font-size: 16px; color: #333;">Has solicitado restablecer tu contraseña de <strong>Twenty</strong>.</p>
+                    <p style="font-size: 16px; color: #333;">Has solicitado restablecer tu contraseña de <strong>Twentty</strong>.</p>
                     <p style="font-size: 16px; color: #333;">Haz clic en el botón de abajo para elegir una nueva contraseña:</p>
                     <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
                         <a href="${resetUrl}" style="background-color: #59B200; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 16px;">Restablecer Contraseña</a>
@@ -100,7 +100,7 @@ export const sendResetPasswordEmail = async (to: string, resetUrl: string): Prom
                     <p style="font-size: 14px; color: #555; margin-top: 30px;">Si no has solicitado este cambio, puedes ignorar este correo de forma segura.</p>
                 </div>
                 <div style="background-color: #f9fbfd; padding: 15px; text-align: center; border-top: 1px solid #dce5ed;">
-                    <p style="margin: 0; font-size: 12px; color: #999;">© Twenty 2010. Todos los derechos reservados.</p>
+                    <p style="margin: 0; font-size: 12px; color: #999;">© Twentty 2026. Todos los derechos reservados.</p>
                 </div>
             </div>
         `,
