@@ -34,7 +34,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
-      <Header currentView={currentView} />
+      <Header />
 
       {/* Main Container */}
       <div className="max-w-[980px] mx-auto mt-[54px] px-2 flex gap-4 items-start">
@@ -88,7 +88,7 @@ const AppContent = () => {
 
   const Layout = ({ children, view }: { children: React.ReactNode, view: ViewState }) => (
     <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
-      <Header currentView={view} />
+      <Header />
       <ToastContainer />
       <div className="main-content-container max-w-[980px] mx-auto px-0 sm:px-2 flex flex-col md:flex-row gap-4 items-start">
         {view === ViewState.HOME && (

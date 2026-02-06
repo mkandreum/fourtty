@@ -106,7 +106,7 @@ const ForgotPassword: React.FC = () => {
             </div>
 
             <div className="p-4 text-center text-white/60 text-[10px]">
-                © Twenty 2010 • Todos los derechos reservados
+                © Twenty 2026 • Todos los derechos reservados
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Edit3, Tag, Youtube, Flag, ThumbsUp, UserPlus } from 'lucide-react';
+import { MessageSquare, Edit3, Tag, Youtube, Flag, ThumbsUp, UserPlus, Plus, Bell, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import api from '../api';
@@ -22,6 +22,8 @@ const Feed: React.FC = () => {
    const [inviteEmail, setInviteEmail] = useState('');
    const [isInviting, setIsInviting] = useState(false);
    const [myInvitations, setMyInvitations] = useState<any[]>([]);
+   const [isInvitesExpanded, setIsInvitesExpanded] = useState(false); // Collapsed by default on mobile
+   const [unreadNotifications, setUnreadNotifications] = useState<any[]>([]);
 
    const fetchFeed = async (pageNum: number, isRefresh = false) => {
       try {
@@ -47,7 +49,8 @@ const Feed: React.FC = () => {
          setIsLoading(true);
          await Promise.all([
             fetchFeed(1, true),
-            fetchInvitations()
+            fetchInvitations(),
+            fetchUnreadNotifications()
          ]);
          setIsLoading(false);
       };
@@ -60,6 +63,15 @@ const Feed: React.FC = () => {
          setMyInvitations(res.data.invitations);
       } catch (error) {
          console.error("Error fetching invitations:", error);
+      }
+   };
+
+   const fetchUnreadNotifications = async () => {
+      try {
+         const res = await api.get('/notifications');
+         setUnreadNotifications(res.data.notifications.filter((n: any) => !n.read));
+      } catch (error) {
+         console.error("Error fetching notifications:", error);
       }
    };
 
@@ -212,47 +224,84 @@ const Feed: React.FC = () => {
             </div>
          </div>
 
-         {/* Invitations Panel - Especially for Mobile */}
-         <div className="mb-6 bg-[#f9fbfd] border border-[#dce5ed] rounded-[4px] p-3 shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between mb-2">
-               <h4 className="font-bold text-[#333] text-[12px] flex items-center gap-1.5">
-                  <UserPlus size={14} className="text-[#59B200]" />
-                  <span>¡INVITA A TUS AMIGOS!</span>
-               </h4>
-               <div className="bg-[#59B200] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-[2px]">
-                  {user?.invitationsCount || 0} disponibles
+         {/* Unread Notifications - Shown below status box */}
+         {unreadNotifications.length > 0 && (
+            <motion.div
+               initial={{ opacity: 0, y: -10 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="mb-4 bg-[#fff9e6] border border-[#ffeaa7] rounded-[4px] p-2 shadow-sm"
+            >
+               <div className="flex items-center gap-2 mb-1">
+                  <Bell size={12} className="text-[#d4a017]" />
+                  <span className="text-[11px] font-bold text-[#856404]">Tienes {unreadNotifications.length} notificaciones nuevas:</span>
                </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-2">
-               <input
-                  type="email"
-                  placeholder="Escribe el email de un amigo..."
-                  className="flex-1 p-2 text-[12px] border border-[#ccc] rounded-[2px] bg-white outline-none focus:border-[#2B7BB9]"
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-               />
-               <button
-                  disabled={isInviting || !inviteEmail.trim() || (user?.invitationsCount || 0) <= 0}
-                  onClick={handleSendInvite}
-                  className="bg-[#59B200] text-white font-bold text-[11px] px-4 py-2 sm:py-0 rounded-[2px] border border-[#4a9600] hover:bg-[#4a9600] disabled:opacity-50 transition-all active:scale-95 shadow-sm truncate"
-               >
-                  {isInviting ? '...' : (user?.invitationsCount || 0) <= 0 ? 'Sin invitaciones' : 'Enviar Invitación'}
-               </button>
-            </div>
-
-            {myInvitations.length > 0 && (
-               <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                  {myInvitations.slice(0, 5).map(inv => (
-                     <div key={inv.id} className="shrink-0 bg-white border border-[#eee] px-2 py-1 rounded-[2px] text-[10px] flex items-center gap-1.5">
-                        <span className={`font-mono font-bold ${inv.used ? 'text-gray-300 line-through' : 'text-[#59B200]'}`}>
-                           {inv.code}
-                        </span>
-                        {inv.used && <span className="text-[8px] text-gray-400 italic">Usado</span>}
+               <div className="flex flex-col gap-1">
+                  {unreadNotifications.slice(0, 3).map(notif => (
+                     <div key={notif.id} className="text-[10px] text-[#856404] flex items-center gap-1">
+                        <div className="w-1 h-1 bg-[#d4a017] rounded-full"></div>
+                        <span className="truncate">{notif.content}</span>
                      </div>
                   ))}
+                  {unreadNotifications.length > 3 && (
+                     <div className="text-[9px] text-[#856404] font-bold mt-1 italic pointer-events-none">
+                        Y otras {unreadNotifications.length - 3} más...
+                     </div>
+                  )}
                </div>
-            )}
+            </motion.div>
+         )}
+
+         {/* Invitations Panel - Especially for Mobile */}
+         <div className="mb-6 bg-[#f9fbfd] border border-[#dce5ed] rounded-[4px] p-2 md:p-3 shadow-sm overflow-hidden">
+            <div
+               className="flex items-center justify-between cursor-pointer md:cursor-default"
+               onClick={() => { if (window.innerWidth < 768) setIsInvitesExpanded(!isInvitesExpanded); }}
+            >
+               <h4 className="font-bold text-[#333] text-[11px] md:text-[12px] flex items-center gap-1.5 uppercase tracking-wide">
+                  <UserPlus size={14} className="text-[#59B200]" />
+                  <span>Invitaciones</span>
+               </h4>
+               <div className="flex items-center gap-2">
+                  <div className="bg-[#59B200] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-[2px]">
+                     {user?.invitationsCount || 0} disponibles
+                  </div>
+                  <div className="md:hidden text-gray-400">
+                     {isInvitesExpanded ? <X size={14} /> : <Plus size={14} />}
+                  </div>
+               </div>
+            </div>
+
+            <div className={`${isInvitesExpanded ? 'block' : 'hidden'} md:block mt-3 animate-in fade-in slide-in-from-top-2 duration-300`}>
+               <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                     type="email"
+                     placeholder="Email de tu amigo..."
+                     className="flex-1 p-2 text-[12px] border border-[#ccc] rounded-[2px] bg-white outline-none focus:border-[#2B7BB9]"
+                     value={inviteEmail}
+                     onChange={(e) => setInviteEmail(e.target.value)}
+                  />
+                  <button
+                     disabled={isInviting || !inviteEmail.trim() || (user?.invitationsCount || 0) <= 0}
+                     onClick={handleSendInvite}
+                     className="bg-[#59B200] text-white font-bold text-[11px] px-4 py-2 sm:py-0 rounded-[2px] border border-[#4a9600] hover:bg-[#4a9600] disabled:opacity-50 transition-all active:scale-95 shadow-sm truncate"
+                  >
+                     {isInviting ? '...' : (user?.invitationsCount || 0) <= 0 ? 'Sin invitaciones' : 'Enviar'}
+                  </button>
+               </div>
+
+               {myInvitations.length > 0 && (
+                  <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                     {myInvitations.slice(0, 5).map(inv => (
+                        <div key={inv.id} className="shrink-0 bg-white border border-[#eee] px-2 py-1 rounded-[2px] text-[10px] flex items-center gap-1.5">
+                           <span className={`font-mono font-bold ${inv.used ? 'text-gray-300 line-through' : 'text-[#59B200]'}`}>
+                              {inv.code}
+                           </span>
+                           {inv.used && <span className="text-[8px] text-gray-400 italic">Usado</span>}
+                        </div>
+                     ))}
+                  </div>
+               )}
+            </div>
          </div>
 
          {/* Feed List */}
@@ -266,8 +315,6 @@ const Feed: React.FC = () => {
             <div className="text-[11px] flex gap-2">
                <span className="font-bold text-[#333]">Amigos</span>
                <span className="text-[#005599] hover:underline cursor-pointer">Páginas</span>
-               <span className="bg-[#59B200] text-white px-1 rounded-[2px] text-[10px] font-bold">10+</span>
-               <span className="text-[#005599] hover:underline cursor-pointer">Sitios</span>
             </div>
          </div>
 
@@ -368,7 +415,7 @@ const Feed: React.FC = () => {
                                  >
                                     <img
                                        src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
-                                       className="h-[120px] md:h-[180px] w-auto"
+                                       className="h-[180px] md:h-[300px] w-auto max-w-full object-contain"
                                        alt="attachment"
                                     />
                                  </motion.div>

@@ -53,7 +53,7 @@ export const sendInvitationEmail = async (to: string, inviterName: string, invit
                     </div>
                 </div>
                 <div style="background-color: #f9fbfd; padding: 15px; text-align: center; border-top: 1px solid #dce5ed;">
-                    <p style="margin: 0; font-size: 12px; color: #999;">© Twenty 2010. Todos los derechos reservados.</p>
+                    <p style="margin: 0; font-size: 12px; color: #999;">© Twenty 2026. Todos los derechos reservados.</p>
                 </div>
             </div>
         `,

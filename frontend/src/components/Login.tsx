@@ -229,7 +229,7 @@ const Login: React.FC = () => {
         <div className="md:absolute bottom-0 w-full bg-[#5C95C4] border-t border-white/20 p-4 mt-8">
           <div className="max-w-[980px] mx-auto flex justify-between text-[11px] text-blue-100">
             <div className="flex flex-wrap gap-2 md:gap-4">
-              <span>© Twenty 2010</span>
+              <span>© Twenty 2026</span>
               <span className="hover:underline cursor-pointer">Español</span>
               <span className="hover:underline cursor-pointer hidden sm:inline">Català</span>
               <span className="hover:underline cursor-pointer">English</span>

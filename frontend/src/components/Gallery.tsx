@@ -179,8 +179,8 @@ const Gallery: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Main Content (3 Columns) */}
-                    <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+                    {/* Main Content (3 Columns) - Scrollable on mobile */}
+                    <div className="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
                         {/* Navigation Left */}
                         <div
                             className="hidden md:flex w-[60px] items-center justify-center cursor-pointer hover:bg-black/20 text-white/30 hover:text-white transition-colors"

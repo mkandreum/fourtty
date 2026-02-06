@@ -145,8 +145,8 @@ const Header: React.FC = () => {
 
         {/* Right Side: Search & Actions */}
         <div className="flex items-center justify-end gap-1 md:gap-2 flex-1 ml-4 overflow-hidden">
-          {/* Search Bar - Compact */}
-          <div className="relative shrink-1 min-w-[60px] max-w-[180px]">
+          {/* Search Bar - Compact - Hidden on mobile */}
+          <div className="relative shrink-1 min-w-[60px] max-w-[180px] hidden md:block">
             <input
               type="text"
               placeholder="Buscar"
@@ -211,13 +211,7 @@ const Header: React.FC = () => {
 
             {unreadNotifsCount >= 0 && (
               <div className="flex items-center gap-1 relative">
-                <Link
-                  to="/"
-                  className="sm:hidden bg-white/20 text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center"
-                  title="Invitaciones"
-                >
-                  <UserPlus size={10} className="mr-0.5" />
-                </Link>
+                {/* Removed UserPlus icon as it is now in Feed/Home */}
 
                 <button
                   onClick={() => setShowNotifs(!showNotifs)}
