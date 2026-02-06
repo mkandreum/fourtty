@@ -45,6 +45,19 @@ app.use(express.urlencoded({ extended: true }));
 
 // Security Headers
 app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "https://ui-avatars.com", "*"], // Allow all images for now to fix user issues
+            connectSrc: ["'self'", (process.env.FRONTEND_URL || 'http://localhost:5173'), "ws:", "wss:"],
+            fontSrc: ["'self'", "https:", "data:"],
+            objectSrc: ["'none'"],
+            mediaSrc: ["'self'"],
+            frameSrc: ["'self'"],
+        },
+    },
     crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
