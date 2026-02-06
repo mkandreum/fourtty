@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Search, Image as ImageIcon, Bell, LogOut, User, Menu, X } from 'lucide-react';
+import { Search, Image as ImageIcon, Bell, LogOut, User, Menu, X, UserPlus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import PhotoUploadModal from './PhotoUploadModal';
@@ -102,10 +102,10 @@ const Header: React.FC = () => {
             </span>
           </div>
 
-          <nav className="hidden sm:flex items-center gap-0.5 md:gap-1 border-l border-white/20 pl-2 md:pl-4">
+          <nav className="flex items-center gap-0.5 md:gap-1 border-l border-white/20 pl-2 md:pl-4 overflow-x-auto no-scrollbar">
             <Link
               to="/"
-              className={`flex items-center gap-1 px-2 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/') ? 'bg-white/20' : 'hover:bg-white/10'}`}
+              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/') ? 'bg-white/20' : 'hover:bg-white/10'}`}
               title="Inicio"
             >
               <div className="w-5 h-5 flex items-center justify-center bg-white/10 rounded">
@@ -116,7 +116,7 @@ const Header: React.FC = () => {
 
             <Link
               to="/profile/photos"
-              className={`flex items-center gap-1 px-2 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile/photos') ? 'bg-white/20' : 'hover:bg-white/10'}`}
+              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile/photos') ? 'bg-white/20' : 'hover:bg-white/10'}`}
               title="Mis Fotos"
             >
               <ImageIcon size={16} className="opacity-80" />
@@ -125,7 +125,7 @@ const Header: React.FC = () => {
 
             <Link
               to="/people"
-              className={`flex items-center gap-1 px-2 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/people') ? 'bg-white/20' : 'hover:bg-white/10'}`}
+              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/people') ? 'bg-white/20' : 'hover:bg-white/10'}`}
               title="Gente"
             >
               <Search size={16} className="opacity-80" />
@@ -134,10 +134,11 @@ const Header: React.FC = () => {
 
             <Link
               to="/profile"
-              className={`flex items-center px-2 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile') ? 'bg-white/20' : 'hover:bg-white/10'}`}
+              className={`flex items-center px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile') ? 'bg-white/20' : 'hover:bg-white/10'}`}
               title="Mi Perfil"
             >
-              <span className="text-[12px] font-bold">Perfil</span>
+              <User size={16} className="sm:hidden opacity-80" />
+              <span className="text-[12px] font-bold hidden sm:inline">Perfil</span>
             </Link>
           </nav>
         </div>
@@ -209,7 +210,15 @@ const Header: React.FC = () => {
             </button>
 
             {unreadNotifsCount >= 0 && (
-              <div className="relative">
+              <div className="flex items-center gap-1 relative">
+                <Link
+                  to="/profile"
+                  className="sm:hidden bg-white/20 text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center"
+                  title="Invitaciones"
+                >
+                  <UserPlus size={10} className="mr-0.5" />
+                </Link>
+
                 <button
                   onClick={() => setShowNotifs(!showNotifs)}
                   className={`${unreadNotifsCount > 0 ? 'bg-[#cc0000]' : 'bg-white/20'} text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center hover:scale-110 transition-transform`}
