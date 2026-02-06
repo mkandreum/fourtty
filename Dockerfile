@@ -42,8 +42,8 @@ COPY --from=backend-build /app/backend/dist ./dist
 # Copy built frontend code to public folder
 COPY --from=frontend-build /app/frontend/dist ./public
 
-# Copy uploads folder structure
-RUN mkdir -p uploads
+# Copy uploads and data folder structure
+RUN mkdir -p uploads data
 
 # Expose port
 EXPOSE 5000
