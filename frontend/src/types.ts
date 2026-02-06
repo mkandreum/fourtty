@@ -4,6 +4,7 @@ export interface User {
   id: number;
   email?: string;
   name: string;
+  lastName: string;
   avatar: string;
   bio?: string; // status in frontend mapped to bio
   gender?: string;

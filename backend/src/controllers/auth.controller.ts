@@ -9,7 +9,7 @@ import { AuthRequest } from '../middleware/auth';
 // Register new user
 export const register = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { email, password, name, inviteCode } = req.body;
+        const { email, password, name, lastName, inviteCode } = req.body;
 
         // Validation
         if (!email || !password || !name || !inviteCode) {
@@ -52,7 +52,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
                 email,
                 password: hashedPassword,
                 name,
-                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=005599&color=fff&size=200`,
+                lastName: lastName || '',
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name + ' ' + (lastName || ''))}&background=005599&color=fff&size=200`,
                 invitationsCount: 10 // Give some initial invitations
             }
         });
@@ -75,6 +76,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
                 id: true,
                 email: true,
                 name: true,
+                lastName: true,
                 avatar: true,
                 bio: true,
                 gender: true,
@@ -163,6 +165,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response): Promise<v
                 id: true,
                 email: true,
                 name: true,
+                lastName: true,
                 avatar: true,
                 bio: true,
                 gender: true,

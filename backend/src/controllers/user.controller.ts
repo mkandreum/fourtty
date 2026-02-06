@@ -13,6 +13,7 @@ export const getUserProfile = async (req: AuthRequest, res: Response): Promise<v
                 id: true,
                 email: true,
                 name: true,
+                lastName: true,
                 avatar: true,
                 bio: true,
                 gender: true,
@@ -57,12 +58,13 @@ export const updateUserProfile = async (req: AuthRequest, res: Response): Promis
             return;
         }
 
-        const { name, bio, gender, age, relationshipStatus, location, occupation, privacy } = req.body;
+        const { name, lastName, bio, gender, age, relationshipStatus, location, occupation, privacy } = req.body;
 
         const updatedUser = await prisma.user.update({
             where: { id: userId },
             data: {
                 ...(name && { name }),
+                ...(lastName !== undefined && { lastName }),
                 ...(bio !== undefined && { bio }),
                 ...(gender && { gender }),
                 ...(age && { age: parseInt(age) }),
@@ -75,6 +77,7 @@ export const updateUserProfile = async (req: AuthRequest, res: Response): Promis
                 id: true,
                 email: true,
                 name: true,
+                lastName: true,
                 avatar: true,
                 bio: true,
                 gender: true,
@@ -151,6 +154,7 @@ export const searchUsers = async (req: AuthRequest, res: Response): Promise<void
         if (query && query.trim().length >= 2) {
             where.OR = [
                 { name: { contains: query } },
+                { lastName: { contains: query } },
                 { email: { contains: query } }
             ];
         }
@@ -174,6 +178,7 @@ export const searchUsers = async (req: AuthRequest, res: Response): Promise<void
             select: {
                 id: true,
                 name: true,
+                lastName: true,
                 avatar: true,
                 location: true,
                 occupation: true,
@@ -207,6 +212,7 @@ export const getUserFriends = async (req: AuthRequest, res: Response): Promise<v
                     select: {
                         id: true,
                         name: true,
+                        lastName: true,
                         avatar: true,
                         location: true,
                         bio: true
@@ -216,6 +222,7 @@ export const getUserFriends = async (req: AuthRequest, res: Response): Promise<v
                     select: {
                         id: true,
                         name: true,
+                        lastName: true,
                         avatar: true,
                         location: true,
                         bio: true

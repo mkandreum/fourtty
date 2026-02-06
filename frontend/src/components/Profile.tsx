@@ -387,7 +387,9 @@ const Profile: React.FC = () => {
          </AnimatePresence>
 
          <div className="mb-4 md:mb-6 relative">
-            <h1 className="text-[18px] md:text-[20px] font-bold text-[#333] mb-1">{profileUser.name}</h1>
+            <h1 className="text-[18px] md:text-[20px] font-bold text-[#333] mb-1">
+               {profileUser.name} {profileUser.lastName}
+            </h1>
             <div className="text-[#555] text-[12px] md:text-[13px] mb-3 border-b border-[#eee] pb-3 pr-[80px] md:pr-0">
                {profileUser.bio || 'Sin estado'}
             </div>
@@ -432,9 +434,16 @@ const Profile: React.FC = () => {
                         <label className="block font-bold text-[#666] mb-1">Nombre</label>
                         <input
                            type="text"
-                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           className="w-full border border-[#ccc] rounded-[2px] p-1 mb-2"
                            value={editData.name || ''}
                            onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                        />
+                        <label className="block font-bold text-[#666] mb-1">Apellidos</label>
+                        <input
+                           type="text"
+                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           value={editData.lastName || ''}
+                           onChange={(e) => setEditData({ ...editData, lastName: e.target.value })}
                         />
                      </div>
                      <div>
@@ -638,7 +647,7 @@ const Profile: React.FC = () => {
                                        className="text-[#005599] font-bold text-[12px] hover:underline cursor-pointer"
                                        onClick={() => navigate(`/profile/${post.user.id}`)}
                                     >
-                                       {post.user.name}
+                                       {post.user.name} {post.user.lastName}
                                     </span>
                                     <span className="text-[#333] text-[12px]"> {post.content}</span>
                                  </div>

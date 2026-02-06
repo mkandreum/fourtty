@@ -390,7 +390,7 @@ const Feed: React.FC = () => {
                               </button>
                            )}
                            <div className="text-[12px] leading-snug mb-1">
-                              <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name}</a>
+                              <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name} {post.user.lastName}</a>
                               <span className="text-[#333] font-bold"> {post.content}</span>
                            </div>
 

@@ -16,6 +16,7 @@ model User {
   email              String         @unique
   password           String
   name               String
+  lastName           String         @default("")
   avatar             String?
   bio                String?        @default("")
   gender             String?        @default("Hombre")

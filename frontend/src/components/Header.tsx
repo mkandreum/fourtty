@@ -177,7 +177,7 @@ const Header: React.FC = () => {
                         className="w-5 h-5 rounded-[2px] object-cover"
                         alt={result.name}
                       />
-                      <span className="text-[11px] font-bold text-[#333] truncate">{result.name}</span>
+                      <span className="text-[11px] font-bold text-[#333] truncate">{result.name} {result.lastName}</span>
                     </div>
                   ))
                 ) : (

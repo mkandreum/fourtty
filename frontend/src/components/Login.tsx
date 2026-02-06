@@ -13,6 +13,7 @@ const Login: React.FC = () => {
 
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [inviteCode, setInviteCode] = useState('');
 
   const { login } = useAuth();
@@ -27,6 +28,7 @@ const Login: React.FC = () => {
         // Register flow
         const response = await api.post('/auth/register', {
           name,
+          lastName,
           email,
           password,
           inviteCode
@@ -74,6 +76,20 @@ const Login: React.FC = () => {
                     onChange={(e) => setName(e.target.value)}
                     className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
                     placeholder="Tu nombre"
+                    required
+                  />
+                </div>
+              )}
+
+              {isRegister && (
+                <div className="flex flex-col animate-in fade-in slide-in-from-top-2">
+                  <label className="mb-1 ml-1 opacity-90">Apellidos</label>
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
+                    placeholder="Tus apellidos"
                     required
                   />
                 </div>
@@ -143,6 +159,7 @@ const Login: React.FC = () => {
                     setIsRegister(!isRegister);
                     setError('');
                     setName('');
+                    setLastName('');
                     setInviteCode('');
                   }}
                   className="mt-1 text-blue-100 hover:underline text-left"
