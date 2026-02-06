@@ -62,9 +62,13 @@ export const uploadPhoto = async (req: AuthRequest, res: Response): Promise<void
         }
 
         res.status(201).json({ photo });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Upload photo error:', error);
-        res.status(500).json({ error: 'Failed to upload photo' });
+        res.status(500).json({
+            error: 'Failed to upload photo',
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 };
 

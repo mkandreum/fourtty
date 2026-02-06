@@ -18,10 +18,17 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     useEffect(() => {
         if (isAuthenticated && user) {
-            const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+            // In production, if served from the same domain, we can use a relative path or current origin
+            const socketUrl = import.meta.env.MODE === 'production'
+                ? window.location.origin
+                : (import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000');
+
+            console.log('🔌 Connecting to socket at:', socketUrl);
+
             const newSocket = io(socketUrl, {
                 withCredentials: true,
-                transports: ['websocket', 'polling']
+                transports: ['websocket', 'polling'],
+                path: '/socket.io'
             });
 
             newSocket.on('connect', () => {
