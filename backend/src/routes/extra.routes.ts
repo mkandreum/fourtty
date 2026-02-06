@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { trackVisit, getProfileStats } from '../controllers/visit.controller';
+import { trackVisit, getProfileStats, getRecentVisitors } from '../controllers/visit.controller';
 import { togglePostLike, togglePhotoLike, toggleCommentLike } from '../controllers/like.controller';
 import { uploadPhoto, getUserPhotos, tagPhoto, deletePhoto } from '../controllers/photo.controller';
 import { createEvent, getEvents, joinEvent } from '../controllers/event.controller';
@@ -12,6 +12,7 @@ const router = Router();
 
 // Stats & Visits
 router.get('/stats', authenticateToken, getProfileStats);
+router.get('/visitors', authenticateToken, getRecentVisitors);
 router.post('/visit/:id', authenticateToken, trackVisit);
 
 // Likes

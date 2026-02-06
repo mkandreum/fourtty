@@ -19,10 +19,16 @@ const Feed: React.FC = () => {
    const [statusText, setStatusText] = useState('');
    const [posts, setPosts] = useState<Post[]>([]);
    const [isLoading, setIsLoading] = useState(true);
-   const [limit] = useState(10);
    const [page, setPage] = useState(1);
    const [hasMore, setHasMore] = useState(true);
    const [isLoadingMore, setIsLoadingMore] = useState(false);
+   const [limit] = useState(10);
+
+   const getAvatarUrl = (avatar?: string | null) => {
+      if (!avatar) return `https://ui-avatars.com/api/?name=${user?.name}+${user?.lastName}&background=random`;
+      if (avatar && avatar.startsWith('http')) return avatar;
+      return `${import.meta.env.VITE_API_URL?.replace('/api', '')}${avatar}`;
+   };
 
    // Invitations states
    const [inviteEmail, setInviteEmail] = useState('');
@@ -31,6 +37,7 @@ const Feed: React.FC = () => {
    const [isInvitesExpanded, setIsInvitesExpanded] = useState(false); // Collapsed by default on mobile
    const [unreadNotifications, setUnreadNotifications] = useState<any[]>([]);
    const [stats, setStats] = useState({ visits: 0 });
+   const [recentVisitors, setRecentVisitors] = useState<any[]>([]);
 
    const fetchFeed = async (pageNum: number, isRefresh = false) => {
       try {
@@ -71,7 +78,8 @@ const Feed: React.FC = () => {
             fetchFeed(1, true),
             fetchInvitations(),
             fetchUnreadNotifications(),
-            fetchStats()
+            fetchStats(),
+            fetchRecentVisitors()
          ]);
          setIsLoading(false);
       };
@@ -186,6 +194,15 @@ const Feed: React.FC = () => {
       } catch (error) {
          console.error("Error deleting post:", error);
          showToast("No se pudo borrar la publicación", "error");
+      }
+   };
+
+   const fetchRecentVisitors = async () => {
+      try {
+         const res = await api.get('/visitors');
+         setRecentVisitors(res.data.visitors);
+      } catch (error) {
+         console.error("Error fetching visitors:", error);
       }
    };
 
@@ -356,6 +373,37 @@ const Feed: React.FC = () => {
                )}
             </div>
          </div>
+
+         {/* Recent Visitors - Home Sidebar Style */}
+         {recentVisitors.length > 0 && (
+            <div className="mb-6 bg-white border border-[#dce5ed] rounded-[4px] p-3 shadow-sm">
+               <h4 className="font-bold text-[#005599] text-[12px] mb-3 border-b border-[#eee] pb-1 flex items-center justify-between">
+                  <span>¿Quién ha visto tu perfil? <span className="text-[#888] font-normal">({recentVisitors.length})</span></span>
+                  <span className="text-[10px] text-[#005599] hover:underline cursor-pointer font-normal" onClick={() => navigate(`/profile/${user?.id}`)}>Ver todos</span>
+               </h4>
+               <div className="grid grid-cols-4 gap-2">
+                  {recentVisitors.map(visitor => (
+                     <div
+                        key={visitor.id}
+                        className="cursor-pointer group flex flex-col items-center"
+                        onClick={() => navigate(`/profile/${visitor.id}`)}
+                        title={`${visitor.name} ${visitor.lastName}`}
+                     >
+                        <div className="w-full aspect-square border border-[#ccc] p-[1px] bg-white group-hover:border-[#005599] transition-colors relative overflow-hidden">
+                           <img
+                              src={getAvatarUrl(visitor.avatar)}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              alt={visitor.name}
+                           />
+                        </div>
+                        <div className="text-[9px] text-[#005599] mt-1 truncate w-full text-center group-hover:underline">
+                           {visitor.name}
+                        </div>
+                     </div>
+                  ))}
+               </div>
+            </div>
+         )}
 
          <div className="flex items-center justify-between mb-2 border-b border-[#EEE] pb-1">
             <h3 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1">

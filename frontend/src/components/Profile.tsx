@@ -28,6 +28,7 @@ const Profile: React.FC = () => {
    const [isRestricted, setIsRestricted] = useState(false);
    const [editData, setEditData] = useState<Partial<User>>({});
    const [stats, setStats] = useState({ visits: 0 });
+   const [recentVisitors, setRecentVisitors] = useState<User[]>([]);
 
    // Cropping states
    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
@@ -72,9 +73,13 @@ const Profile: React.FC = () => {
                if (!isOwnProfile) {
                   api.post(`/visit/${targetUserId}`).catch(e => console.error("Track visit error:", e));
                } else {
-                  // Fetch stats for own profile
-                  const statsRes = await api.get('/stats');
+                  // Fetch stats and visitors for own profile
+                  const [statsRes, visitorsRes] = await Promise.all([
+                     api.get('/stats'),
+                     api.get('/visitors')
+                  ]);
                   setStats({ visits: statsRes.data.visits });
+                  setRecentVisitors(visitorsRes.data.visitors);
                }
             }
          } catch (error) {
@@ -599,6 +604,33 @@ const Profile: React.FC = () => {
                      ))}
                   </div>
                </div>
+
+               {isOwnProfile && recentVisitors.length > 0 && (
+                  <div className="mt-2">
+                     <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1 flex items-center justify-between">
+                        <span>Visitantes recientes <span className="text-[#888] font-normal">({recentVisitors.length})</span></span>
+                     </h3>
+                     <div className="grid grid-cols-4 gap-1">
+                        {recentVisitors.map(visitor => (
+                           <div
+                              key={visitor.id}
+                              className="cursor-pointer group relative hover:translate-y-[-1px] transition-transform"
+                              onClick={() => navigate(`/profile/${visitor.id}`)}
+                              title={`${visitor.name} ${visitor.lastName}`}
+                           >
+                              <img
+                                 src={getAvatarUrl(visitor.avatar)}
+                                 className="w-full aspect-square object-cover border border-[#eee] group-hover:border-[#005599] transition-colors"
+                                 alt={visitor.name}
+                              />
+                              <div className="text-[8px] text-center mt-0.5 truncate text-[#666]">
+                                 {visitor.name}
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  </div>
+               )}
 
                <div>
                   <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1">
