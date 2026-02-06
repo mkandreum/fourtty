@@ -61,6 +61,16 @@ export const uploadPhoto = async (req: AuthRequest, res: Response): Promise<void
             });
         }
 
+        // --- NEW: Create a POST for this photo so it appears in the feed ---
+        await prisma.post.create({
+            data: {
+                userId,
+                content: caption || 'compartió una foto',
+                type: 'photo',
+                image: photoUrl // Use the same photo URL
+            }
+        });
+
         res.status(201).json({ photo });
     } catch (error: any) {
         console.error('Upload photo error:', error);

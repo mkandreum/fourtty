@@ -212,7 +212,7 @@ const Header: React.FC = () => {
             {unreadNotifsCount >= 0 && (
               <div className="flex items-center gap-1 relative">
                 <Link
-                  to="/profile"
+                  to="/"
                   className="sm:hidden bg-white/20 text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center"
                   title="Invitaciones"
                 >

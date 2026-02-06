@@ -8,7 +8,6 @@ import CommentSection from './CommentSection';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cropper from 'react-easy-crop';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserPlus } from 'lucide-react';
 
 const Profile: React.FC = () => {
    const { user, updateUser } = useAuth();
@@ -26,9 +25,6 @@ const Profile: React.FC = () => {
    const [isEditing, setIsEditing] = useState(false);
    const [isRestricted, setIsRestricted] = useState(false);
    const [editData, setEditData] = useState<Partial<User>>({});
-   const [inviteEmail, setInviteEmail] = useState('');
-   const [isInviting, setIsInviting] = useState(false);
-   const [myInvitations, setMyInvitations] = useState<any[]>([]);
 
    // Cropping states
    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
@@ -83,18 +79,11 @@ const Profile: React.FC = () => {
 
       fetchProfile();
       if (isOwnProfile) {
-         fetchInvitations();
+         // fetchInvitations(); // Removed from profile
       }
    }, [id, user, isOwnProfile]);
 
-   const fetchInvitations = async () => {
-      try {
-         const res = await api.get('/invitations/my');
-         setMyInvitations(res.data.invitations);
-      } catch (error) {
-         console.error("Error fetching invitations:", error);
-      }
-   };
+   /* Removed fetchInvitations */
 
    const handleUpdateProfile = async () => {
       if (!profileUser) return;
@@ -174,22 +163,7 @@ const Profile: React.FC = () => {
          showToast("Error al eliminar amigo", "error");
       }
    };
-   const handleSendInvite = async () => {
-      if (!inviteEmail.trim()) return;
-      setIsInviting(true);
-      try {
-         const res = await api.post('/invitations/generate', { email: inviteEmail });
-         showToast(res.data.message || "Invitación enviada", "success");
-         const userRes = await api.get('/auth/me');
-         updateUser(userRes.data.user);
-         setInviteEmail('');
-         fetchInvitations();
-      } catch (e: any) {
-         showToast(e.response?.data?.error || "Error al generar invitación", "error");
-      } finally {
-         setIsInviting(false);
-      }
-   };
+   /* Removed handleSendInvite */
 
    const onCropComplete = (_croppedArea: any, croppedAreaPixels: any) => {
       setCroppedAreaPixels(croppedAreaPixels);
@@ -552,52 +526,6 @@ const Profile: React.FC = () => {
                      <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
                         <Briefcase size={12} className="text-[#888]" />
                         <span>{profileUser.occupation || 'No especificado'}</span>
-                     </div>
-                  </div>
-               )}
-
-               {isOwnProfile && (
-                  <div className="bg-white border border-[#ccc] shadow-sm p-3 mt-4 mb-4">
-                     <h4 className="font-bold text-[#333] text-[11px] mb-2 border-b border-[#eee] pb-1 uppercase tracking-wider flex items-center gap-1">
-                        <UserPlus size={12} className="text-[#59B200]" /> Invitar a mis amigos
-                     </h4>
-                     <div className="text-[10px] text-[#999] mb-2">
-                        Tienes <strong>{user?.invitationsCount || 0}</strong> invitaciones disponibles.
-                     </div>
-
-                     {user?.invitationsCount !== undefined && user.invitationsCount > 0 && (
-                        <div className="flex flex-col gap-1.5 mb-3">
-                           <input
-                              type="email"
-                              placeholder="Email de tu amigo/a"
-                              className="w-full p-2 text-[11px] border border-[#ccc] rounded-sm bg-white"
-                              value={inviteEmail}
-                              onChange={(e) => setInviteEmail(e.target.value)}
-                           />
-                           <button
-                              disabled={isInviting}
-                              onClick={handleSendInvite}
-                              className="bg-[#59B200] text-white font-bold text-[11px] px-3 py-1.5 rounded-[2px] border border-[#4a9600] hover:bg-[#4a9600] w-full disabled:opacity-50 transition-colors shadow-sm"
-                           >
-                              {isInviting ? 'Enviando...' : 'Enviar invitación por email'}
-                           </button>
-                        </div>
-                     )}
-
-                     <div className="flex flex-col gap-1 max-h-[120px] overflow-y-auto mt-2 bg-[#f9f9f9] p-2 rounded-sm border border-[#eee]">
-                        <div className="text-[9px] font-bold text-[#666] mb-1">CÓDIGOS GENERADOS</div>
-                        {myInvitations.length > 0 ? myInvitations.map(inv => (
-                           <div key={inv.id} className="text-[10px] border-b border-[#eee] last:border-0 pb-1 flex justify-between items-center py-1">
-                              <span className={`font-mono font-bold ${inv.used ? 'text-gray-400 line-through' : 'text-[#59B200]'}`}>
-                                 {inv.code}
-                              </span>
-                              <span className="text-[8px] text-gray-400">
-                                 {inv.used ? `Usado por ${inv.usedBy?.name}` : 'Disponible'}
-                              </span>
-                           </div>
-                        )) : (
-                           <div className="text-[9px] text-gray-400 italic">No has generado códigos aún</div>
-                        )}
                      </div>
                   </div>
                )}

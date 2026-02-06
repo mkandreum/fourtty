@@ -27,19 +27,9 @@ const LeftPanel: React.FC = () => {
       photos: 0
    });
    const [events, setEvents] = React.useState<any[]>([]);
-   const [myInvitations, setMyInvitations] = React.useState<any[]>([]);
    const [isLoading, setIsLoading] = React.useState(true);
-   const [inviteEmail, setInviteEmail] = React.useState('');
-   const [isInviting, setIsInviting] = React.useState(false);
 
-   const fetchInvitations = async () => {
-      try {
-         const res = await api.get('/invitations/my');
-         setMyInvitations(res.data.invitations);
-      } catch (error) {
-         console.error("Error fetching invitations:", error);
-      }
-   };
+   /* fetchInvitations moved to Feed */
 
    React.useEffect(() => {
       const fetchData = async () => {
@@ -65,7 +55,6 @@ const LeftPanel: React.FC = () => {
       };
       if (user) {
          fetchData();
-         fetchInvitations();
       }
    }, [user]);
 
@@ -111,59 +100,7 @@ const LeftPanel: React.FC = () => {
             <MenuItem icon={BarChart2} count={stats.visits} text="visitas nuevas" />
          </div>
 
-         {/* Invite Friends */}
-         <div className="mb-6">
-            <h4 className="font-bold text-[#333] text-[11px] mb-2">Invita a tus amigos</h4>
-            <div className="text-[10px] text-[#999] mb-1">
-               {user?.invitationsCount || 0} invitaciones restantes
-            </div>
-
-            {user?.invitationsCount !== undefined && user.invitationsCount > 0 && (
-               <div className="flex flex-col gap-1 mb-2">
-                  <input
-                     type="email"
-                     placeholder="Email de tu amigo/a"
-                     className="w-full p-1 text-[10px] border border-[#ccc] rounded-sm bg-white"
-                     value={inviteEmail}
-                     onChange={(e) => setInviteEmail(e.target.value)}
-                  />
-                  <button
-                     disabled={isInviting}
-                     onClick={async () => {
-                        setIsInviting(true);
-                        try {
-                           const res = await api.post('/invitations/generate', { email: inviteEmail });
-                           showToast(res.data.message || "Invitación enviada", "success");
-                           const userRes = await api.get('/auth/me');
-                           updateUser(userRes.data.user);
-                           setInviteEmail('');
-                           fetchInvitations();
-                        } catch (e: any) {
-                           showToast(e.response?.data?.error || "Error al generar invitación", "error");
-                        } finally {
-                           setIsInviting(false);
-                        }
-                     }}
-                     className="bg-[#2B7BB9] text-white font-bold text-[10px] px-2 py-0.5 rounded-[2px] border border-[#1e5a8c] hover:bg-[#256ca3] w-full disabled:opacity-50"
-                  >
-                     {isInviting ? 'Enviando...' : 'Enviar invitación'}
-                  </button>
-               </div>
-            )}
-
-            <div className="flex flex-col gap-1 max-h-[100px] overflow-y-auto mt-2">
-               {myInvitations.map(inv => (
-                  <div key={inv.id} className="text-[10px] border-b border-[#eee] pb-1 flex justify-between items-center">
-                     <span className={`font-mono font-bold ${inv.used ? 'text-gray-400 line-through' : 'text-[#59B200]'}`}>
-                        {inv.code}
-                     </span>
-                     <span className="text-[8px] text-gray-400">
-                        {inv.used ? `Usado por ${inv.usedBy?.name}` : 'Disponible'}
-                     </span>
-                  </div>
-               ))}
-            </div>
-         </div>
+         {/* Invite Friends section moved to Feed */}
 
          {/* Sponsored Events */}
          <div className="mb-6">
