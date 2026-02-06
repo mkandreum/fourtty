@@ -92,10 +92,10 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <div className="bg-white min-h-[500px]">
+      <div className="bg-white min-h-[500px] p-3 md:p-0">
 
          {/* Status Box - Speech Bubble Style */}
-         <div className="mb-6 relative pt-2">
+         <div className="mb-4 md:mb-6 relative pt-2">
             <div className="bg-white border-2 border-[#b2c2d1] rounded-[8px] p-2 relative shadow-sm">
                {/* Speech pulse arrow tip */}
                <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[#b2c2d1]"></div>
@@ -104,7 +104,7 @@ const Feed: React.FC = () => {
                <div className="flex gap-2 items-start">
                   <div className="flex-1 relative">
                      <input
-                        className="w-full border-none p-2 text-[14px] md:text-[18px] text-[#333] placeholder-gray-300 outline-none"
+                        className="w-full border-none p-1 md:p-2 text-[15px] md:text-[18px] text-[#333] placeholder-gray-300 outline-none"
                         value={statusText}
                         onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                         placeholder="¡Hola!"
@@ -117,16 +117,16 @@ const Feed: React.FC = () => {
                </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 pl-2 gap-2">
-               <div className="text-[11px] text-[#888] italic">
-                  Última actualización: <span className="text-[#333] font-bold not-italic">"{user?.bio || 'Sin estado'}"</span>
+            <div className="flex justify-between items-center mt-2 px-1 gap-2">
+               <div className="text-[10px] md:text-[11px] text-[#888] italic truncate max-w-[60%]">
+                  Última: <span className="text-[#333] font-bold not-italic">"{user?.bio || 'Sin estado'}"</span>
                </div>
                <button
                   onClick={handleUpdateStatus}
                   disabled={isSubmitting || !statusText.trim()}
-                  className={`bg-[#2B7BB9] text-white text-[12px] font-bold px-6 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm self-end sm:self-auto ${isSubmitting || !statusText.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#256ca3]'}`}
+                  className={`bg-[#2B7BB9] text-white text-[11px] md:text-[12px] font-bold px-4 md:px-6 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm ${isSubmitting || !statusText.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#256ca3]'}`}
                >
-                  {isSubmitting ? 'Guardando...' : 'Guardar'}
+                  {isSubmitting ? '...' : 'Guardar'}
                </button>
             </div>
          </div>

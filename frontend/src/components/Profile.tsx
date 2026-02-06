@@ -238,16 +238,16 @@ const Profile: React.FC = () => {
    };
 
    return (
-      <div className="bg-white rounded-[4px] border border-[#dce5ed] p-4 min-h-[600px]">
+      <div className="bg-white md:rounded-[4px] md:border border-[#dce5ed] p-3 md:p-4 min-h-[600px]">
 
          {/* Profile Header */}
-         <div className="mb-6 relative">
-            <h1 className="text-[20px] font-bold text-[#333] mb-1">{profileUser.name}</h1>
-            <div className="text-[#555] text-[13px] mb-3 border-b border-[#eee] pb-3">
-               {profileUser.bio || 'Sin estado'} <span className="text-[#999] text-[11px] ml-2"></span>
+         <div className="mb-4 md:mb-6 relative">
+            <h1 className="text-[18px] md:text-[20px] font-bold text-[#333] mb-1">{profileUser.name}</h1>
+            <div className="text-[#555] text-[12px] md:text-[13px] mb-3 border-b border-[#eee] pb-3 pr-[80px] md:pr-0">
+               {profileUser.bio || 'Sin estado'}
             </div>
 
-            <div className="flex md:absolute top-0 right-0 gap-2 mb-4 md:mb-0">
+            <div className="absolute top-0 right-0 gap-2">
                {renderActionButtons()}
             </div>
          </div>
