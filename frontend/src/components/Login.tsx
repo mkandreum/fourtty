@@ -54,9 +54,14 @@ const Login: React.FC = () => {
       <div className="flex-1 bg-gradient-to-b from-[#5C95C4] via-[#5C95C4] to-[#6FA3CD] relative overflow-hidden">
 
         {/* Top Login Bar */}
-        <div className="absolute top-0 w-full p-4 flex justify-center z-20">
-          <div className="max-w-[980px] w-full flex justify-end">
-            <form onSubmit={handleSubmit} className="flex items-start gap-3 text-white text-[11px]">
+        <div className="md:absolute top-0 w-full p-4 flex justify-center z-20 bg-[#5C95C4] md:bg-transparent">
+          <div className="max-w-[980px] w-full flex flex-col md:flex-row justify-between md:justify-end gap-4 md:gap-0">
+            {/* Logo for mobile in header */}
+            <div className="md:hidden flex items-center gap-1 select-none">
+              <span className="text-2xl font-bold tracking-tighter text-white">;) twenty</span>
+            </div>
+
+            <form onSubmit={handleSubmit} className="flex flex-wrap items-end md:items-start gap-2 md:gap-3 text-white text-[10px] md:text-[11px]">
               {isRegister && (
                 <div className="flex flex-col animate-in fade-in slide-in-from-top-2">
                   <label className="mb-1 ml-1 opacity-90">Nombre</label>
@@ -64,7 +69,7 @@ const Login: React.FC = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
                     placeholder="Tu nombre"
                     required
                   />
@@ -77,7 +82,7 @@ const Login: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
                   placeholder="laura@tuenti.com"
                   required
                 />
@@ -95,7 +100,7 @@ const Login: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
+                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300"
                   placeholder="********"
                   required
                 />
@@ -108,7 +113,7 @@ const Login: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="mt-[19px] bg-[#2B7BB9] hover:bg-[#256ca3] text-white border border-[#205e8e] px-3 py-1 rounded-sm font-bold shadow-sm disabled:opacity-50 min-w-20"
+                  className="md:mt-[19px] bg-[#2B7BB9] hover:bg-[#256ca3] text-white border border-[#205e8e] px-3 py-1 rounded-sm font-bold shadow-sm disabled:opacity-50 min-w-20"
                 >
                   {isLoading ? '...' : (isRegister ? 'Registrarse' : 'Entrar')}
                 </button>
@@ -135,20 +140,20 @@ const Login: React.FC = () => {
         )}
 
         {/* Main Content Area */}
-        <div className="max-w-[980px] mx-auto mt-32 px-4 flex items-center justify-between text-white relative z-10">
+        <div className="max-w-[980px] mx-auto mt-12 md:mt-32 px-4 flex flex-col md:flex-row items-center justify-between text-white relative z-10 pb-40">
 
           {/* Left Side: Logo & Description */}
-          <div className="w-1/2 pr-12">
+          <div className="w-full md:w-1/2 md:pr-12 text-center md:text-left mb-12 md:mb-0">
             <div className="mb-6">
               {/* Recreated Logo */}
-              <div className="flex items-center gap-1 mb-4 select-none">
-                <div className="bg-white/20 rounded-lg p-2 backdrop-blur-sm">
-                  <span className="text-6xl font-bold tracking-tighter text-white drop-shadow-md">;)</span>
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-1 mb-8 select-none">
+                <div className="bg-white/20 rounded-lg p-2 backdrop-blur-sm hidden md:block">
+                  <span className="text-4xl md:text-6xl font-bold tracking-tighter text-white drop-shadow-md">;)</span>
                 </div>
-                <h1 className="text-8xl font-bold tracking-tighter text-white drop-shadow-md pb-2">twenty</h1>
+                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-white drop-shadow-md pb-2 mt-2">twenty</h1>
               </div>
 
-              <h2 className="text-xl font-bold mb-2 text-right w-full border-b border-white/30 pb-2">
+              <h2 className="text-lg md:text-xl font-bold mb-2 md:text-right w-full border-b border-white/30 pb-2">
                 ¿Qué es Twenty?
               </h2>
               <p className="text-[13px] leading-relaxed text-justify opacity-90">
@@ -160,10 +165,10 @@ const Login: React.FC = () => {
           </div>
 
           {/* Vertical Separator */}
-          <div className="w-[1px] h-64 bg-gradient-to-b from-transparent via-white/30 to-transparent mx-8"></div>
+          <div className="hidden md:block w-[1px] h-64 bg-gradient-to-b from-transparent via-white/30 to-transparent mx-8"></div>
 
           {/* Right Side: Features */}
-          <div className="w-1/2 flex flex-col gap-8 pl-4">
+          <div className="w-full md:w-1/2 flex flex-col gap-6 md:gap-8 pl-0 md:pl-4">
 
             <div className="flex items-start gap-4 group cursor-pointer">
               <UserIcon className="w-10 h-10 mt-1 opacity-80 group-hover:opacity-100 transition-opacity" />
@@ -199,23 +204,22 @@ const Login: React.FC = () => {
         </div>
 
         {/* Bottom Footer Area in Login */}
-        <div className="absolute bottom-0 w-full bg-[#5C95C4] border-t border-white/20 p-4">
+        <div className="md:absolute bottom-0 w-full bg-[#5C95C4] border-t border-white/20 p-4 mt-8">
           <div className="max-w-[980px] mx-auto flex justify-between text-[11px] text-blue-100">
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-2 md:gap-4">
               <span>© Twenty 2010</span>
-              <span className="hover:underline cursor-pointer">Castellano</span>
-              <span className="hover:underline cursor-pointer">Català</span>
+              <span className="hover:underline cursor-pointer">Español</span>
+              <span className="hover:underline cursor-pointer hidden sm:inline">Català</span>
               <span className="hover:underline cursor-pointer">English</span>
-              <span className="hover:underline cursor-pointer">Euskara</span>
-              <span className="hover:underline cursor-pointer">Galego</span>
+              <span className="hover:underline cursor-pointer hidden sm:inline">Euskara</span>
+              <span className="hover:underline cursor-pointer hidden sm:inline">Galego</span>
             </div>
-            <div className="flex gap-4">
+            <div className="hidden md:flex gap-4">
               <span className="hover:underline cursor-pointer">Acerca de</span>
               <span className="hover:underline cursor-pointer">Empleo</span>
               <span className="hover:underline cursor-pointer">Anúnciate</span>
               <span className="hover:underline cursor-pointer">Prensa</span>
               <span className="hover:underline cursor-pointer">Blog</span>
-              <span className="hover:underline cursor-pointer">Desarrolladores</span>
               <span className="hover:underline cursor-pointer">Ayuda</span>
             </div>
           </div>
