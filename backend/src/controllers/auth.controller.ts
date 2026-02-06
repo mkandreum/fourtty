@@ -16,13 +16,19 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         }
 
         // Check if invitation is valid
-        const invitation = await prisma.invitation.findUnique({
-            where: { code: inviteCode.toUpperCase() }
-        });
+        const masterCode = process.env.MASTER_INVITE_CODE || 'TWENTY2025';
+        const isMaster = inviteCode.toUpperCase() === masterCode.toUpperCase();
 
-        if (!invitation || invitation.used) {
-            res.status(400).json({ error: 'Código de invitación inválido o ya usado' });
-            return;
+        let invitation: any = null;
+        if (!isMaster) {
+            invitation = await prisma.invitation.findUnique({
+                where: { code: inviteCode.toUpperCase() }
+            });
+
+            if (!invitation || invitation.used) {
+                res.status(400).json({ error: 'Código de invitación inválido o ya usado' });
+                return;
+            }
         }
 
         // Check if user exists
@@ -44,18 +50,21 @@ export const register = async (req: Request, res: Response): Promise<void> => {
                 email,
                 password: hashedPassword,
                 name,
-                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=005599&color=fff&size=200`
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=005599&color=fff&size=200`,
+                invitationsCount: 10 // Give some initial invitations
             }
         });
 
-        // Mark invitation as used
-        await prisma.invitation.update({
-            where: { id: invitation.id },
-            data: {
-                used: true,
-                usedById: user.id
-            }
-        });
+        // Mark invitation as used (only if not using master code)
+        if (invitation) {
+            await prisma.invitation.update({
+                where: { id: invitation.id },
+                data: {
+                    used: true,
+                    usedById: user.id
+                }
+            });
+        }
 
         // Get fresh user data with selection (including invitationsCount)
         const userDetails = await prisma.user.findUnique({

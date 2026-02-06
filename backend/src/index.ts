@@ -57,6 +57,10 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/pages', pageRoutes);
 app.use('/api/invitations', invitationRoutes);
+app.get('/api/health', (req: Request, res: Response) => {
+    res.json({ status: 'ok', timestamp: new Date(), version: '1.1.0' });
+});
+
 app.use('/api', extraRoutes);
 
 // Error handling middleware
