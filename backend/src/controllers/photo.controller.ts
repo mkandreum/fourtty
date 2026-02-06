@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { prisma } from '../index';
+import { prisma, io } from '../index';
 import { AuthRequest } from '../middleware/auth';
 
 // Upload a photo to gallery
@@ -38,7 +38,7 @@ export const uploadPhoto = async (req: AuthRequest, res: Response): Promise<void
                 });
 
                 // Notify tagged user
-                await prisma.notification.create({
+                const notification = await prisma.notification.create({
                     data: {
                         userId: parseInt(taggedUid),
                         type: 'tag',
@@ -47,6 +47,8 @@ export const uploadPhoto = async (req: AuthRequest, res: Response): Promise<void
                         relatedUserId: userId
                     }
                 });
+                // Emit real-time notification
+                io.to(`user_${parseInt(taggedUid)}`).emit('notification', notification);
             }
         }
 
@@ -145,7 +147,7 @@ export const tagPhoto = async (req: AuthRequest, res: Response): Promise<void> =
         const senderName = currentUser?.name || 'Un amigo';
 
         // Notify tagged user
-        await prisma.notification.create({
+        const notification = await prisma.notification.create({
             data: {
                 userId,
                 type: 'tag',
@@ -154,6 +156,8 @@ export const tagPhoto = async (req: AuthRequest, res: Response): Promise<void> =
                 relatedUserId: req.userId!
             }
         });
+        // Emit real-time notification
+        io.to(`user_${userId}`).emit('notification', notification);
 
         res.status(201).json({ tag });
     } catch (error) {

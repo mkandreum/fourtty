@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { prisma } from '../index';
+import { prisma, io } from '../index';
 import { AuthRequest } from '../middleware/auth';
 
 // Get comments for a post
@@ -125,7 +125,7 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
             if (targetType === 'post') {
                 const post = await prisma.post.findUnique({ where: { id: targetId! } });
                 if (post && post.userId !== userId) {
-                    await prisma.notification.create({
+                    const notification = await prisma.notification.create({
                         data: {
                             userId: post.userId,
                             type: 'comment',
@@ -134,11 +134,13 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
                             relatedUserId: userId
                         }
                     });
+                    // Emit real-time notification
+                    io.to(`user_${post.userId}`).emit('notification', notification);
                 }
             } else {
                 const photo = await prisma.photo.findUnique({ where: { id: targetId! } });
                 if (photo && photo.userId !== userId) {
-                    await prisma.notification.create({
+                    const notification = await prisma.notification.create({
                         data: {
                             userId: photo.userId,
                             type: 'comment',
@@ -147,6 +149,8 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
                             relatedUserId: userId
                         }
                     });
+                    // Emit real-time notification
+                    io.to(`user_${photo.userId}`).emit('notification', notification);
                 }
             }
         };
@@ -176,7 +180,7 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
                 const matchedFriend = friends.find(f => f.name.toLowerCase() === nameMentioned.toLowerCase());
 
                 if (matchedFriend && matchedFriend.id !== userId) {
-                    await prisma.notification.create({
+                    const notification = await prisma.notification.create({
                         data: {
                             userId: matchedFriend.id,
                             type: 'tag',
@@ -185,6 +189,8 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
                             relatedUserId: userId
                         }
                     });
+                    // Emit real-time notification
+                    io.to(`user_${matchedFriend.id}`).emit('notification', notification);
                 }
             }
         }

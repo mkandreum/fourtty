@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { prisma } from '../index';
+import { prisma, io } from '../index';
 import { AuthRequest } from '../middleware/auth';
 
 // Toggle like on a post
@@ -33,7 +33,7 @@ export const togglePostLike = async (req: AuthRequest, res: Response): Promise<v
 
             if (post && post.userId !== userId) {
                 const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true } });
-                await prisma.notification.create({
+                const notification = await prisma.notification.create({
                     data: {
                         userId: post.userId,
                         type: 'like',
@@ -42,6 +42,9 @@ export const togglePostLike = async (req: AuthRequest, res: Response): Promise<v
                         relatedUserId: userId
                     }
                 });
+
+                // Emit real-time notification
+                io.to(`user_${post.userId}`).emit('notification', notification);
             }
 
             res.status(201).json({ liked: true });
@@ -83,7 +86,7 @@ export const togglePhotoLike = async (req: AuthRequest, res: Response): Promise<
 
             if (photo && photo.userId !== userId) {
                 const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true } });
-                await prisma.notification.create({
+                const notification = await prisma.notification.create({
                     data: {
                         userId: photo.userId,
                         type: 'like',
@@ -92,6 +95,9 @@ export const togglePhotoLike = async (req: AuthRequest, res: Response): Promise<
                         relatedUserId: userId
                     }
                 });
+
+                // Emit real-time notification
+                io.to(`user_${photo.userId}`).emit('notification', notification);
             }
 
             res.status(201).json({ liked: true });
@@ -133,7 +139,7 @@ export const toggleCommentLike = async (req: AuthRequest, res: Response): Promis
 
             if (comment && comment.userId !== userId) {
                 const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true } });
-                await prisma.notification.create({
+                const notification = await prisma.notification.create({
                     data: {
                         userId: comment.userId,
                         type: 'like',
@@ -142,6 +148,9 @@ export const toggleCommentLike = async (req: AuthRequest, res: Response): Promis
                         relatedUserId: userId
                     }
                 });
+
+                // Emit real-time notification
+                io.to(`user_${comment.userId}`).emit('notification', notification);
             }
 
             res.status(201).json({ liked: true });

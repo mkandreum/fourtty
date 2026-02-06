@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { prisma } from '../index';
+import { prisma, io } from '../index';
 import { AuthRequest } from '../middleware/auth';
 
 // Send friend request
@@ -57,7 +57,7 @@ export const sendFriendRequest = async (req: AuthRequest, res: Response): Promis
         });
 
         // Create notification for the friend
-        await prisma.notification.create({
+        const notification = await prisma.notification.create({
             data: {
                 userId: friendId,
                 type: 'friendship',
@@ -66,6 +66,9 @@ export const sendFriendRequest = async (req: AuthRequest, res: Response): Promis
                 relatedUserId: req.userId!
             }
         });
+
+        // Emit real-time notification
+        io.to(`user_${friendId}`).emit('notification', notification);
 
         res.status(201).json({
             message: 'Friend request sent successfully',
@@ -131,7 +134,7 @@ export const acceptFriendRequest = async (req: AuthRequest, res: Response): Prom
         });
 
         // Create notification for the requester
-        await prisma.notification.create({
+        const notification = await prisma.notification.create({
             data: {
                 userId: friendship.userId,
                 type: 'friendship',
@@ -140,6 +143,9 @@ export const acceptFriendRequest = async (req: AuthRequest, res: Response): Prom
                 relatedUserId: req.userId!
             }
         });
+
+        // Emit real-time notification
+        io.to(`user_${friendship.userId}`).emit('notification', notification);
 
         res.json({
             message: 'Friend request accepted',

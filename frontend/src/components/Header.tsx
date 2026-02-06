@@ -4,6 +4,7 @@ import { Search, Image as ImageIcon, Bell, LogOut, User, Menu, X, UserPlus, Mail
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import PhotoUploadModal from './PhotoUploadModal';
+import { useSocket } from '../contexts/SocketContext';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -20,15 +21,27 @@ const Header: React.FC = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadNotifsCount, setUnreadNotifsCount] = useState(0);
   const [showNotifs, setShowNotifs] = useState(false);
+  const { socket } = useSocket();
 
   useEffect(() => {
     if (user) {
       fetchNotifications();
-      // Setup interval to check notifications every minute
-      const interval = setInterval(fetchNotifications, 60000);
-      return () => clearInterval(interval);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (socket) {
+      const handleNewNotification = (notification: any) => {
+        setNotifications(prev => [notification, ...prev]);
+        setUnreadNotifsCount(prev => prev + 1);
+      };
+
+      socket.on('notification', handleNewNotification);
+      return () => {
+        socket.off('notification', handleNewNotification);
+      };
+    }
+  }, [socket]);
 
   const fetchNotifications = async () => {
     try {

@@ -3,6 +3,7 @@ import { MessageSquare, Edit3, Tag, Youtube, Flag, ThumbsUp, UserPlus, Plus, Bel
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
+import { useSocket } from '../contexts/SocketContext';
 import api from '../api';
 import { Post } from '../types';
 import CommentSection from './CommentSection';
@@ -14,6 +15,7 @@ const Feed: React.FC = () => {
    const { showToast } = useToast();
    const navigate = useNavigate();
    const { openPhoto } = usePhotoModal();
+   const { socket } = useSocket();
    const [statusText, setStatusText] = useState('');
    const [posts, setPosts] = useState<Post[]>([]);
    const [isLoading, setIsLoading] = useState(true);
@@ -47,6 +49,19 @@ const Feed: React.FC = () => {
          console.error("Error fetching feed:", error);
       }
    };
+
+   useEffect(() => {
+      if (socket) {
+         const handleNewNotification = (notification: any) => {
+            setUnreadNotifications(prev => [notification, ...prev]);
+         };
+
+         socket.on('notification', handleNewNotification);
+         return () => {
+            socket.off('notification', handleNewNotification);
+         };
+      }
+   }, [socket]);
 
    // Initial fetch
    useEffect(() => {
