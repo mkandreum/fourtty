@@ -275,10 +275,45 @@ const Feed: React.FC = () => {
             </div>
          </div>
 
-         {/* Unread Notifications - Shown below status box */}
-         {unreadNotifications.length > 0 && (
+         {/* Unread Notifications & Visits - Shown below status box */}
+         {(unreadNotifications.length > 0 || stats.visits > 0) && (
             <div className="mb-4">
                <div className="flex flex-col gap-2">
+                  {/* Visits - Mobile only */}
+                  {stats.visits > 0 && (
+                     <div
+                        className="md:hidden flex items-center gap-2 group cursor-pointer hover:bg-[#F9FBFE] p-1.5 rounded-sm transition-colors border-l-2 border-[#59B200] bg-white shadow-sm"
+                        onClick={() => navigate('/profile')}
+                     >
+                        <div className="text-[#59B200] bg-[#59B200]/10 p-1.5 rounded-sm">
+                           <BarChart2 size={16} />
+                        </div>
+                        <div className="flex flex-col flex-1">
+                           <span className="text-[14px] md:text-[16px] font-bold text-[#59B200] group-hover:underline leading-tight">
+                              {stats.visits} visitas al perfil
+                           </span>
+                           {recentVisitors.length > 0 && (
+                              <div className="flex -space-x-1 overflow-hidden mt-1">
+                                 {recentVisitors.slice(0, 6).map((visitor, idx) => (
+                                    <img
+                                       key={visitor.id}
+                                       src={getAvatarUrl(visitor.avatar, visitor.name, visitor.lastName)}
+                                       className="inline-block h-6 w-6 rounded-full ring-1 ring-white object-cover shadow-sm"
+                                       alt={visitor.name}
+                                       style={{ zIndex: 10 - idx }}
+                                    />
+                                 ))}
+                                 {recentVisitors.length > 6 && (
+                                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 ring-1 ring-white text-[8px] font-bold text-gray-500 z-0 shadow-sm">
+                                       +{recentVisitors.length - 6}
+                                    </div>
+                                 )}
+                              </div>
+                           )}
+                        </div>
+                     </div>
+                  )}
+
                   {unreadNotifications.map(notif => (
                      <div key={notif.id} className="flex flex-col gap-1 w-full animate-in fade-in slide-in-from-top-1 duration-300">
                         <div
