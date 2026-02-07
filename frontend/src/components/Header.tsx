@@ -237,7 +237,7 @@ const Header: React.FC = () => {
         </div>
 
         {/* Right Side: Search & Actions */}
-        <div className="flex items-center justify-end gap-1 md:gap-2 flex-1 ml-4">
+        <div className="flex items-center justify-end gap-1 md:gap-2 flex-1 ml-4 pr-3 md:pr-0">
           {/* Search Bar - Compact - Hidden on mobile */}
           <div className="relative shrink-1 min-w-[60px] max-w-[180px] hidden md:block">
             <input
