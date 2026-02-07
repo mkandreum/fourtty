@@ -193,6 +193,30 @@ const Feed: React.FC = () => {
       }
    };
 
+   const handleAcceptFriend = async (friendshipId: number, notificationId: number) => {
+      try {
+         await api.put(`/friendships/${friendshipId}/accept`);
+         showToast("Solicitud aceptada", "success");
+         setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
+         fetchStats();
+      } catch (error) {
+         console.error("Error accepting friend:", error);
+         showToast("Error al aceptar solicitud", "error");
+      }
+   };
+
+   const handleRejectFriend = async (friendshipId: number, notificationId: number) => {
+      try {
+         await api.put(`/friendships/${friendshipId}/reject`);
+         showToast("Solicitud rechazada", "info");
+         setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
+         fetchStats();
+      } catch (error) {
+         console.error("Error rejecting friend:", error);
+         showToast("Error al rechazar solicitud", "error");
+      }
+   };
+
    const handleNotificationClick = async (notif: any) => {
       // Mark as read
       try {
