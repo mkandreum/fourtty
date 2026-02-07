@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Minus, Send, Check, CheckCheck } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { useSocket } from '../contexts/SocketContext';
+import { User } from '../types';
+import api from '../api';
 
 const ChatWindow = ({
    friend,
