@@ -20,6 +20,7 @@
     --toast-info-border: #bbdefb;
     --toast-info-text: #0d47a1;
     --text-muted: #666666;
+    --status-border: #dce5ed;
 }
 
 [data-theme='dark'] {
@@ -42,6 +43,7 @@
     --toast-info-border: #1e40af;
     --toast-info-text: #93c5fd;
     --text-muted: #94a3b8;
+    --status-border: #ffffff;
 }
 
 body {

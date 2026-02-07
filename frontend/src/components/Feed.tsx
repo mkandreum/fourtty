@@ -277,9 +277,9 @@ const Feed: React.FC = () => {
 
          {/* Status Box - Speech Bubble Style */}
          <div className="mb-4 md:mb-6 relative pt-0">
-            <div className="bg-[var(--card-bg)] border-2 border-[var(--border-color)] [data-theme='dark']:border-white rounded-[8px] p-2 relative shadow-sm transition-colors duration-200">
+            <div className="bg-[var(--card-bg)] border-2 border-[var(--status-border)] rounded-[8px] p-2 relative shadow-sm transition-colors duration-200">
                {/* Speech pulse arrow tip */}
-               <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--border-color)] [data-theme='dark']:border-b-white"></div>
+               <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--status-border)]"></div>
                <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--card-bg)]"></div>
 
                <div className="flex gap-2 items-start">
@@ -346,13 +346,13 @@ const Feed: React.FC = () => {
                                     <img
                                        key={visitor.id}
                                        src={getAvatarUrl(visitor.avatar, visitor.name, visitor.lastName)}
-                                       className="inline-block h-6 w-6 rounded-full ring-1 ring-white object-cover shadow-sm"
+                                       className="inline-block h-6 w-6 rounded-full ring-1 ring-[var(--bg-color)] object-cover shadow-sm"
                                        alt={visitor.name}
                                        style={{ zIndex: 10 - idx }}
                                     />
                                  ))}
                                  {recentVisitors.length > 6 && (
-                                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 ring-1 ring-white text-[8px] font-bold text-gray-500 z-0 shadow-sm">
+                                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 ring-1 ring-[var(--bg-color)] text-[8px] font-bold text-gray-500 z-0 shadow-sm">
                                        +{recentVisitors.length - 6}
                                     </div>
                                  )}
