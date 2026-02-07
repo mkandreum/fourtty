@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageSquare, MessageCircle, Tag, Bell, Mail, UserPlus, BarChart2, Heart, Share2, MoreHorizontal, Send, X, ThumbsUp, Youtube, Flag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Invitations from './Invitations';
@@ -25,6 +25,17 @@ const Feed: React.FC = () => {
    const [hasMore, setHasMore] = useState(true);
    const [isLoadingMore, setIsLoadingMore] = useState(false);
    const [limit] = useState(10);
+   const observer = useRef<IntersectionObserver | null>(null);
+   const lastPostElementRef = useCallback((node: HTMLDivElement | null) => {
+      if (isLoading || isLoadingMore) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(entries => {
+         if (entries[0].isIntersecting && hasMore) {
+            setPage(prev => prev + 1);
+         }
+      });
+      if (node) observer.current.observe(node);
+   }, [isLoading, isLoadingMore, hasMore]);
 
    const getAvatarUrl = (avatar?: string | null, name?: string, lastName?: string) => {
       if (!avatar) return `https://ui-avatars.com/api/?name=${name || ''}+${lastName || ''}&background=random`;
@@ -67,20 +78,28 @@ const Feed: React.FC = () => {
       }
    }, [socket]);
 
-   // Initial fetch
+   // Initial fetch for metadata only
    useEffect(() => {
-      const init = async () => {
-         setIsLoading(true);
-         await Promise.all([
-            fetchFeed(1, true),
-            fetchUnreadNotifications(),
-            fetchStats(),
-            fetchRecentVisitors()
-         ]);
-         setIsLoading(false);
-      };
-      init();
+      fetchUnreadNotifications();
+      fetchStats();
+      fetchRecentVisitors();
    }, []);
+
+   // Feed fetching logic
+   useEffect(() => {
+      const getPosts = async () => {
+         if (page === 1) {
+            setIsLoading(true);
+            await fetchFeed(1, true);
+            setIsLoading(false);
+         } else {
+            setIsLoadingMore(true);
+            await fetchFeed(page);
+            setIsLoadingMore(false);
+         }
+      };
+      getPosts();
+   }, [page]);
 
 
    const fetchUnreadNotifications = async () => {
@@ -101,13 +120,6 @@ const Feed: React.FC = () => {
       }
    };
 
-   const handleLoadMore = async () => {
-      setIsLoadingMore(true);
-      const nextPage = page + 1;
-      await fetchFeed(nextPage);
-      setPage(nextPage);
-      setIsLoadingMore(false);
-   };
 
    const [isSubmitting, setIsSubmitting] = useState(false);
    const handleUpdateStatus = async () => {
@@ -433,6 +445,7 @@ const Feed: React.FC = () => {
                            <img
                               src={post.user.avatar.startsWith('http') ? post.user.avatar : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.user.avatar}`}
                               alt={post.user.name}
+                              loading="lazy"
                               className="w-[50px] h-[50px] object-cover border border-[#ccc] rounded-[2px] p-[1px] bg-white shadow-sm cursor-pointer hover:scale-105 transition-transform"
                            />
                         ) : (
@@ -502,6 +515,7 @@ const Feed: React.FC = () => {
                               <div className="border border-[#ddd] p-1 bg-white inline-block shadow-sm hover:border-[#2B7BB9] cursor-pointer transition-all hover:scale-[1.01] self-start">
                                  <img
                                     src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
+                                    loading="lazy"
                                     className="h-[250px] md:h-[450px] w-auto max-w-full object-contain"
                                     onClick={() => {
                                        const photoObj = {
@@ -550,17 +564,20 @@ const Feed: React.FC = () => {
             </div>
          )}
 
-         {hasMore && (
-            <div className="mt-4 text-center">
-               <button
-                  onClick={handleLoadMore}
-                  disabled={isLoadingMore}
-                  className="text-[#005599] font-bold text-[12px] hover:underline bg-[#f2f6f9] w-full py-2 rounded border border-[#e1e9f0] transition-colors"
-               >
-                  {isLoadingMore ? 'Cargando...' : 'Ver más novedades'}
-               </button>
-            </div>
-         )}
+         {/* Infinite Scroll Sentinel */}
+         <div ref={lastPostElementRef} className="h-10 flex items-center justify-center">
+            {isLoadingMore && (
+               <div className="flex items-center gap-2 text-[11px] text-[#005599] font-bold">
+                  <div className="w-4 h-4 border-2 border-[#005599] border-t-transparent rounded-full animate-spin"></div>
+                  Cargando más novedades...
+               </div>
+            )}
+            {!hasMore && posts.length > 0 && (
+               <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                  No hay más novedades por ahora
+               </span>
+            )}
+         </div>
 
       </div>
    );
