@@ -111,6 +111,27 @@ export const initSocketHandlers = (io: Server) => {
             io.to(`user_${data.recipientId}`).emit('user_stop_typing', { senderId: userId });
         });
 
+        socket.on('mark_messages_read', async (data: { senderId: number }) => {
+            const { senderId: partnerId } = data;
+            try {
+                await prisma.message.updateMany({
+                    where: {
+                        senderId: partnerId,
+                        receiverId: userId,
+                        read: false
+                    },
+                    data: {
+                        read: true
+                    }
+                });
+
+                // Notify the partner that their messages have been read
+                io.to(`user_${partnerId}`).emit('messages_read', { readerId: userId });
+            } catch (error) {
+                console.error('Error handling mark_messages_read:', error);
+            }
+        });
+
         socket.on('disconnect', () => {
             const index = connectedUsers.findIndex(u => u.socketId === socket.id);
             if (index !== -1) {

@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, X, Minus } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useSocket } from '../contexts/SocketContext';
-import { User } from '../types';
-import api from '../api';
+import { Settings, X, Minus, Send, Check, CheckCheck } from 'lucide-react';
 
 const ChatWindow = ({
    friend,
@@ -19,7 +15,28 @@ const ChatWindow = ({
    const [messages, setMessages] = useState<any[]>([]);
    const [inputText, setInputText] = useState('');
    const [isFriendTyping, setIsFriendTyping] = useState(false);
+   const [bottomOffset, setBottomOffset] = useState(30);
    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+   // Handle Visual Viewport for mobile keyboard
+   useEffect(() => {
+      if (!window.visualViewport) return;
+
+      const handleResize = () => {
+         const viewport = window.visualViewport!;
+         // On mobile, if the viewport height is significantly less than window height,
+         // it usually means the keyboard is open.
+         const offset = window.innerHeight - viewport.height;
+         setBottomOffset(Math.max(30, offset));
+      };
+
+      window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('scroll', handleResize);
+      return () => {
+         window.visualViewport?.removeEventListener('resize', handleResize);
+         window.visualViewport?.removeEventListener('scroll', handleResize);
+      };
+   }, []);
 
    useEffect(() => {
       fetchMessages();
@@ -27,9 +44,20 @@ const ChatWindow = ({
       if (!socket) return;
 
       const handleNewMessage = (message: any) => {
-         // Only add message if it belongs to this chat
          if (message.senderId === friend.id || message.receiverId === friend.id) {
             setMessages(prev => [...prev, message]);
+            // If message is from friend, mark as read immediately since chat is open
+            if (message.senderId === friend.id) {
+               socket.emit('mark_messages_read', { senderId: friend.id });
+            }
+         }
+      };
+
+      const handleMessagesRead = (data: { readerId: number }) => {
+         if (data.readerId === friend.id) {
+            setMessages(prev => prev.map(msg =>
+               msg.senderId === currentUser.id ? { ...msg, read: true } : msg
+            ));
          }
       };
 
@@ -43,19 +71,23 @@ const ChatWindow = ({
 
       socket.on('new_message', handleNewMessage);
       socket.on('message_sent', handleNewMessage);
+      socket.on('messages_read', handleMessagesRead);
       socket.on('user_typing', handleTyping);
       socket.on('user_stop_typing', handleStopTyping);
+
+      // Initial mark as read when opening chat
+      socket.emit('mark_messages_read', { senderId: friend.id });
 
       return () => {
          socket.off('new_message', handleNewMessage);
          socket.off('message_sent', handleNewMessage);
+         socket.off('messages_read', handleMessagesRead);
          socket.off('user_typing', handleTyping);
          socket.off('user_stop_typing', handleStopTyping);
       };
    }, [friend.id, socket]);
 
    useEffect(() => {
-      // Scroll to bottom on new messages
       if (scrollRef.current) {
          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       }
@@ -70,8 +102,8 @@ const ChatWindow = ({
       }
    };
 
-   const handleSend = async (e: React.FormEvent) => {
-      e.preventDefault();
+   const handleSend = async (e?: React.FormEvent) => {
+      e?.preventDefault();
       if (!inputText.trim() || !socket) return;
 
       socket.emit('send_message', {
@@ -95,47 +127,61 @@ const ChatWindow = ({
    };
 
    return (
-      <div className="fixed bottom-[30px] right-2 md:right-20 w-[calc(100%-16px)] md:w-[260px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg rounded-t-[4px] z-40 flex flex-col transition-colors duration-200">
+      <div
+         className="fixed right-2 md:right-20 w-[calc(100%-16px)] md:w-[280px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-2xl rounded-t-lg z-40 flex flex-col transition-all duration-300 ease-in-out"
+         style={{ bottom: `${bottomOffset}px` }}
+      >
          {/* Header */}
          <div
-            className="bg-[#005599] text-white p-1.5 px-2 flex justify-between items-center rounded-t-[3px] cursor-pointer"
+            className="bg-[#005599] text-white p-2.5 px-3 flex justify-between items-center rounded-t-lg cursor-pointer"
             onClick={onClose}
          >
-            <div className="flex items-center gap-2 font-bold text-[12px]">
-               <div className="w-2 h-2 rounded-full bg-[#59B200] border border-white"></div>
+            <div className="flex items-center gap-2 font-bold text-[13px]">
+               <div className="w-2.5 h-2.5 rounded-full bg-[#59B200] border border-white shadow-[0_0_4px_rgba(89,178,0,0.5)]"></div>
                {friend.name}
             </div>
-            <div className="flex gap-2">
-               <Minus size={14} className="hover:opacity-75" onClick={(e) => { e.stopPropagation(); onClose(); }} />
-               <X size={14} className="hover:opacity-75" onClick={(e) => { e.stopPropagation(); onClose(); }} />
+            <div className="flex gap-2.5">
+               <Minus size={16} className="hover:opacity-75 transition-opacity" onClick={(e) => { e.stopPropagation(); onClose(); }} />
+               <X size={16} className="hover:opacity-75 transition-opacity" onClick={(e) => { e.stopPropagation(); onClose(); }} />
             </div>
          </div>
 
          {/* Body */}
          <div
-            className="h-[200px] overflow-y-auto p-2 bg-[var(--card-bg)] text-[12px] flex flex-col gap-2 transition-colors duration-200"
+            className="h-[250px] overflow-y-auto p-3 bg-[var(--card-bg)] text-[12px] flex flex-col gap-3 transition-colors duration-200"
             ref={scrollRef}
          >
-            {messages.length === 0 && (
-               <div className="text-[#999] text-[10px] text-center mt-4">Inicio de la conversación</div>
+            {messages.length === 0 && !isFriendTyping && (
+               <div className="text-[#999] text-[10px] text-center mt-6 italic">No hay mensajes anteriores</div>
             )}
 
             {messages.map((msg, idx) => {
                const isMe = msg.senderId === currentUser.id;
                return (
-                  <div key={idx} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                     <div className={`max-w-[85%] rounded-[4px] p-1 px-2 ${isMe ? 'bg-[#59B200]/20' : 'bg-[var(--bg-color)]'}`}>
-                        <span className="text-[var(--text-main)] transition-colors duration-200">{msg.content}</span>
+                  <div key={idx} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} group`}>
+                     <div className={`max-w-[85%] rounded-[12px] p-2 px-3 shadow-sm ${isMe ? 'bg-[#005599] text-white rounded-tr-none' : 'bg-[var(--bg-color)] text-[var(--text-main)] rounded-tl-none border border-[var(--border-soft)]'}`}>
+                        <div className="leading-relaxed break-words">{msg.content}</div>
+                        <div className={`flex items-center gap-1 mt-1 justify-end ${isMe ? 'text-white/70' : 'text-[#999]'}`}>
+                           <span className="text-[9px]">
+                              {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                           </span>
+                           {isMe && (
+                              <span className="flex items-center">
+                                 {msg.read ? (
+                                    <CheckCheck size={12} className="text-[#40ff40]" />
+                                 ) : (
+                                    <Check size={12} />
+                                 )}
+                              </span>
+                           )}
+                        </div>
                      </div>
-                     <span className="text-[9px] text-[#999] mt-0.5">
-                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                     </span>
                   </div>
                );
             })}
             {isFriendTyping && (
                <div className="flex items-start">
-                  <div className="bg-[var(--bg-color)] rounded-[4px] p-1 px-2 flex gap-1 items-baseline transition-colors duration-200">
+                  <div className="bg-[var(--bg-color)] rounded-[12px] rounded-tl-none p-2 px-3 flex gap-1 items-baseline transition-colors duration-200 border border-[var(--border-soft)]">
                      <span className="text-[10px] text-[#005599] italic font-bold">Escribiendo</span>
                      <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>.</motion.span>
                      <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }}>.</motion.span>
@@ -145,18 +191,29 @@ const ChatWindow = ({
             )}
          </div>
 
-         {/* Input */}
-         <form onSubmit={handleSend} className="p-2 border-t border-[var(--border-soft)] bg-[var(--bg-color)] transition-colors duration-200">
-            <input
-               type="text"
-               className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1 text-[11px] focus:outline-none focus:border-[#005599] transition-colors"
-               autoFocus
-               value={inputText}
-               onChange={handleInputChange}
-               onBlur={() => socket?.emit('stop_typing', { recipientId: friend.id, senderId: currentUser.id })}
-               placeholder="Escribe un mensaje..."
-            />
-         </form>
+         {/* Input area */}
+         <div className="p-2 border-t border-[var(--border-soft)] bg-[var(--bg-color)] transition-colors duration-200">
+            <form onSubmit={handleSend} className="flex gap-2 items-center">
+               <div className="relative flex-1">
+                  <input
+                     type="text"
+                     className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-full py-1.5 px-3 text-[12px] focus:outline-none focus:border-[#005599] focus:ring-1 focus:ring-[#005599]/30 transition-all"
+                     autoFocus
+                     value={inputText}
+                     onChange={handleInputChange}
+                     onBlur={() => socket?.emit('stop_typing', { recipientId: friend.id, senderId: currentUser.id })}
+                     placeholder="Escribe un mensaje..."
+                  />
+               </div>
+               <button
+                  type="submit"
+                  disabled={!inputText.trim()}
+                  className={`p-1.5 rounded-full transition-all flex items-center justify-center ${inputText.trim() ? 'bg-[#005599] text-white hover:bg-[#004488] shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+               >
+                  <Send size={16} />
+               </button>
+            </form>
+         </div>
       </div>
    );
 };
