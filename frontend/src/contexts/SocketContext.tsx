@@ -27,6 +27,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             console.log('🔌 Connecting to socket at:', socketUrl);
 
             const newSocket = io(socketUrl, {
+                auth: { token: localStorage.getItem('token') },
                 withCredentials: true,
                 transports: ['websocket', 'polling'],
                 path: '/socket.io'
