@@ -107,7 +107,7 @@ const AppContent = () => {
               </div>
             </aside>
           )}
-          <main className={`flex-1 min-w-0 w-full bg-[var(--card-bg)] md:bg-transparent ${view === ViewState.PROFILE ? 'max-w-4xl mx-auto' : ''}`}>
+          <main className={`flex-1 min-w-0 w-full bg-[var(--bg-color)] md:bg-transparent ${view === ViewState.PROFILE ? 'max-w-4xl mx-auto' : ''}`}>
             {children}
           </main>
           {(view === ViewState.HOME || view === ViewState.PEOPLE) && (

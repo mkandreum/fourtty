@@ -23,13 +23,13 @@
 
 [data-theme='dark'] {
     color-scheme: dark;
-    --bg-color: #020617;
-    --card-bg: #0f172a;
+    --bg-color: #000000;
+    --card-bg: #111111;
     --text-main: #f1f5f9;
     --text-secondary: #38bdf8;
-    --border-color: #1e293b;
-    --border-soft: #0f172a;
-    --input-bg: #1e293b;
+    --border-color: #222222;
+    --border-soft: #111111;
+    --input-bg: #222222;
     --input-text: #f1f5f9;
     --toast-success-bg: #064e3b;
     --toast-success-border: #065f46;

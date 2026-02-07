@@ -54,12 +54,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div className="min-h-screen flex flex-col font-sans transition-colors duration-200">
       {/* Background Gradient similar to the original */}
-      <div className="flex-1 bg-gradient-to-b from-[#5C95C4] via-[#5C95C4] to-[#6FA3CD] relative overflow-hidden">
+      <div className="flex-1 bg-gradient-to-b from-[#5C95C4] via-[#5C95C4] to-[#6FA3CD] [data-theme='dark']:from-[#000000] [data-theme='dark']:via-[#000000] [data-theme='dark']:to-[#0a0a0a] relative overflow-hidden transition-colors duration-500">
 
         {/* Top Login Bar */}
-        <div className="md:absolute top-0 w-full p-4 flex justify-center z-20 bg-[#5C95C4] md:bg-transparent">
+        <div className="md:absolute top-0 w-full p-4 flex justify-center z-20 bg-[#5C95C4] [data-theme='dark']:bg-[#000000] md:bg-transparent">
           <div className="max-w-[980px] w-full flex flex-col md:flex-row justify-between md:justify-end gap-4 md:gap-0">
             {/* Logo for mobile in header */}
             <div className="md:hidden flex items-center gap-1 select-none">
@@ -243,7 +243,7 @@ const Login: React.FC = () => {
         </div>
 
         {/* Bottom Footer Area in Login */}
-        <div className="md:absolute bottom-0 w-full bg-[#5C95C4] border-t border-white/20 p-4 mt-8">
+        <div className="md:absolute bottom-0 w-full bg-[#5C95C4] [data-theme='dark']:bg-[#000000] border-t border-white/20 p-4 mt-8 transition-colors duration-500">
           <div className="max-w-[980px] mx-auto flex justify-between text-[11px] text-blue-100">
             <div className="flex flex-wrap gap-2 md:gap-4">
               <span>© Twentty 2026</span>

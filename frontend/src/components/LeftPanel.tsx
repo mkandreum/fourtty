@@ -142,7 +142,7 @@ const LeftPanel: React.FC = () => {
                               </button>
                               <button
                                  onClick={() => handleRejectFriend(req.id)}
-                                 className="flex-1 bg-[var(--card-bg)] text-[#cc0000] border border-[#ffcccc] text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-red-50 transition-colors"
+                                 className="flex-1 bg-[var(--card-bg)] text-[#cc0000] border border-[#ff3333]/30 text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-red-900/10 transition-colors"
                               >
                                  Rechazar
                               </button>
@@ -172,7 +172,7 @@ const LeftPanel: React.FC = () => {
                         />
                      ))}
                      {recentVisitors.length > 6 && (
-                        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 ring-1 ring-white text-[8px] font-bold text-gray-500 z-0 shadow-sm">
+                        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-[var(--border-soft)] ring-1 ring-[var(--border-color)] text-[8px] font-bold text-gray-500 z-0 shadow-sm transition-colors duration-200">
                            +{recentVisitors.length - 6}
                         </div>
                      )}

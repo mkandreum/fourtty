@@ -359,7 +359,7 @@ const Profile: React.FC = () => {
    if (!profileUser) return <div className="p-4">Usuario no encontrado</div>;
 
    return (
-      <div className="bg-white md:rounded-[4px] md:border border-[#dce5ed] p-3 md:p-4 min-h-[600px]">
+      <div className="bg-[var(--bg-color)] md:bg-[var(--card-bg)] md:rounded-[4px] md:border border-[var(--border-color)] p-3 md:p-4 min-h-[600px] transition-colors duration-200">
          <AnimatePresence>
             {imageToCrop && (
                <motion.div
@@ -372,14 +372,14 @@ const Profile: React.FC = () => {
                      initial={{ scale: 0.9, opacity: 0 }}
                      animate={{ scale: 1, opacity: 1 }}
                      exit={{ scale: 0.9, opacity: 0 }}
-                     className="bg-white rounded-lg overflow-hidden w-full max-w-[500px] flex flex-col"
+                     className="bg-[var(--card-bg)] rounded-lg overflow-hidden w-full max-w-[500px] flex flex-col border border-[var(--border-color)] transition-colors duration-200"
                   >
-                     <div className="p-4 border-b border-[#eee] flex justify-between items-center">
-                        <h3 className="font-bold text-[#333]">Ajustar foto de perfil</h3>
-                        <button onClick={() => setImageToCrop(null)} className="text-gray-400 hover:text-gray-600">×</button>
+                     <div className="p-4 border-b border-[var(--border-soft)] flex justify-between items-center bg-[var(--card-bg)]">
+                        <h3 className="font-bold text-[var(--text-main)]">Ajustar foto de perfil</h3>
+                        <button onClick={() => setImageToCrop(null)} className="text-gray-400 hover:text-gray-600 transition-colors">×</button>
                      </div>
 
-                     <div className="relative h-[300px] bg-[#f0f0f0]">
+                     <div className="relative h-[300px] bg-[var(--bg-color)]">
                         <Cropper
                            image={imageToCrop}
                            crop={crop}
@@ -391,7 +391,7 @@ const Profile: React.FC = () => {
                         />
                      </div>
 
-                     <div className="p-4 bg-white flex flex-col gap-4">
+                     <div className="p-4 bg-[var(--card-bg)] flex flex-col gap-4">
                         <div className="flex items-center gap-4">
                            <span className="text-xs text-gray-500">Zoom</span>
                            <input
@@ -469,8 +469,8 @@ const Profile: React.FC = () => {
                <div className="p-1 bg-[var(--card-bg)] border border-[var(--border-color)] shadow-sm inline-block group relative cursor-pointer transition-colors duration-200">
                   <img
                      src={getAvatarUrl(profileUser.avatar)}
-                     alt="Profile"
                      className="w-full h-auto min-h-[150px] object-cover group-hover:scale-[1.01] transition-transform"
+                     alt="Profile"
                   />
                   {isOwnProfile && (
                      <label className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
@@ -568,7 +568,7 @@ const Profile: React.FC = () => {
                      <div>
                         <label className="block font-bold text-[#666] mb-1">Privacidad del perfil</label>
                         <select
-                           className="w-full border border-[#ccc] rounded-[2px] p-1 bg-white"
+                           className="w-full border border-[var(--border-color)] rounded-[2px] p-1 bg-[var(--input-bg)] text-[var(--input-text)] outline-none"
                            value={editData.privacy || 'public'}
                            onChange={(e) => setEditData({ ...editData, privacy: e.target.value })}
                         >
@@ -598,7 +598,7 @@ const Profile: React.FC = () => {
                   </div>
                ) : (
                   (profileUser.gender || profileUser.age || profileUser.relationshipStatus || profileUser.location || profileUser.occupation) ? (
-                     <div className="bg-[#f9fbfd] border-t border-b border-[#e1e9f0] p-2 text-[11px] text-[#333]">
+                     <div className="bg-[var(--border-soft)] border-t border-b border-[var(--border-color)] p-2 text-[11px] text-[var(--text-main)] transition-colors duration-200">
                         {(profileUser.gender || profileUser.age) && (
                            <div className="flex items-center gap-2 mb-1.5 hover:translate-x-1 transition-transform">
                               <UserIcon size={12} className="text-[#888]" />
@@ -625,16 +625,16 @@ const Profile: React.FC = () => {
                         )}
                      </div>
                   ) : isOwnProfile ? (
-                     <div className="bg-[#f9fbfd] border-t border-b border-[#e1e9f0] p-2 text-[10px] text-[#999] italic">
+                     <div className="bg-[var(--border-soft)] border-t border-b border-[var(--border-color)] p-2 text-[10px] text-gray-400 italic transition-colors duration-200">
                         Completa tu información personal...
                      </div>
                   ) : null
                )}
 
                <div>
-                  <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1 flex items-center justify-between">
-                     <span>Amigos <span className="text-[#888] font-normal">({friends.length})</span></span>
-                     <span className="text-[10px] text-[#005599] hover:underline cursor-pointer font-normal">Ver todos</span>
+                  <h3 className="text-[var(--text-secondary)] font-bold text-[12px] mb-2 border-b border-[var(--border-soft)] pb-1 flex justify-between items-center transition-colors duration-200">
+                     <span>Amigos <span className="text-gray-500 font-normal">({friends.length})</span></span>
+                     <span className="text-[10px] text-[var(--text-secondary)] hover:underline cursor-pointer font-normal transition-colors">Ver todos</span>
                   </h3>
                   <div className="grid grid-cols-3 gap-1">
                      {friends.slice(0, 9).map(friend => (
@@ -658,8 +658,8 @@ const Profile: React.FC = () => {
 
                {isOwnProfile && recentVisitors.length > 0 && (
                   <div className="mt-2">
-                     <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1 flex items-center justify-between">
-                        <span>Visitantes recientes <span className="text-[#888] font-normal">({recentVisitors.length})</span></span>
+                     <h3 className="text-[var(--text-secondary)] font-bold text-[12px] mb-2 border-b border-[var(--border-soft)] pb-1 flex items-center justify-between transition-colors duration-200">
+                        <span>Visitantes recientes <span className="text-gray-500 font-normal">({recentVisitors.length})</span></span>
                      </h3>
                      <div className="grid grid-cols-4 gap-1">
                         {recentVisitors.map(visitor => (
@@ -684,12 +684,12 @@ const Profile: React.FC = () => {
                )}
 
                <div>
-                  <h3 className="text-[#005599] font-bold text-[12px] mb-2 border-b border-[#eee] pb-1">
+                  <h3 className="text-[var(--text-secondary)] font-bold text-[12px] mb-2 border-b border-[var(--border-soft)] pb-1 transition-colors duration-200">
                      Galería de fotos
                   </h3>
                   <button
                      onClick={() => navigate(id ? `/profile/photos/${id}` : '/profile/photos')}
-                     className="w-full bg-[#f2f6f9] border border-[#dce5ed] p-2 text-[11px] text-[#005599] font-bold hover:bg-[#e1f0fa] transition-colors flex items-center justify-center gap-2"
+                     className="w-full bg-[var(--border-soft)] border border-[var(--border-color)] p-2 text-[11px] text-[var(--text-secondary)] font-bold hover:opacity-80 transition-all flex items-center justify-center gap-2"
                   >
                      <Camera size={14} /> Ver fotos de {profileUser.name.split(' ')[0]}
                   </button>
@@ -698,10 +698,10 @@ const Profile: React.FC = () => {
 
             <div className="flex-1">
                {isOwnProfile && (
-                  <div className="bg-[#f2f6f9] p-3 rounded-[4px] border border-[#e1e9f0] mb-4 shadow-sm animate-in slide-in-from-right-2 duration-300">
-                     <div className="text-[#005599] font-bold text-[12px] mb-1">Escribe algo en tu tablón...</div>
+                  <div className="bg-[var(--border-soft)] p-3 rounded-[4px] border border-[var(--border-color)] mb-4 shadow-sm animate-in slide-in-from-right-2 duration-300 transition-colors duration-200">
+                     <div className="text-[var(--text-secondary)] font-bold text-[12px] mb-1">Escribe algo en tu tablón...</div>
                      <textarea
-                        className="w-full h-16 border border-[#b2c2d1] rounded-[2px] p-1 text-[12px] resize-none focus:border-[#5C95C4] outline-none transition-colors"
+                        className="w-full h-16 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1 text-[12px] resize-none focus:border-[var(--text-secondary)] outline-none transition-colors"
                         value={wallInput}
                         onChange={(e) => setWallInput(e.target.value)}
                      ></textarea>
@@ -731,7 +731,7 @@ const Profile: React.FC = () => {
                   </div>
                )}
 
-               <h3 className="text-[#333] font-bold text-[13px] mb-3 pb-1 border-b border-[#ccc]">Tablón</h3>
+               <h3 className="text-[var(--text-main)] font-bold text-[13px] mb-3 pb-1 border-b border-[var(--border-soft)] transition-colors duration-200">Tablón</h3>
 
                <div className="flex flex-col">
                   {isLoading ? (
@@ -743,7 +743,7 @@ const Profile: React.FC = () => {
                         {wallPosts.map((post, idx) => (
                            <div
                               key={post.id}
-                              className={`flex gap-3 p-3 border-b border-[#eee] ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f9fbfd]'} hover:bg-[#f0f5f9] transition-smooth cursor-default group`}
+                              className={`flex gap-3 p-3 border-b border-[var(--border-soft)] ${idx % 2 === 0 ? 'bg-[var(--card-bg)]' : 'bg-[var(--border-soft)]'} hover:opacity-90 transition-all cursor-default group`}
                            >
                               <div className="w-10 flex-shrink-0">
                                  <img

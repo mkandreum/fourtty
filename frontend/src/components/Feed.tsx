@@ -273,19 +273,19 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <div className="bg-white md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4">
+      <div className="bg-[var(--bg-color)] md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4 transition-colors duration-200">
 
          {/* Status Box - Speech Bubble Style */}
          <div className="mb-4 md:mb-6 relative pt-0">
-            <div className="bg-white border-2 border-[#b2c2d1] rounded-[8px] p-2 relative shadow-sm">
+            <div className="bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-[8px] p-2 relative shadow-sm transition-colors duration-200">
                {/* Speech pulse arrow tip */}
-               <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[#b2c2d1]"></div>
-               <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-white"></div>
+               <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--border-color)]"></div>
+               <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--card-bg)]"></div>
 
                <div className="flex gap-2 items-start">
                   <div className="flex-1 relative">
                      <input
-                        className="w-full border-none p-1 md:p-2 text-[15px] md:text-[18px] text-[#333] placeholder-gray-300 outline-none !bg-white"
+                        className="w-full border-none p-1 md:p-2 text-[15px] md:text-[18px] text-[var(--text-main)] placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200"
                         value={statusText}
                         onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                         placeholder="¿Qué estás pensando?"
@@ -365,7 +365,7 @@ const Feed: React.FC = () => {
                   {unreadNotifications.map(notif => (
                      <div key={notif.id} className="flex flex-col gap-1 w-full animate-in fade-in slide-in-from-top-1 duration-300">
                         <div
-                           className="flex items-center gap-2 group cursor-pointer hover:bg-[#F9FBFE] p-1.5 rounded-sm transition-colors border-l-2 border-[#59B200] bg-white shadow-sm"
+                           className="flex items-center gap-2 group cursor-pointer hover:bg-[var(--border-soft)] p-1.5 rounded-sm transition-colors border-l-2 border-[#59B200] bg-[var(--card-bg)] shadow-sm"
                            onClick={() => {
                               if (notif.type === 'friendship') return; // Handled below
                               handleNotificationClick(notif);
@@ -522,7 +522,7 @@ const Feed: React.FC = () => {
                         {/* Photo specific */}
                         {post.type === 'photo' && post.image && (
                            <div className="mt-2 flex flex-col gap-2">
-                              <div className="border border-[#ddd] p-1 bg-white inline-block shadow-sm hover:border-[#2B7BB9] cursor-pointer transition-all hover:scale-[1.01] self-start">
+                              <div className="border border-[var(--border-color)] p-1 bg-[var(--card-bg)] inline-block shadow-sm hover:border-[var(--text-secondary)] cursor-pointer transition-all hover:scale-[1.01] self-start">
                                  <img
                                     src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
                                     loading="lazy"
