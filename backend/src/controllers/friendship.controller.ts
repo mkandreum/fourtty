@@ -176,6 +176,14 @@ export const rejectFriendRequest = async (req: AuthRequest, res: Response): Prom
             return;
         }
 
+        // Clean up related notifications
+        await prisma.notification.deleteMany({
+            where: {
+                relatedId: friendshipId,
+                type: 'friendship'
+            }
+        });
+
         await prisma.friendship.update({
             where: { id: friendshipId },
             data: { status: 'rejected' }
@@ -279,6 +287,14 @@ export const removeFriend = async (req: AuthRequest, res: Response): Promise<voi
             res.status(403).json({ error: 'You can only remove your own friendships' });
             return;
         }
+
+        // Clean up related notifications
+        await prisma.notification.deleteMany({
+            where: {
+                relatedId: friendshipId,
+                type: 'friendship'
+            }
+        });
 
         await prisma.friendship.delete({
             where: { id: friendshipId }

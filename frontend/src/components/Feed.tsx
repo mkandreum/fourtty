@@ -211,9 +211,14 @@ const Feed: React.FC = () => {
          showToast("Solicitud aceptada", "success");
          setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
          fetchStats();
-      } catch (error) {
+      } catch (error: any) {
          console.error("Error accepting friend:", error);
-         showToast("Error al aceptar solicitud", "error");
+         // If already accepted/deleted elsewhere (404), just clear it
+         if (error.response?.status === 404) {
+            setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
+         } else {
+            showToast("Error al aceptar solicitud", "error");
+         }
       }
    };
 
@@ -223,9 +228,14 @@ const Feed: React.FC = () => {
          showToast("Solicitud rechazada", "info");
          setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
          fetchStats();
-      } catch (error) {
+      } catch (error: any) {
          console.error("Error rejecting friend:", error);
-         showToast("Error al rechazar solicitud", "error");
+         // If already rejected/deleted elsewhere (404), just clear it
+         if (error.response?.status === 404) {
+            setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
+         } else {
+            showToast("Error al rechazar solicitud", "error");
+         }
       }
    };
 
