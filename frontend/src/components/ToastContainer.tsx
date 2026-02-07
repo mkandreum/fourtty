@@ -18,11 +18,11 @@ const ToastContainer: React.FC = () => {
                         className="w-full pointer-events-auto"
                     >
                         <div className={`
-                            w-full p-2 md:p-3 shadow-md flex items-center justify-between border-b
-                            ${toast.type === 'success' ? 'bg-[#fff9e6] border-[#fceebb] text-[#856404]' : ''}
-                            ${toast.type === 'error' ? 'bg-red-100 border-red-200 text-red-800' : ''}
-                            ${toast.type === 'info' ? 'bg-[#f0f7fd] border-[#d1e7fe] text-[#004085]' : ''}
-                            ${!['success', 'error', 'info'].includes(toast.type) ? 'bg-[#fff9e6] border-[#fceebb] text-[#856404]' : ''}
+                            w-full p-2 md:p-3 shadow-md flex items-center justify-between border-b transition-colors duration-200
+                            ${toast.type === 'success' ? 'bg-[var(--toast-success-bg)] border-[var(--toast-success-border)] text-[var(--toast-success-text)]' : ''}
+                            ${toast.type === 'error' ? 'bg-[var(--toast-error-bg)] border-[var(--toast-error-border)] text-[var(--toast-error-text)]' : ''}
+                            ${toast.type === 'info' ? 'bg-[var(--toast-info-bg)] border-[var(--toast-info-border)] text-[var(--toast-info-text)]' : ''}
+                            ${!['success', 'error', 'info'].includes(toast.type) ? 'bg-[var(--toast-success-bg)] border-[var(--toast-success-border)] text-[var(--toast-success-text)]' : ''}
                         `}>
                             <div className="max-w-[980px] mx-auto w-full flex items-center gap-3 px-2">
                                 {toast.type === 'success' && <CheckCircle size={16} className="shrink-0" />}

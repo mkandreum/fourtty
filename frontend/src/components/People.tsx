@@ -49,17 +49,17 @@ const People: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4 p-3 md:p-0">
             {/* Left Column: Filters */}
             <aside className="w-full md:w-[200px] shrink-0">
-                <div className="bg-white border border-[#dce5ed] rounded-[4px] shadow-sm overflow-hidden">
-                    <div className="bg-[#f2f6f9] border-b border-[#dce5ed] p-2 flex items-center gap-2">
-                        <Filter size={14} className="text-[#333]" />
-                        <span className="text-[11px] font-bold text-[#333]">Filtros de búsqueda</span>
+                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[4px] shadow-sm overflow-hidden transition-colors duration-200">
+                    <div className="bg-[var(--bg-color)] border-b border-[var(--border-color)] p-2 flex items-center gap-2 transition-colors duration-200">
+                        <Filter size={14} className="text-[var(--text-main)] transition-colors duration-200" />
+                        <span className="text-[11px] font-bold text-[var(--text-main)] transition-colors duration-200">Filtros de búsqueda</span>
                     </div>
                     <div className="p-3 flex flex-col gap-4">
                         {/* Gender */}
                         <div>
-                            <label className="block text-[10px] font-bold text-[#666] uppercase mb-1">Sexo</label>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Sexo</label>
                             <select
-                                className="w-full border border-[#ccc] rounded-[2px] p-1 text-[11px] bg-white"
+                                className="w-full border border-[var(--border-color)] rounded-[2px] p-1 text-[11px] bg-[var(--input-bg)] text-[var(--input-text)] transition-colors"
                                 value={filters.gender}
                                 onChange={(e) => setFilters({ ...filters, gender: e.target.value })}
                             >
@@ -71,12 +71,12 @@ const People: React.FC = () => {
 
                         {/* Location */}
                         <div>
-                            <label className="block text-[10px] font-bold text-[#666] uppercase mb-1">Localidad</label>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Localidad</label>
                             <div className="relative">
-                                <MapPin size={10} className="absolute left-1.5 top-2 text-gray-400" />
+                                <MapPin size={10} className="absolute left-1.5 top-2 text-gray-500" />
                                 <input
                                     type="text"
-                                    className="w-full border border-[#ccc] rounded-[2px] py-1 pl-5 pr-1 text-[11px]"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] py-1 pl-5 pr-1 text-[11px] transition-colors"
                                     placeholder="Ej: Madrid"
                                     value={filters.location}
                                     onChange={(e) => setFilters({ ...filters, location: e.target.value })}
@@ -86,20 +86,20 @@ const People: React.FC = () => {
 
                         {/* Age Range */}
                         <div>
-                            <label className="block text-[10px] font-bold text-[#666] uppercase mb-1">Edad</label>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Edad</label>
                             <div className="flex items-center gap-1">
                                 <input
                                     type="number"
                                     placeholder="Min"
-                                    className="w-full border border-[#ccc] rounded-[2px] p-1 text-[11px]"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1 text-[11px] transition-colors"
                                     value={filters.ageMin}
                                     onChange={(e) => setFilters({ ...filters, ageMin: e.target.value })}
                                 />
-                                <span className="text-gray-400">-</span>
+                                <span className="text-gray-500">-</span>
                                 <input
                                     type="number"
                                     placeholder="Max"
-                                    className="w-full border border-[#ccc] rounded-[2px] p-1 text-[11px]"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1 text-[11px] transition-colors"
                                     value={filters.ageMax}
                                     onChange={(e) => setFilters({ ...filters, ageMax: e.target.value })}
                                 />
@@ -111,7 +111,7 @@ const People: React.FC = () => {
                                 setFilters({ gender: '', location: '', ageMin: '', ageMax: '' });
                                 setSearchQ('');
                             }}
-                            className="bg-white text-[#cc0000] border border-[#ffcccc] py-1 rounded-[2px] text-[10px] font-bold hover:bg-[#fff5f5] transition-colors"
+                            className="bg-[var(--card-bg)] text-[#cc0000] border border-[#ffcccc] py-1 rounded-[2px] text-[10px] font-bold hover:bg-red-500/10 transition-colors"
                         >
                             Limpiar filtros
                         </button>
@@ -121,20 +121,20 @@ const People: React.FC = () => {
 
             {/* Main Column: Results */}
             <main className="flex-1 min-w-0">
-                <div className="bg-white border border-[#dce5ed] rounded-[4px] shadow-sm">
-                    <div className="p-3 border-b border-[#eee] flex items-center justify-between gap-4">
+                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[4px] shadow-sm transition-colors duration-200">
+                    <div className="p-3 border-b border-[var(--border-soft)] flex items-center justify-between gap-4 transition-colors duration-200">
                         <h2 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1 shrink-0">
                             Gente en Twentty
                         </h2>
                         <div className="relative flex-1 max-w-[300px]">
                             <input
                                 type="text"
-                                className="w-full border border-[#ccc] rounded-[2px] py-1 pl-7 pr-2 text-[12px] placeholder-gray-300"
+                                className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] py-1 pl-7 pr-2 text-[12px] placeholder-gray-500 transition-colors"
                                 placeholder="Buscar por nombre..."
                                 value={searchQ}
                                 onChange={(e) => setSearchQ(e.target.value)}
                             />
-                            <Search size={14} className="absolute left-2 top-1.5 text-gray-400" />
+                            <Search size={14} className="absolute left-2 top-1.5 text-gray-500" />
                         </div>
                     </div>
 
@@ -155,10 +155,10 @@ const People: React.FC = () => {
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: (idx % 20) * 0.03 }}
-                                            className="flex gap-3 p-2 border border-transparent hover:border-[#dce5ed] hover:bg-[#f9fbfd] rounded-[3px] cursor-pointer group transition-all"
+                                            className="flex gap-3 p-2 border border-transparent hover:border-[var(--border-color)] hover:bg-[var(--bg-color)] rounded-[3px] cursor-pointer group transition-all"
                                             onClick={() => handleNavigate(u.id)}
                                         >
-                                            <div className="w-[60px] h-[60px] shrink-0 bg-white border border-[#ccc] p-[1px] shadow-sm">
+                                            <div className="w-[60px] h-[60px] shrink-0 bg-[var(--card-bg)] border border-[var(--border-color)] p-[1px] shadow-sm transition-colors duration-200">
                                                 <img
                                                     src={u.avatar || `/api/proxy/avatar?name=${encodeURIComponent(u.name)}`}
                                                     alt={u.name}
@@ -169,12 +169,17 @@ const People: React.FC = () => {
                                                 <div className="text-[13px] font-bold text-[#005599] group-hover:underline truncate">{u.name}</div>
                                                 <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
                                                     {u.age && (
-                                                        <span className="text-[10px] text-[#333] font-bold">{u.age} años</span>
+                                                        <span className="text-[10px] text-[var(--text-main)] font-bold transition-colors duration-200">{u.age} años</span>
                                                     )}
                                                     {u.location && (
                                                         <span className="text-[10px] text-gray-500 flex items-center gap-0.5 truncate">
                                                             <MapPin size={8} /> {u.location}
                                                         </span>
+                                                    )}
+                                                    {u.occupation && (
+                                                        <div className="text-[10px] text-gray-400 flex items-center gap-0.5 mt-0.5 truncate italic">
+                                                            <Briefcase size={8} /> {u.occupation}
+                                                        </div>
                                                     )}
                                                 </div>
                                                 {u.occupation && (

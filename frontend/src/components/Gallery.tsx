@@ -48,13 +48,13 @@ const Gallery: React.FC = () => {
     if (isLoading) return <div className="p-10 text-center opacity-50">Cargando galería...</div>;
 
     return (
-        <div className="bg-[#f0f2f5] min-h-screen">
+        <div className="bg-[var(--bg-color)] min-h-screen transition-colors duration-200">
             <div className="max-w-[980px] mx-auto p-4 flex flex-col gap-4">
 
-                <div className="bg-white rounded-[4px] border border-[#dce5ed] p-4 shadow-sm">
-                    <div className="flex justify-between items-center mb-6 border-b border-[#eee] pb-4">
-                        <h1 className="text-[20px] font-bold text-[#333]">
-                            Fotos de {userName} <span className="text-[#999] font-normal text-[14px]">({photos.length})</span>
+                <div className="bg-[var(--card-bg)] rounded-[4px] border border-[var(--border-color)] p-4 shadow-sm transition-colors duration-200">
+                    <div className="flex justify-between items-center mb-6 border-b border-[var(--border-soft)] pb-4 transition-colors duration-200">
+                        <h1 className="text-[20px] font-bold text-[var(--text-main)] transition-colors duration-200">
+                            Fotos de {userName} <span className="text-gray-400 font-normal text-[14px]">({photos.length})</span>
                         </h1>
                         <button
                             onClick={() => navigate(-1)}
@@ -65,7 +65,7 @@ const Gallery: React.FC = () => {
                     </div>
 
                     {photos.length === 0 ? (
-                        <div className="p-10 text-center text-gray-500">
+                        <div className="p-10 text-center text-gray-400">
                             Este usuario aún no ha subido ninguna foto a su galería.
                         </div>
                     ) : (
@@ -93,7 +93,7 @@ const Gallery: React.FC = () => {
                                     whileHover={{ y: -5, transition: { type: 'spring', stiffness: 300 } }}
                                     className="flex flex-col gap-1 group"
                                 >
-                                    <div className="p-1 bg-white border border-[#ccc] shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                    <div className="p-1 bg-[var(--card-bg)] border border-[var(--border-color)] shadow-sm hover:shadow-md transition-all cursor-pointer">
                                         <img
                                             src={getPhotoUrl(photo.url)}
                                             className="w-full aspect-square object-cover"
@@ -102,7 +102,7 @@ const Gallery: React.FC = () => {
                                         />
                                     </div>
                                     <div className="flex justify-between items-center px-1">
-                                        <div className="text-[9px] text-gray-400">{new Date(photo.createdAt).toLocaleDateString()}</div>
+                                        <div className="text-[9px] text-gray-500">{new Date(photo.createdAt).toLocaleDateString()}</div>
                                         {photo.photoTags?.length > 0 && (
                                             <div className="flex items-center gap-0.5 text-[9px] text-[#59B200] font-bold">
                                                 <Tag size={8} fill="#59B200" /> {photo.photoTags.length}

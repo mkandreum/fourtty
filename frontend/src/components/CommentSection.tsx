@@ -142,7 +142,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
 
             {/* Comments List & Input */}
             {isExpanded && (
-                <div className="bg-[#f2fbff] p-2 rounded-[2px] mt-1 border border-[#cfe2f3]">
+                <div className="bg-[var(--bg-color)] p-2 rounded-[2px] mt-1 border border-[var(--border-color)] transition-colors duration-200">
                     {isLoading && <div className="text-[10px] text-gray-500 mb-2">Cargando...</div>}
 
                     <div className="flex flex-col gap-3 mb-2">
@@ -150,7 +150,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                             <div key={comment.id} className="flex gap-2">
                                 <img
                                     src={getAvatarUrl(comment.user.avatar, comment.user.name)}
-                                    className="w-8 h-8 object-cover border border-[#ccc] rounded-[2px] p-[1px] bg-white shadow-sm cursor-pointer"
+                                    className="w-8 h-8 object-cover border border-[var(--border-color)] rounded-[2px] p-[1px] bg-[var(--card-bg)] shadow-sm cursor-pointer transition-colors duration-200"
                                     alt={comment.user.name}
                                     onClick={() => navigate(`/profile/${comment.userId}`)}
                                 />
@@ -162,7 +162,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                                         >
                                             {comment.user.name}
                                         </span>
-                                        <span className="text-[#333]"> {renderCommentContent(comment.content)}</span>
+                                        <span className="text-[var(--text-main)] transition-colors duration-200"> {renderCommentContent(comment.content)}</span>
                                     </div>
                                     <div className="text-[10px] flex items-center gap-2 mt-0.5">
                                         <span className="text-[#999]">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -186,16 +186,16 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                     </div>
 
                     {/* Input */}
-                    <div className="flex gap-2 mt-2 pt-2 border-t border-[#dcecf9]">
+                    <div className="flex gap-2 mt-2 pt-2 border-t border-[var(--border-soft)]">
                         <img
                             src={getAvatarUrl(user?.avatar, user?.name)}
-                            className="w-7 h-7 object-cover border border-[#ccc] rounded-[2px]"
+                            className="w-7 h-7 object-cover border border-[var(--border-color)] rounded-[2px] transition-colors duration-200"
                             alt="Me"
                         />
                         <form onSubmit={handleSubmitComment} className="flex-1 flex gap-1">
                             <input
                                 type="text"
-                                className="flex-1 border border-[#b2c2d1] rounded-[2px] p-1.5 text-[11px] !bg-white focus:outline-none focus:border-[#5C95C4] shadow-inner"
+                                className="flex-1 border border-[var(--border-color)] rounded-[2px] p-1.5 text-[11px] bg-[var(--input-bg)] text-[var(--input-text)] focus:outline-none focus:border-[#5C95C4] shadow-inner transition-colors"
                                 placeholder="Escribe un comentario..."
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}

@@ -78,7 +78,7 @@ const PageDetails: React.FC = () => {
     const isCreator = currentUser?.id === page.creatorId;
 
     return (
-        <div className="flex-1 bg-[#f0f2f5] min-h-screen">
+        <div className="flex-1 bg-[var(--bg-color)] min-h-screen transition-colors duration-200">
             <div className="max-w-[800px] mx-auto p-4 flex flex-col gap-4">
 
                 <Link to="/pages" className="flex items-center gap-1 text-[#2B7BB9] text-[12px] hover:underline mb-2">
@@ -86,24 +86,24 @@ const PageDetails: React.FC = () => {
                 </Link>
 
                 {/* Page Header */}
-                <div className="bg-white rounded-sm border border-[#ccc] shadow-sm overflow-hidden">
+                <div className="bg-[var(--card-bg)] rounded-sm border border-[var(--border-color)] shadow-sm overflow-hidden transition-colors duration-200">
                     <div className="h-32 bg-gradient-to-r from-[#2B7BB9] to-[#005599]"></div>
                     <div className="p-4 flex flex-col md:flex-row gap-6 items-start">
-                        <div className="w-32 h-32 mt-[-64px] bg-white p-1 rounded-sm shadow-md">
-                            <div className="w-full h-full bg-[#eee] border border-[#ddd] overflow-hidden flex items-center justify-center">
+                        <div className="w-32 h-32 mt-[-64px] bg-[var(--card-bg)] p-1 rounded-sm shadow-md transition-colors duration-200">
+                            <div className="w-full h-full bg-[var(--bg-color)] border border-[var(--border-color)] overflow-hidden flex items-center justify-center transition-colors duration-200">
                                 {page.image ? (
                                     <img src={page.image} alt={page.name} className="w-full h-full object-cover" />
                                 ) : (
-                                    <Flag size={48} className="text-[#999]" />
+                                    <Flag size={48} className="text-gray-500" />
                                 )}
                             </div>
                         </div>
                         <div className="flex-1">
-                            <h1 className="text-2xl font-bold text-[#333]">{page.name}</h1>
-                            <p className="text-[12px] text-[#888] mb-2">{page.category}</p>
-                            <p className="text-[14px] text-[#555] leading-relaxed mb-4">{page.description}</p>
+                            <h1 className="text-2xl font-bold text-[var(--text-main)] transition-colors duration-200">{page.name}</h1>
+                            <p className="text-[12px] text-gray-400 mb-2 transition-colors duration-200">{page.category}</p>
+                            <p className="text-[14px] text-gray-500 leading-relaxed mb-4 transition-colors duration-200">{page.description}</p>
                             <div className="flex items-center gap-4 text-[13px]">
-                                <span className="flex items-center gap-1 text-[#555]">
+                                <span className="flex items-center gap-1 text-gray-400">
                                     <Users size={16} className="text-[#2B7BB9]" />
                                     <strong>{page._count?.followers || 0}</strong> seguidores
                                 </span>
@@ -111,8 +111,8 @@ const PageDetails: React.FC = () => {
                                     <button
                                         onClick={handleFollowToggle}
                                         className={`px-6 py-1.5 rounded-[3px] font-bold text-[12px] transition-colors ${isFollowing
-                                                ? 'bg-gray-100 text-[#555] border border-[#ccc] hover:bg-gray-200'
-                                                : 'bg-[#59B200] text-white border border-[#4a9400] hover:bg-[#4a9400]'
+                                            ? 'bg-gray-100 text-[#555] border border-[#ccc] hover:bg-gray-200'
+                                            : 'bg-[#59B200] text-white border border-[#4a9400] hover:bg-[#4a9400]'
                                             }`}
                                     >
                                         {isFollowing ? 'Siguiendo' : 'Segur página'}
@@ -128,35 +128,35 @@ const PageDetails: React.FC = () => {
                     <div className="md:col-span-2 flex flex-col gap-4">
                         {/* Post Box (Only Creator) */}
                         {isCreator && (
-                            <div className="bg-white p-4 rounded-sm border border-[#ccc] shadow-sm">
-                                <h3 className="font-bold text-[#333] text-[13px] mb-3 flex items-center gap-1">
+                            <div className="bg-[var(--card-bg)] p-4 rounded-sm border border-[var(--border-color)] shadow-sm transition-colors duration-200">
+                                <h3 className="font-bold text-[var(--text-main)] text-[13px] mb-3 flex items-center gap-1 transition-colors duration-200">
                                     <FileText size={16} className="text-[#2B7BB9]" /> Publicar en la página
                                 </h3>
                                 <form onSubmit={handleCreatePost} className="flex flex-col gap-3">
                                     <textarea
                                         value={postContent}
                                         onChange={(e) => setPostContent(e.target.value)}
-                                        className="w-full border border-[#ccc] p-3 text-[13px] outline-none focus:border-[#2B7BB9] min-h-[80px] rounded-[2px]"
+                                        className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] p-3 text-[13px] outline-none focus:border-[#2B7BB9] min-h-[80px] rounded-[2px] transition-colors duration-200"
                                         placeholder="Escribe algo para tus seguidores..."
                                         required
                                     />
                                     <div className="flex flex-col sm:flex-row gap-3">
-                                        <div className="flex-1 flex items-center gap-2 border border-[#eee] p-2 bg-[#fafafa] rounded-[2px]">
+                                        <div className="flex-1 flex items-center gap-2 border border-[var(--border-soft)] p-2 bg-[var(--bg-color)] rounded-[2px] transition-colors duration-200">
                                             <Youtube size={16} className="text-red-600" />
                                             <input
                                                 type="text"
                                                 value={videoUrl}
                                                 onChange={(e) => setVideoUrl(e.target.value)}
                                                 placeholder="URL de YouTube (opcional)"
-                                                className="bg-transparent border-none text-[11px] w-full outline-none"
+                                                className="bg-transparent border-none text-[11px] w-full outline-none text-[var(--text-main)]"
                                             />
                                         </div>
-                                        <div className="flex-1 flex items-center gap-2 border border-[#eee] p-2 bg-[#fafafa] rounded-[2px]">
+                                        <div className="flex-1 flex items-center gap-2 border border-[var(--border-soft)] p-2 bg-[var(--bg-color)] rounded-[2px] transition-colors duration-200">
                                             <ImageIcon size={16} className="text-[#2B7BB9]" />
                                             <input
                                                 type="file"
                                                 onChange={(e) => setImage(e.target.files?.[0] || null)}
-                                                className="text-[10px] w-full"
+                                                className="text-[10px] w-full text-gray-400"
                                                 accept="image/*"
                                             />
                                         </div>
@@ -176,22 +176,22 @@ const PageDetails: React.FC = () => {
                         {/* Page Posts Feed */}
                         <div className="flex flex-col gap-4">
                             {page.posts?.length === 0 ? (
-                                <div className="text-center py-10 bg-white border border-[#ccc] text-[#999] text-[13px]">
+                                <div className="text-center py-10 bg-[var(--card-bg)] border border-[var(--border-color)] text-gray-500 text-[13px] transition-colors duration-200">
                                     Aún no hay publicaciones en esta página.
                                 </div>
                             ) : (
                                 page.posts?.map((post: any) => (
-                                    <div key={post.id} className="bg-white p-4 rounded-sm border border-[#ccc] shadow-sm">
+                                    <div key={post.id} className="bg-[var(--card-bg)] p-4 rounded-sm border border-[var(--border-color)] shadow-sm transition-colors duration-200">
                                         <div className="flex items-center gap-2 mb-3">
                                             <div className="w-8 h-8 rounded-full bg-[#2B7BB9] flex items-center justify-center text-white font-bold text-[10px]">
                                                 {page.name.charAt(0)}
                                             </div>
                                             <div>
                                                 <h4 className="text-[12px] font-bold text-[#2B7BB9]">{page.name}</h4>
-                                                <span className="text-[10px] text-[#999]">{new Date(post.createdAt).toLocaleString()}</span>
+                                                <span className="text-[10px] text-gray-500 transition-colors duration-200">{new Date(post.createdAt).toLocaleString()}</span>
                                             </div>
                                         </div>
-                                        <p className="text-[13px] text-[#333] mb-3 leading-relaxed whitespace-pre-wrap">{post.content}</p>
+                                        <p className="text-[13px] text-[var(--text-main)] mb-3 leading-relaxed whitespace-pre-wrap transition-colors duration-200">{post.content}</p>
 
                                         {/* Video if exists */}
                                         {post.videoUrl && (
@@ -210,7 +210,7 @@ const PageDetails: React.FC = () => {
 
                                         {/* Image if exists */}
                                         {post.image && (
-                                            <div className="mb-3 border border-[#eee] p-1 bg-white inline-block shadow-sm">
+                                            <div className="mb-3 border border-[var(--border-soft)] p-1 bg-[var(--card-bg)] inline-block shadow-sm transition-colors duration-200">
                                                 <img src={post.image} className="max-w-full h-auto rounded-[1px]" alt="post attachment" />
                                             </div>
                                         )}
@@ -226,11 +226,11 @@ const PageDetails: React.FC = () => {
 
                     {/* Sidebar (Right) */}
                     <div className="flex flex-col gap-4">
-                        <div className="bg-white p-4 rounded-sm border border-[#ccc] shadow-sm">
-                            <h3 className="font-bold text-[12px] text-[#333] border-b border-[#eee] pb-2 mb-3">Información</h3>
+                        <div className="bg-[var(--card-bg)] p-4 rounded-sm border border-[var(--border-color)] shadow-sm transition-colors duration-200">
+                            <h3 className="font-bold text-[12px] text-[var(--text-main)] border-b border-[var(--border-soft)] pb-2 mb-3 transition-colors duration-200">Información</h3>
                             <div className="flex flex-col gap-2 text-[12px]">
-                                <div className="text-[#888]">Creada el: <span className="text-[#333]">{new Date(page.createdAt).toLocaleDateString()}</span></div>
-                                <div className="text-[#888]">Categoría: <span className="text-[#333] font-bold">{page.category}</span></div>
+                                <div className="text-gray-400 transition-colors duration-200">Creada el: <span className="text-[var(--text-main)] transition-colors duration-200">{new Date(page.createdAt).toLocaleDateString()}</span></div>
+                                <div className="text-gray-400 transition-colors duration-200">Categoría: <span className="text-[var(--text-main)] font-bold transition-colors duration-200">{page.category}</span></div>
                             </div>
                         </div>
                     </div>

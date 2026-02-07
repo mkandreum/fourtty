@@ -50,7 +50,7 @@ const ResetPassword: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col font-sans bg-gradient-to-b from-[#5C95C4] via-[#5C95C4] to-[#6FA3CD]">
             <div className="flex-1 flex items-center justify-center p-4">
-                <div className="max-w-md w-full bg-white rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div className="max-w-md w-full bg-[var(--card-bg)] rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-300 border border-[var(--border-color)] transition-colors duration-200">
                     <div className="bg-[#005599] p-6 text-center text-white">
                         <h1 className="text-3xl font-bold tracking-tighter">;) twentty</h1>
                         <p className="mt-2 opacity-80 text-sm italic">Seguridad primero</p>
@@ -59,7 +59,7 @@ const ResetPassword: React.FC = () => {
                     <div className="p-8">
                         {!isSuccess ? (
                             <>
-                                <h2 className="text-xl font-bold text-[#333] mb-6 text-center">Elige tu nueva contraseña</h2>
+                                <h2 className="text-xl font-bold text-[var(--text-main)] mb-6 text-center transition-colors duration-200">Elige tu nueva contraseña</h2>
 
                                 {error && (
                                     <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6 text-xs">
@@ -69,14 +69,14 @@ const ResetPassword: React.FC = () => {
 
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-700 mb-1 ml-1 uppercase tracking-wider">Nueva Contraseña</label>
+                                        <label className="block text-xs font-bold text-gray-400 mb-1 ml-1 uppercase tracking-wider transition-colors duration-200">Nueva Contraseña</label>
                                         <div className="relative">
-                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
                                             <input
                                                 type="password"
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded text-sm outline-none focus:ring-2 focus:ring-[#59B200] transition-all"
+                                                className="w-full pl-10 pr-4 py-2 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded text-sm outline-none focus:ring-2 focus:ring-[#59B200] transition-all"
                                                 placeholder="Mínimo 6 caracteres"
                                                 required
                                             />
@@ -84,14 +84,14 @@ const ResetPassword: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-700 mb-1 ml-1 uppercase tracking-wider">Repite Contraseña</label>
+                                        <label className="block text-xs font-bold text-gray-400 mb-1 ml-1 uppercase tracking-wider transition-colors duration-200">Repite Contraseña</label>
                                         <div className="relative">
-                                            <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                            <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
                                             <input
                                                 type="password"
                                                 value={confirmPassword}
                                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded text-sm outline-none focus:ring-2 focus:ring-[#59B200] transition-all"
+                                                className="w-full pl-10 pr-4 py-2 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded text-sm outline-none focus:ring-2 focus:ring-[#59B200] transition-all"
                                                 placeholder="********"
                                                 required
                                             />
@@ -110,8 +110,8 @@ const ResetPassword: React.FC = () => {
                         ) : (
                             <div className="text-center py-4 animate-in fade-in slide-in-from-bottom-2">
                                 <CheckCircle className="w-16 h-16 text-[#59B200] mx-auto mb-4" />
-                                <h2 className="text-xl font-bold text-[#333] mb-2">¡Contraseña Cambiada!</h2>
-                                <p className="text-sm text-gray-600 mb-6 italic">
+                                <h2 className="text-xl font-bold text-[var(--text-main)] mb-2 transition-colors duration-200">¡Contraseña Cambiada!</h2>
+                                <p className="text-sm text-gray-400 mb-6 italic transition-colors duration-200">
                                     Tu contraseña ha sido actualizada con éxito.
                                 </p>
                                 <p className="text-xs text-blue-600 mb-8 animate-pulse">
@@ -127,7 +127,7 @@ const ResetPassword: React.FC = () => {
                         )}
 
                         {!isSuccess && (
-                            <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+                            <div className="mt-8 pt-6 border-t border-[var(--border-soft)] text-center transition-colors duration-200">
                                 <Link
                                     to="/login"
                                     className="inline-flex items-center text-sm font-bold text-[#005599] hover:text-[#59B200] transition-colors"

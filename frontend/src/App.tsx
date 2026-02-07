@@ -21,52 +21,43 @@ import PhotoModal from './components/PhotoModal';
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentView, setCurrentView] = useState<ViewState>(ViewState.HOME);
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const { theme } = useTheme();
 
   // Handlers for switching views (passed to Header, etc.)
   // In a real router app, these would just be Links
 
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#eef4f9]">Cargando...</div>;
-  }
-
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" />;
   }
 
   return (
-    <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
+    <div className="min-h-screen pb-[40px] bg-[var(--bg-color)] transition-colors duration-200">
       <Header />
 
       {/* Main Container */}
       <div className="max-w-[980px] mx-auto mt-[54px] px-2 flex gap-4 items-start">
 
         {/* VIEW: HOME (3 Columns) */}
-        {currentView === ViewState.HOME && (
-          <>
-            {/* Left Column: Menu & Profile Summary */}
-            <aside className="w-[190px] shrink-0 hidden md:block">
-              <LeftPanel />
-            </aside>
+        {/* This MainLayout is likely deprecated or used for a different purpose now,
+            as the AppContent's Layout handles routing and view states.
+            Keeping it for now as per original structure, but removing view state logic. */}
+        <>
+          {/* Left Column: Menu & Profile Summary */}
+          <aside className="w-[190px] shrink-0 hidden md:block">
+            <LeftPanel />
+          </aside>
 
-            {/* Center Column: Feed */}
-            <main className="flex-1 min-w-0">
-              {children}
-            </main>
-
-            {/* Right Column: Sidebar */}
-            <aside className="w-[200px] shrink-0 hidden lg:block">
-              <Sidebar />
-            </aside>
-          </>
-        )}
-
-        {/* VIEW: PROFILE (2 Columns) */}
-        {currentView === ViewState.PROFILE && (
-          <main className="w-full">
-            <Profile />
+          {/* Center Column: Feed */}
+          <main className="flex-1 min-w-0">
+            {children}
           </main>
-        )}
+
+          {/* Right Column: Sidebar */}
+          <aside className="w-[200px] shrink-0 hidden lg:block">
+            <Sidebar />
+          </aside>
+        </>
 
       </div>
 
@@ -79,6 +70,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // Ideally we would use proper routes like /profile/:id, but adhering to current structure for now
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
 const AnimatedPage: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -95,30 +87,31 @@ const AnimatedPage: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 const AppContent = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const { theme } = useTheme();
   const location = useLocation();
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#eef4f9] text-[#005599] font-bold">Cargando Twentty...</div>;
+    return <div className="flex h-screen items-center justify-center bg-[var(--bg-color)]">Cargando...</div>;
   }
 
   const Layout = ({ children, view }: { children: React.ReactNode, view: ViewState }) => (
-    <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
+    <div className="min-h-screen pb-[40px] bg-[var(--bg-color)] transition-colors duration-200">
       <Header />
       <ToastContainer />
       <div className="main-content-container max-w-[980px] mx-auto px-0 sm:px-2">
-        <div className={`flex flex-col md:flex-row md:gap-0 items-start ${view === ViewState.HOME || view === ViewState.PEOPLE ? 'md:bg-white md:border md:border-[#dce5ed] md:rounded-[4px] md:shadow-sm md:mt-4' : ''}`}>
+        <div className={`flex flex-col md:flex-row md:gap-0 items-start ${view === ViewState.HOME || view === ViewState.PEOPLE ? 'md:bg-[var(--card-bg)] md:border md:border-[var(--border-color)] md:rounded-[4px] md:shadow-sm md:mt-4 transition-colors duration-200' : ''}`}>
           {view === ViewState.HOME && (
-            <aside className="hidden md:block w-[190px] shrink-0 sticky top-[80px] border-r border-[#eee] min-h-[calc(100vh-80px)]">
+            <aside className="hidden md:block w-[190px] shrink-0 sticky top-[80px] border-r border-[var(--border-soft)] min-h-[calc(100vh-80px)]">
               <div className="p-3">
                 <LeftPanel />
               </div>
             </aside>
           )}
-          <main className={`flex-1 min-w-0 w-full bg-white md:bg-transparent ${view === ViewState.PROFILE ? 'max-w-4xl mx-auto' : ''}`}>
+          <main className={`flex-1 min-w-0 w-full bg-[var(--card-bg)] md:bg-transparent ${view === ViewState.PROFILE ? 'max-w-4xl mx-auto' : ''}`}>
             {children}
           </main>
           {(view === ViewState.HOME || view === ViewState.PEOPLE) && (
-            <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[80px] border-l border-[#eee] min-h-[calc(100vh-80px)]">
+            <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[80px] border-l border-[var(--border-soft)] min-h-[calc(100vh-80px)]">
               <div className="p-3">
                 <Sidebar />
               </div>
@@ -225,18 +218,20 @@ const AppContent = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <SocketProvider>
-        <PhotoModalProvider>
-          <ToastProvider>
-            <Router>
-              <AppContent />
-              <PhotoModal />
-            </Router>
-          </ToastProvider>
-        </PhotoModalProvider>
-      </SocketProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <SocketProvider>
+          <PhotoModalProvider>
+            <ToastProvider>
+              <Router>
+                <AppContent />
+                <PhotoModal />
+              </Router>
+            </ToastProvider>
+          </PhotoModalProvider>
+        </SocketProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

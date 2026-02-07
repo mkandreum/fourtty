@@ -391,7 +391,7 @@ const Feed: React.FC = () => {
                         {/* Quick actions for Friendships remains expanded */}
                         {notif.type === 'friendship' && (
                            <div className="ml-8 flex flex-col gap-2 mt-1 mb-2">
-                              <div className="bg-[#f0f7e6] border border-[#d4e9bc] p-2 rounded-[4px] flex flex-col gap-2 shadow-sm">
+                              <div className="bg-[var(--bg-color)] border border-[var(--border-color)] p-2 rounded-[4px] flex flex-col gap-2 shadow-sm transition-colors duration-200">
                                  <div className="flex gap-2">
                                     <button
                                        onClick={() => handleAcceptFriend(notif.relatedId, notif.id)}
@@ -401,7 +401,7 @@ const Feed: React.FC = () => {
                                     </button>
                                     <button
                                        onClick={() => handleRejectFriend(notif.relatedId, notif.id)}
-                                       className="flex-1 bg-white text-[#cc0000] border border-[#ffcccc] text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#fff5f5] active:scale-95 transition-all"
+                                       className="flex-1 bg-[var(--card-bg)] text-[#cc0000] border border-[#ffcccc] text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-red-50 active:scale-95 transition-all"
                                     >
                                        Rechazar
                                     </button>
@@ -421,7 +421,7 @@ const Feed: React.FC = () => {
          </div>
 
 
-         <div className="flex items-center justify-between mb-2 border-b border-[#EEE] pb-1">
+         <div className="flex items-center justify-between mb-2 border-b border-[var(--border-soft)] pb-1 transition-colors duration-200">
             <h3 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1">
                <div className="bg-[#59B200] text-white p-0.5 rounded-[3px] shadow-sm">
                   <MessageSquare size={14} fill="white" strokeWidth={0} />
@@ -429,7 +429,7 @@ const Feed: React.FC = () => {
                Novedades
             </h3>
             <div className="text-[11px] flex gap-2">
-               <span className="font-bold text-[#333] hover:text-[#005599] cursor-pointer transition-colors">Amigos</span>
+               <span className="font-bold text-[var(--text-main)] hover:text-[#005599] cursor-pointer transition-colors">Amigos</span>
                <span className="text-[#005599] hover:underline cursor-pointer transition-colors">Páginas</span>
             </div>
          </div>
@@ -447,7 +447,7 @@ const Feed: React.FC = () => {
                {posts.map((post) => (
                   <div
                      key={post.id}
-                     className="flex gap-2 hover-lift p-1 rounded-sm"
+                     className="flex gap-2 hover:bg-[var(--border-soft)] p-1 rounded-sm transition-colors duration-200"
                   >
                      {/* Avatar */}
                      <div className="w-[50px] shrink-0">
@@ -456,10 +456,10 @@ const Feed: React.FC = () => {
                               src={post.user.avatar.startsWith('http') ? post.user.avatar : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.user.avatar}`}
                               alt={post.user.name}
                               loading="lazy"
-                              className="w-[50px] h-[50px] object-cover border border-[#ccc] rounded-[2px] p-[1px] bg-white shadow-sm cursor-pointer hover:scale-105 transition-transform"
+                              className="w-[50px] h-[50px] object-cover border border-[var(--border-color)] rounded-[2px] p-[1px] bg-[var(--card-bg)] shadow-sm cursor-pointer hover:scale-105 transition-transform"
                            />
                         ) : (
-                           <div className="w-[50px] h-[50px] bg-gray-200 border border-[#ccc] rounded-[2px] flex items-center justify-center text-gray-400">
+                           <div className="w-[50px] h-[50px] bg-[var(--bg-color)] border border-[var(--border-color)] rounded-[2px] flex items-center justify-center text-gray-400">
                               No img
                            </div>
                         )}
@@ -478,7 +478,7 @@ const Feed: React.FC = () => {
                         )}
                         <div className="text-[12px] leading-snug mb-1">
                            <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name} {post.user.lastName}</a>
-                           <span className="text-[#333] font-bold"> {post.content}</span>
+                           <span className="text-[var(--text-main)] text-[12px] transition-colors duration-200"> {post.content}</span>
                         </div>
 
                         <div className="text-[10px] text-[#999] mb-1 flex items-center gap-2">

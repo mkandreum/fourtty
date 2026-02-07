@@ -33,12 +33,12 @@ const Inbox: React.FC = () => {
     if (isLoading) return <div className="p-4">Cargando mensajes...</div>;
 
     return (
-        <div className="bg-white rounded-[4px] border border-[#dce5ed] p-4 min-h-[600px]">
-            <div className="flex justify-between items-center mb-6 border-b border-[#eee] pb-4">
-                <h1 className="text-[20px] font-bold text-[#333] flex items-center gap-2">
+        <div className="bg-[var(--card-bg)] rounded-[4px] border border-[var(--border-color)] p-4 min-h-[600px] transition-colors duration-200">
+            <div className="flex justify-between items-center mb-6 border-b border-[var(--border-soft)] pb-4 transition-colors duration-200">
+                <h1 className="text-[20px] font-bold text-[var(--text-main)] flex items-center gap-2 transition-colors duration-200">
                     <Mail size={20} className="text-[#005599]" /> Mensajes
                 </h1>
-                <div className="text-[12px] text-gray-500">Tienes {conversations.length} conversaciones</div>
+                <div className="text-[12px] text-gray-400">Tienes {conversations.length} conversaciones</div>
             </div>
 
             {conversations.length === 0 ? (
@@ -55,11 +55,11 @@ const Inbox: React.FC = () => {
                             <div
                                 key={otherUser.id}
                                 onClick={() => navigate(`/profile/${otherUser.id}`)} // For now, chat is on profile or ChatBar
-                                className="flex items-center gap-4 p-4 border-b border-[#eee] hover:bg-[#f6f9fc] cursor-pointer transition-colors"
+                                className="flex items-center gap-4 p-4 border-b border-[var(--border-soft)] hover:bg-[var(--border-soft)] cursor-pointer transition-colors"
                             >
                                 <img
                                     src={getAvatarUrl(otherUser.avatar)}
-                                    className="w-12 h-12 rounded-[4px] object-cover border border-[#ddd]"
+                                    className="w-12 h-12 rounded-[4px] object-cover border border-[var(--border-color)]"
                                     alt={otherUser.name}
                                 />
                                 <div className="flex-1 min-w-0">
@@ -69,7 +69,7 @@ const Inbox: React.FC = () => {
                                             {new Date(lastMsg.createdAt).toLocaleDateString()}
                                         </span>
                                     </div>
-                                    <p className="text-[12px] text-gray-600 truncate">
+                                    <p className="text-[12px] text-gray-400 truncate transition-colors duration-200">
                                         {lastMsg.senderId === user?.id ? 'Tú: ' : ''}{lastMsg.content}
                                     </p>
                                 </div>

@@ -103,7 +103,7 @@ const LeftPanel: React.FC = () => {
       >
          {/* Profile Summary */}
          <div className="flex gap-3">
-            <div className="bg-white p-1 border border-[#ccc] shadow-sm">
+            <div className="bg-[var(--card-bg)] p-1 border border-[var(--border-color)] shadow-sm transition-colors duration-200">
                <img
                   src={getAvatarUrl(user?.avatar)}
                   alt="Profile"
@@ -125,13 +125,13 @@ const LeftPanel: React.FC = () => {
                {pendingRequests.length > 0 && (
                   <div className="ml-5 flex flex-col gap-2 mt-1 mb-3">
                      {pendingRequests.map(req => (
-                        <div key={req.id} className="bg-[#f0f7e6] border border-[#d4e9bc] p-1.5 rounded-[2px] shadow-sm flex flex-col gap-1">
+                        <div key={req.id} className="bg-[var(--card-bg)] border border-[var(--border-color)] p-1.5 rounded-[2px] shadow-sm flex flex-col gap-1 transition-colors duration-200">
                            <div className="flex items-center gap-1.5">
                               <img
                                  src={getAvatarUrl(req.user.avatar, req.user.name, req.user.lastName)}
                                  className="w-4 h-4 rounded-full object-cover"
                               />
-                              <span className="text-[9px] font-bold text-[#333] truncate">{req.user.name}</span>
+                              <span className="text-[9px] font-bold text-[var(--text-main)] truncate">{req.user.name}</span>
                            </div>
                            <div className="flex gap-1">
                               <button
@@ -142,7 +142,7 @@ const LeftPanel: React.FC = () => {
                               </button>
                               <button
                                  onClick={() => handleRejectFriend(req.id)}
-                                 className="flex-1 bg-white text-[#cc0000] border border-[#ffcccc] text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-[#fff5f5]"
+                                 className="flex-1 bg-[var(--card-bg)] text-[#cc0000] border border-[#ffcccc] text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-red-50 transition-colors"
                               >
                                  Rechazar
                               </button>
@@ -162,7 +162,7 @@ const LeftPanel: React.FC = () => {
                         <img
                            key={visitor.id}
                            src={getAvatarUrl(visitor.avatar, visitor.name, visitor.lastName)}
-                           className="inline-block h-6 w-6 rounded-full ring-1 ring-white object-cover shadow-sm cursor-pointer hover:scale-110 transition-transform"
+                           className="inline-block h-6 w-6 rounded-full ring-1 ring-[var(--card-bg)] object-cover shadow-sm cursor-pointer hover:scale-110 transition-transform"
                            alt={visitor.name}
                            style={{ zIndex: 10 - idx }}
                            onClick={() => window.location.href = `/profile/${visitor.id}`}
@@ -185,7 +185,7 @@ const LeftPanel: React.FC = () => {
 
          {/* Sponsored Events */}
          <div className="mb-6">
-            <h4 className="font-bold text-[#333] text-[11px] mb-2 border-b border-[#eee] pb-1">Eventos</h4>
+            <h4 className="font-bold text-[var(--text-main)] text-[11px] mb-2 border-b border-[var(--border-soft)] pb-1 transition-colors duration-200">Eventos</h4>
             <div className="flex flex-col gap-3">
                {events.length > 0 ? events.map(event => (
                   <div key={event.id} className="flex gap-2">
@@ -207,7 +207,7 @@ const LeftPanel: React.FC = () => {
 
          {/* Calendar */}
          <div className="mb-4">
-            <h4 className="font-bold text-[#333] text-[11px] mb-2 border-b border-[#eee] pb-1 flex justify-between items-center">
+            <h4 className="font-bold text-[var(--text-main)] text-[11px] mb-2 border-b border-[var(--border-soft)] pb-1 flex justify-between items-center transition-colors duration-200">
                <span>Calendario</span>
                <span
                   className="text-[#005599] text-[9px] font-normal hover:underline cursor-pointer"
@@ -226,10 +226,10 @@ const LeftPanel: React.FC = () => {
 
                return (
                   <>
-                     <div className="text-[10px] text-[#333] mb-1">
+                     <div className="text-[10px] text-[var(--text-main)] mb-1 transition-colors duration-200">
                         <span className="font-bold">Hoy</span> {todayEvents.length > 0 ? todayEvents[0].title : 'no tienes ningún evento.'}
                      </div>
-                     <div className="text-[10px] text-[#333]">
+                     <div className="text-[10px] text-[var(--text-main)] transition-colors duration-200">
                         <span className="font-bold">Mañana</span> {tomorrowEvents.length > 0 ? tomorrowEvents[0].title : 'no tienes ningún evento.'}
                      </div>
                   </>

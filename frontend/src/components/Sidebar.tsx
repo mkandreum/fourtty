@@ -62,7 +62,7 @@ const Sidebar: React.FC = () => {
 
          {/* Chat Widget */}
          <div className="">
-            <h4 className="text-[#333] font-bold text-[11px] mb-2 flex items-center justify-between border-b border-[#eee] pb-1">
+            <h4 className="text-[var(--text-main)] font-bold text-[11px] mb-2 flex items-center justify-between border-b border-[var(--border-soft)] pb-1 transition-colors duration-200">
                <div className="flex items-center gap-1">
                   <span className={`w-2 h-2 rounded-full ${onlineFriendsCount > 0 ? 'bg-[#59B200]' : 'bg-gray-400'}`}></span>
                   Chat ({onlineFriendsCount})
@@ -73,7 +73,7 @@ const Sidebar: React.FC = () => {
                <input
                   type="text"
                   placeholder="Buscar amigo"
-                  className="w-full border border-[#ccc] rounded-[2px] py-0.5 px-1 text-[11px] pl-5"
+                  className="w-full bg-[var(--input-bg)] border border-[var(--border-color)] text-[var(--input-text)] rounded-[2px] py-0.5 px-1 text-[11px] pl-5 focus:outline-none transition-colors"
                   value={filterQuery}
                   onChange={(e) => setFilterQuery(e.target.value)}
                />
@@ -86,9 +86,9 @@ const Sidebar: React.FC = () => {
                   filteredFriends.map(friend => {
                      const isOnline = onlineUserIds.includes(friend.id);
                      return (
-                        <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[#e1f0fa] cursor-pointer group">
-                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-300'}`}></div>
-                           <span className={`text-[11px] ${isOnline ? 'text-[#333]' : 'text-gray-400'} group-hover:text-black truncate`}>{friend.name}</span>
+                        <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[#59B200]/10 cursor-pointer group rounded-sm transition-colors duration-200">
+                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-400'}`}></div>
+                           <span className={`text-[11px] ${isOnline ? 'text-[var(--text-main)]' : 'text-gray-400'} group-hover:text-[#59B200] truncate transition-colors duration-200`}>{friend.name}</span>
                         </div>
                      );
                   })

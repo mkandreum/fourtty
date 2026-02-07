@@ -150,16 +150,16 @@ const PhotoModal: React.FC = () => {
 
                         {/* Friend List Selector */}
                         {showFriendList && (
-                            <div className="absolute bg-white border border-[#ccc] shadow-xl rounded-[2px] w-[180px] z-50 overflow-hidden"
+                            <div className="absolute bg-[var(--card-bg)] border border-[var(--border-color)] shadow-xl rounded-[2px] w-[180px] z-50 overflow-hidden"
                                 style={{ left: `${showFriendList.x}%`, top: `${showFriendList.y}%` }}>
-                                <div className="p-2 bg-[#f0f2f5] border-b border-[#ccc] text-[11px] font-bold text-[#333] flex justify-between items-center">
+                                <div className="p-2 bg-[var(--bg-color)] border-b border-[var(--border-color)] text-[11px] font-bold text-[var(--text-main)] flex justify-between items-center">
                                     ¿Quién es?
                                     <X size={12} className="cursor-pointer" onClick={() => setShowFriendList(null)} />
                                 </div>
                                 <div className="max-h-[200px] overflow-y-auto">
                                     {friends.map(f => (
                                         <div key={f.id} onClick={() => handleAddTag(f.id)}
-                                            className="p-1.5 border-b border-[#eee] last:border-0 hover:bg-[#2B7BB9] hover:text-white cursor-pointer transition-colors flex items-center gap-2">
+                                            className="p-1.5 border-b border-[var(--border-soft)] last:border-0 hover:bg-[#2B7BB9] hover:text-white cursor-pointer transition-colors flex items-center gap-2">
                                             <img src={f.avatar || `/api/proxy/avatar?name=${encodeURIComponent(f.name)}`} className="w-5 h-5 rounded-full" />
                                             <span className="text-[10px] truncate">{f.name}</span>
                                         </div>
@@ -179,11 +179,11 @@ const PhotoModal: React.FC = () => {
                 </div>
 
                 {/* Sidebar - Comments & Info */}
-                <div className="w-full md:w-[380px] bg-white border-l border-[#ddd] flex flex-col md:h-full overflow-y-auto">
-                    <div className="p-4 border-b border-[#ddd] bg-white">
+                <div className="w-full md:w-[380px] bg-[var(--card-bg)] border-l border-[var(--border-color)] flex flex-col md:h-full overflow-y-auto transition-colors duration-200">
+                    <div className="p-4 border-b border-[var(--border-soft)] bg-[var(--card-bg)] transition-colors duration-200">
                         <div className="flex items-center gap-3 mb-4">
                             <img src={activePhoto.user?.avatar || `/api/proxy/avatar?name=${encodeURIComponent(userName)}`}
-                                className="w-12 h-12 rounded-[2px] border border-[#ccc] shadow-sm" />
+                                className="w-12 h-12 rounded-[2px] border border-[var(--border-color)] shadow-sm bg-[var(--card-bg)]" />
                             <div>
                                 <h4 className="text-[14px] font-bold text-[#005599] hover:underline cursor-pointer">
                                     <Link to={`/profile/${activePhoto.userId}`} onClick={closePhoto}>{userName}</Link>
@@ -196,13 +196,13 @@ const PhotoModal: React.FC = () => {
 
                         <div className="flex flex-wrap gap-2 mb-4">
                             <button onClick={handleToggleLike}
-                                className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${activePhoto.likedByMe ? 'bg-[#59B200] text-white' : 'bg-white text-[#555] border border-[#ccc]'}`}>
+                                className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${activePhoto.likedByMe ? 'bg-[#59B200] text-white' : 'bg-white/5 text-[var(--text-main)] border border-[var(--border-color)]'}`}>
                                 <ThumbsUp size={12} fill={activePhoto.likedByMe ? 'white' : 'transparent'} />
                                 {activePhoto.likedByMe ? '¡Me mola!' : 'Me mola'}
                             </button>
                             {user?.id === activePhoto.userId && (
                                 <button onClick={() => setIsTagging(!isTagging)}
-                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${isTagging ? 'bg-[#59B200] text-white' : 'bg-white text-[#555] border border-[#ccc]'}`}>
+                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${isTagging ? 'bg-[#59B200] text-white' : 'bg-white/5 text-[var(--text-main)] border border-[var(--border-color)]'}`}>
                                     <Tag size={12} /> {isTagging ? 'Haz clic en la foto' : 'Etiquetar'}
                                 </button>
                             )}
@@ -221,7 +221,7 @@ const PhotoModal: React.FC = () => {
                                 <div className="flex flex-wrap gap-1.5">
                                     {activePhoto.photoTags?.map((tag: any) => (
                                         <Link to={`/profile/${tag.userId}`} key={tag.id} onClick={closePhoto}
-                                            className="bg-white border border-[#ccc] text-[#005599] text-[11px] px-2 py-0.5 rounded-[2px] hover:bg-[#2B7BB9] hover:text-white">
+                                            className="bg-[var(--bg-color)] border border-[var(--border-color)] text-[#005599] text-[11px] px-2 py-0.5 rounded-[2px] hover:bg-[#2B7BB9] hover:text-white transition-colors">
                                             {tag.user.name}
                                         </Link>
                                     ))}
@@ -230,12 +230,12 @@ const PhotoModal: React.FC = () => {
                         )}
                     </div>
 
-                    <div className="p-4 bg-[#f8f9fb] flex-1 border-t border-[#eee]">
-                        <h5 className="text-[12px] font-bold text-[#333] mb-4 flex items-center gap-2">
+                    <div className="p-4 bg-[var(--bg-color)] flex-1 border-t border-[var(--border-soft)] transition-colors duration-200">
+                        <h5 className="text-[12px] font-bold text-[var(--text-main)] mb-4 flex items-center gap-2 transition-colors duration-200">
                             <MessageSquare size={16} className="text-[#59B200] fill-[#59B200]" />
                             Comentarios e interacción
                         </h5>
-                        <div className="bg-white rounded-[3px] border border-[#e1e9f0] p-3 shadow-sm">
+                        <div className="bg-[var(--card-bg)] rounded-[3px] border border-[var(--border-color)] p-3 shadow-sm transition-colors duration-200">
                             <CommentSection photoId={activePhoto.id} isPhoto={true} initialCommentsCount={activePhoto._count?.comments || 0} />
                         </div>
                     </div>

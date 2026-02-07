@@ -1,4 +1,4 @@
-const CACHE_NAME = 'twentty-cache-v2';
+const CACHE_NAME = 'twentty-cache-v3';
 const urlsToCache = [
     '/',
     '/index.html',
@@ -27,6 +27,7 @@ self.addEventListener('activate', (event) => {
             );
         })
     );
+    self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {

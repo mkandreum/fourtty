@@ -54,12 +54,12 @@ const Pages: React.FC = () => {
     };
 
     return (
-        <div className="flex-1 p-4 bg-[#f0f2f5] min-h-screen">
+        <div className="flex-1 p-4 bg-[var(--bg-color)] min-h-screen transition-colors duration-200">
             <div className="max-w-[800px] mx-auto">
-                <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-sm border border-[#ccc] shadow-sm">
+                <div className="flex justify-between items-center mb-6 bg-[var(--card-bg)] p-4 rounded-sm border border-[var(--border-color)] shadow-sm transition-colors duration-200">
                     <div className="flex items-center gap-2">
                         <Flag className="text-[#2B7BB9]" size={24} />
-                        <h1 className="text-xl font-bold text-[#333]">Páginas</h1>
+                        <h1 className="text-xl font-bold text-[var(--text-main)] transition-colors duration-200">Páginas</h1>
                     </div>
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
@@ -77,9 +77,9 @@ const Pages: React.FC = () => {
                             <Link
                                 to={`/pages/${page.id}`}
                                 key={page.id}
-                                className="bg-white p-3 rounded-sm border border-[#ccc] shadow-sm hover:border-[#2B7BB9] transition-colors flex gap-4"
+                                className="bg-[var(--card-bg)] p-3 rounded-sm border border-[var(--border-color)] shadow-sm hover:border-[#2B7BB9] transition-colors flex gap-4"
                             >
-                                <div className="w-16 h-16 bg-[#eee] rounded-md overflow-hidden flex-shrink-0 border border-[#ddd]">
+                                <div className="w-16 h-16 bg-[var(--bg-color)] rounded-md overflow-hidden flex-shrink-0 border border-[var(--border-color)]">
                                     {page.image ? (
                                         <img src={page.image} alt={page.name} className="w-full h-full object-cover" />
                                     ) : (
@@ -90,11 +90,11 @@ const Pages: React.FC = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h3 className="font-bold text-[#2B7BB9] truncate">{page.name}</h3>
-                                    <p className="text-[11px] text-[#888] mb-1">{page.category}</p>
-                                    <p className="text-[12px] text-[#555] line-clamp-2 leading-tight">
+                                    <p className="text-[11px] text-gray-400 mb-1">{page.category}</p>
+                                    <p className="text-[12px] text-gray-500 line-clamp-2 leading-tight">
                                         {page.description || 'Sin descripción'}
                                     </p>
-                                    <div className="mt-2 flex items-center gap-1 text-[10px] text-[#999]">
+                                    <div className="mt-2 flex items-center gap-1 text-[10px] text-gray-500">
                                         <Users size={12} /> {page._count?.followers || 0} seguidores
                                     </div>
                                 </div>
@@ -104,7 +104,7 @@ const Pages: React.FC = () => {
                 )}
 
                 {pages.length === 0 && !isLoading && (
-                    <div className="text-center py-20 bg-white border border-dashed border-[#ccc] rounded-sm text-[#999]">
+                    <div className="text-center py-20 bg-[var(--card-bg)] border border-dashed border-[var(--border-color)] rounded-sm text-gray-500 transition-colors duration-200">
                         Aún no hay páginas creadas. ¡Sé el primero en crear una!
                     </div>
                 )}
@@ -112,27 +112,27 @@ const Pages: React.FC = () => {
 
             {/* Create Modal */}
             {isCreateModalOpen && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white w-full max-w-[450px] rounded-sm shadow-xl p-6 border-t-4 border-[#2B7BB9]">
-                        <h2 className="text-xl font-bold mb-4">Nueva Página</h2>
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 transition-colors duration-200">
+                    <div className="bg-[var(--card-bg)] w-full max-w-[450px] rounded-sm shadow-xl p-6 border-t-4 border-[#2B7BB9] transition-colors duration-200 border border-[var(--border-color)]">
+                        <h2 className="text-xl font-bold mb-4 text-[var(--text-main)] transition-colors duration-200">Nueva Página</h2>
                         <form onSubmit={handleCreatePage} className="flex flex-col gap-4">
                             <div>
-                                <label className="block text-[12px] font-bold text-[#555] mb-1">Nombre de la página</label>
+                                <label className="block text-[12px] font-bold text-gray-400 mb-1 transition-colors duration-200">Nombre de la página</label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full border border-[#ccc] p-2 rounded-[3px] text-[13px] outline-none focus:border-[#2B7BB9]"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] p-2 rounded-[3px] text-[13px] outline-none focus:border-[#2B7BB9] transition-colors"
                                     placeholder="Nombre de la banda, marca o comunidad"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="block text-[12px] font-bold text-[#555] mb-1">Categoría</label>
+                                <label className="block text-[12px] font-bold text-gray-400 mb-1 transition-colors duration-200">Categoría</label>
                                 <select
                                     value={category}
                                     onChange={(e) => setCategory(e.target.value)}
-                                    className="w-full border border-[#ccc] p-2 rounded-[3px] text-[13px] outline-none focus:border-[#2B7BB9]"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] p-2 rounded-[3px] text-[13px] outline-none focus:border-[#2B7BB9] transition-colors"
                                 >
                                     <option>Interés general</option>
                                     <option>Música / Banda</option>
@@ -142,20 +142,20 @@ const Pages: React.FC = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-[12px] font-bold text-[#555] mb-1">Descripción</label>
+                                <label className="block text-[12px] font-bold text-gray-400 mb-1 transition-colors duration-200">Descripción</label>
                                 <textarea
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    className="w-full border border-[#ccc] p-2 rounded-[3px] text-[13px] outline-none focus:border-[#2B7BB9] h-24 resize-none"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] p-2 rounded-[3px] text-[13px] outline-none focus:border-[#2B7BB9] h-24 resize-none transition-colors"
                                     placeholder="De qué trata tu página..."
                                 />
                             </div>
                             <div>
-                                <label className="block text-[12px] font-bold text-[#555] mb-1">Imagen de perfil</label>
+                                <label className="block text-[12px] font-bold text-gray-400 mb-1 transition-colors duration-200">Imagen de perfil</label>
                                 <input
                                     type="file"
                                     onChange={(e) => setImage(e.target.files?.[0] || null)}
-                                    className="text-[12px]"
+                                    className="text-[12px] text-gray-400"
                                     accept="image/*"
                                 />
                             </div>

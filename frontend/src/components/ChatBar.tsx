@@ -95,7 +95,7 @@ const ChatWindow = ({
    };
 
    return (
-      <div className="fixed bottom-[30px] right-2 md:right-20 w-[calc(100%-16px)] md:w-[260px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 flex flex-col">
+      <div className="fixed bottom-[30px] right-2 md:right-20 w-[calc(100%-16px)] md:w-[260px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg rounded-t-[4px] z-40 flex flex-col transition-colors duration-200">
          {/* Header */}
          <div
             className="bg-[#005599] text-white p-1.5 px-2 flex justify-between items-center rounded-t-[3px] cursor-pointer"
@@ -113,7 +113,7 @@ const ChatWindow = ({
 
          {/* Body */}
          <div
-            className="h-[200px] overflow-y-auto p-2 bg-white text-[12px] flex flex-col gap-2"
+            className="h-[200px] overflow-y-auto p-2 bg-[var(--card-bg)] text-[12px] flex flex-col gap-2 transition-colors duration-200"
             ref={scrollRef}
          >
             {messages.length === 0 && (
@@ -124,8 +124,8 @@ const ChatWindow = ({
                const isMe = msg.senderId === currentUser.id;
                return (
                   <div key={idx} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                     <div className={`max-w-[85%] rounded-[4px] p-1 px-2 ${isMe ? 'bg-[#e1f0fa]' : 'bg-[#f0f0f0]'}`}>
-                        <span className="text-[#333]">{msg.content}</span>
+                     <div className={`max-w-[85%] rounded-[4px] p-1 px-2 ${isMe ? 'bg-[#59B200]/20' : 'bg-[var(--bg-color)]'}`}>
+                        <span className="text-[var(--text-main)] transition-colors duration-200">{msg.content}</span>
                      </div>
                      <span className="text-[9px] text-[#999] mt-0.5">
                         {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -135,7 +135,7 @@ const ChatWindow = ({
             })}
             {isFriendTyping && (
                <div className="flex items-start">
-                  <div className="bg-[#f0f0f0] rounded-[4px] p-1 px-2 flex gap-1 items-baseline">
+                  <div className="bg-[var(--bg-color)] rounded-[4px] p-1 px-2 flex gap-1 items-baseline transition-colors duration-200">
                      <span className="text-[10px] text-[#005599] italic font-bold">Escribiendo</span>
                      <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>.</motion.span>
                      <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }}>.</motion.span>
@@ -146,10 +146,10 @@ const ChatWindow = ({
          </div>
 
          {/* Input */}
-         <form onSubmit={handleSend} className="p-2 border-t border-[#ccc] bg-[#f2f6f9]">
+         <form onSubmit={handleSend} className="p-2 border-t border-[var(--border-soft)] bg-[var(--bg-color)] transition-colors duration-200">
             <input
                type="text"
-               className="w-full border border-[#b2c2d1] rounded-[2px] p-1 text-[11px] focus:outline-none focus:border-[#005599]"
+               className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1 text-[11px] focus:outline-none focus:border-[#005599] transition-colors"
                autoFocus
                value={inputText}
                onChange={handleInputChange}
@@ -249,21 +249,21 @@ const ChatBar: React.FC = () => {
 
          {/* Friends List Popup */}
          {isOpen && (
-            <div ref={chatListRef} className="fixed bottom-[30px] left-2 w-[200px] bg-white border border-[#999] shadow-lg rounded-t-[4px] z-40 max-h-[400px] flex flex-col">
-               <div className="bg-[#f0f0f0] p-2 border-b border-[#ccc] flex justify-between items-center">
-                  <span className="text-[11px] font-bold text-[#333]">Amigos {friends.length > 0 && `(${onlineFriends.length}/${friends.length})`}</span>
+            <div ref={chatListRef} className="fixed bottom-[30px] left-2 w-[200px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg rounded-t-[4px] z-40 max-h-[400px] flex flex-col transition-colors duration-200">
+               <div className="bg-[var(--bg-color)] p-2 border-b border-[var(--border-soft)] flex justify-between items-center transition-colors duration-200">
+                  <span className="text-[11px] font-bold text-[var(--text-main)] transition-colors duration-200">Amigos {friends.length > 0 && `(${onlineFriends.length}/${friends.length})`}</span>
                   <div className="flex gap-1">
                      <span className="text-[9px] text-[#005599] hover:underline cursor-pointer">Ajustes</span>
                   </div>
                </div>
                <div className="overflow-y-auto p-1 flex-1 h-[300px]">
-                  <input type="text" placeholder="Buscar amigo" className="w-full text-[11px] p-1 border border-[#ccc] rounded-[2px] mb-2 focus:outline-none" />
+                  <input type="text" placeholder="Buscar amigo" className="w-full text-[11px] p-1 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] mb-2 focus:outline-none transition-colors" />
                   {friends.length > 0 ? friends.map(friend => {
                      const isOnline = onlineUserIds.includes(friend.id);
                      return (
                         <div
                            key={friend.id}
-                           className="flex items-center gap-2 p-1.5 hover:bg-[#e1f0fa] cursor-pointer rounded-[2px]"
+                           className="flex items-center gap-2 p-1.5 hover:bg-[var(--border-soft)] cursor-pointer rounded-[2px] transition-colors duration-200"
                            onClick={() => {
                               setActiveChatUser(friend);
                            }}
@@ -271,10 +271,10 @@ const ChatBar: React.FC = () => {
                            <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-300'}`}></div>
                            <img
                               src={friend.avatar || `/api/proxy/avatar?name=${encodeURIComponent(friend.name)}`}
-                              className={`w-5 h-5 rounded-sm object-cover ${!isOnline ? 'grayscale opacity-70' : ''}`}
+                              className={`w-5 h-5 rounded-sm object-cover bg-[var(--bg-color)] ${!isOnline ? 'grayscale opacity-70' : ''}`}
                               alt={friend.name}
                            />
-                           <span className={`text-[11px] ${isOnline ? 'text-[#333] font-bold' : 'text-gray-500'} truncate`}>{friend.name}</span>
+                           <span className={`text-[11px] ${isOnline ? 'text-[var(--text-main)] font-bold' : 'text-gray-500'} truncate transition-colors duration-200`}>{friend.name}</span>
                         </div>
                      );
                   }) : (

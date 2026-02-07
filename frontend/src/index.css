@@ -1,11 +1,54 @@
 @import "tailwindcss";
 
+:root {
+    --bg-color: #E8EEF4;
+    --card-bg: #ffffff;
+    --text-main: #333333;
+    --text-secondary: #005599;
+    --border-color: #dce5ed;
+    --border-soft: #eeeeee;
+    --input-bg: #ffffff;
+    --input-text: #000000;
+    --header-bg: #2B7BB9;
+    --toast-success-bg: #fff9e6;
+    --toast-success-border: #fceebb;
+    --toast-success-text: #856404;
+    --toast-error-bg: #fee2e2;
+    --toast-error-border: #fecaca;
+    --toast-error-text: #991b1b;
+    --toast-info-bg: #f0f7fd;
+    --toast-info-border: #d1e7fe;
+    --toast-info-text: #004085;
+}
+
+[data-theme='dark'] {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-main: #f1f5f9;
+    --text-secondary: #38bdf8;
+    --border-color: #334155;
+    --border-soft: #1e293b;
+    --input-bg: #334155;
+    --input-text: #f1f5f9;
+    --toast-success-bg: #064e3b;
+    --toast-success-border: #065f46;
+    --toast-success-text: #6ee7b7;
+    --toast-error-bg: #7f1d1d;
+    --toast-error-border: #991b1b;
+    --toast-error-text: #fca5a5;
+    --toast-info-bg: #1e3a8a;
+    --toast-info-border: #1e40af;
+    --toast-info-text: #93c5fd;
+}
+
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #E8EEF4;
+    background-color: var(--bg-color);
+    color: var(--text-main);
     scroll-behavior: smooth;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -32,22 +75,22 @@ body {
     }
 }
 
-/* GLOBAL FORCED WHITE BACKGROUND */
+/* GLOBAL THEME-AWARE BACKGROUNDS */
 input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea {
-    background-color: white !important;
-    background: white !important;
-    color: black !important;
+    background-color: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border-color: var(--border-color) !important;
 }
 
-/* Fix browser autofill blue color and persistent overlays */
+/* Fix browser autofill dark mode */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-    -webkit-text-fill-color: black !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+    -webkit-text-fill-color: var(--input-text) !important;
     transition: background-color 5000s ease-in-out 0s !important;
 }
 

@@ -49,12 +49,12 @@ const Invitations: React.FC<InvitationsProps> = ({ compact = false }) => {
     };
 
     return (
-        <div className={`${compact ? 'p-2' : 'mb-6 p-2 md:p-3'} bg-[#f9fbfd] border border-[#dce5ed] rounded-[4px] shadow-sm overflow-hidden`}>
+        <div className={`${compact ? 'p-2' : 'mb-6 p-2 md:p-3'} bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[4px] shadow-sm overflow-hidden transition-colors duration-200`}>
             <div
                 className={`flex items-center justify-between ${window.innerWidth < 768 ? 'cursor-pointer' : 'md:cursor-default'}`}
                 onClick={() => { if (window.innerWidth < 768) setIsInvitesExpanded(!isInvitesExpanded); }}
             >
-                <h4 className={`font-bold text-[#333] ${compact ? 'text-[11px]' : 'text-[11px] md:text-[12px]'} flex items-center gap-1.5 uppercase tracking-wide`}>
+                <h4 className={`font-bold text-[var(--text-main)] ${compact ? 'text-[11px]' : 'text-[11px] md:text-[12px]'} flex items-center gap-1.5 uppercase tracking-wide transition-colors duration-200`}>
                     <UserPlus size={compact ? 12 : 14} className="text-[#59B200]" />
                     <span>Invitaciones</span>
                 </h4>
@@ -75,7 +75,7 @@ const Invitations: React.FC<InvitationsProps> = ({ compact = false }) => {
                     <input
                         type="email"
                         placeholder="Email de tu amigo..."
-                        className="flex-1 p-1.5 md:p-2 text-[11px] md:text-[12px] border border-[#ccc] rounded-[2px] bg-white outline-none focus:border-[#2B7BB9]"
+                        className="flex-1 p-1.5 md:p-2 text-[11px] md:text-[12px] border border-[var(--border-color)] rounded-[2px] bg-[var(--input-bg)] text-[var(--input-text)] outline-none focus:border-[#2B7BB9] transition-colors"
                         value={inviteEmail}
                         onChange={(e) => setInviteEmail(e.target.value)}
                     />
@@ -91,8 +91,8 @@ const Invitations: React.FC<InvitationsProps> = ({ compact = false }) => {
                 {myInvitations.length > 0 && (
                     <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar pb-1">
                         {myInvitations.slice(0, compact ? 3 : 5).map(inv => (
-                            <div key={inv.id} className="shrink-0 bg-white border border-[#eee] px-2 py-0.5 rounded-[2px] text-[9px] md:text-[10px] flex items-center gap-1.5">
-                                <span className={`font-mono font-bold ${inv.used ? 'text-gray-300 line-through' : 'text-[#59B200]'}`}>
+                            <div key={inv.id} className="shrink-0 bg-[var(--bg-color)] border border-[var(--border-soft)] px-2 py-0.5 rounded-[2px] text-[9px] md:text-[10px] flex items-center gap-1.5 transition-colors duration-200">
+                                <span className={`font-mono font-bold ${inv.used ? 'text-gray-500 line-through' : 'text-[#59B200]'}`}>
                                     {inv.code}
                                 </span>
                                 {inv.used && <span className="text-[8px] text-gray-400 italic">Usado</span>}

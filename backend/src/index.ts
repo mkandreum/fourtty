@@ -26,6 +26,7 @@ dotenv.config();
 export const prisma = new PrismaClient();
 
 const app: Express = express();
+app.set('trust proxy', 1);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
