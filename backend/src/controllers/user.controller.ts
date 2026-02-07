@@ -240,3 +240,25 @@ export const getUserFriends = async (req: AuthRequest, res: Response): Promise<v
         res.status(500).json({ error: 'Failed to get friends' });
     }
 };
+
+// Delete user account
+export const deleteUserAccount = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = parseInt(req.params.id as string);
+
+        // Check if user can delete this account
+        if (req.userId !== userId) {
+            res.status(403).json({ error: 'You can only delete your own account' });
+            return;
+        }
+
+        await prisma.user.delete({
+            where: { id: userId }
+        });
+
+        res.json({ message: 'Account deleted successfully' });
+    } catch (error) {
+        console.error('Delete account error:', error);
+        res.status(500).json({ error: 'Failed to delete account' });
+    }
+};

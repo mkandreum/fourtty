@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag } from 'lucide-react';
+import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag, Trash2, UserX } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { usePhotoModal } from '../contexts/PhotoModalContext';
@@ -11,7 +11,7 @@ import Cropper from 'react-easy-crop';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Profile: React.FC = () => {
-   const { user, updateUser } = useAuth();
+   const { user, updateUser, logout } = useAuth();
    const { showToast } = useToast();
    const { id } = useParams<{ id: string }>();
    const navigate = useNavigate();
@@ -175,7 +175,39 @@ const Profile: React.FC = () => {
          showToast("Error al eliminar amigo", "error");
       }
    };
-   /* Removed handleSendInvite */
+   const handleDeletePost = async (postId: number) => {
+      if (!window.confirm("¿Estás seguro de que quieres borrar esta publicación?")) return;
+
+      try {
+         await api.delete(`/posts/${postId}`);
+         setWallPosts(prev => prev.filter(p => p.id !== postId));
+         showToast("Publicación borrada", "success");
+      } catch (error) {
+         console.error("Error deleting post:", error);
+         showToast("No se pudo borrar la publicación", "error");
+      }
+   };
+
+   const handleDeleteAccount = async () => {
+      if (!profileUser) return;
+      if (!window.confirm("¡ATENCIÓN! ¿Estás COMPLETAMENTE seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer y perderás todos tus datos.")) return;
+
+      const confirmInput = window.prompt("Para confirmar, escribe 'ELIMINAR' en mayúsculas:");
+      if (confirmInput !== 'ELIMINAR') {
+         showToast("Confirmación incorrecta", "error");
+         return;
+      }
+
+      try {
+         await api.delete(`/users/${profileUser.id}`);
+         showToast("Cuenta eliminada correctamente. Hasta pronto.", "info");
+         logout();
+         navigate('/');
+      } catch (error) {
+         console.error("Error deleting account:", error);
+         showToast("Error al eliminar la cuenta", "error");
+      }
+   };
 
    const onCropComplete = (_croppedArea: any, croppedAreaPixels: any) => {
       setCroppedAreaPixels(croppedAreaPixels);
@@ -551,6 +583,15 @@ const Profile: React.FC = () => {
                      >
                         Guardar cambios
                      </button>
+
+                     <div className="mt-4 pt-4 border-t border-[#dce5ed]">
+                        <button
+                           onClick={handleDeleteAccount}
+                           className="flex items-center justify-center gap-1.5 w-full bg-white text-[#cc0000] border border-[#cc0000] font-bold py-1.5 rounded-[2px] hover:bg-red-50 transition-colors text-[10px]"
+                        >
+                           <UserX size={12} /> Eliminar mi cuenta permanentemente
+                        </button>
+                     </div>
                   </div>
                ) : (
                   (profileUser.gender || profileUser.age || profileUser.relationshipStatus || profileUser.location || profileUser.occupation) ? (
@@ -717,6 +758,18 @@ const Profile: React.FC = () => {
                                     >
                                        {post.user.name} {post.user.lastName}
                                     </span>
+                                    {isOwnProfile && (
+                                       <button
+                                          onClick={(e) => {
+                                             e.stopPropagation();
+                                             handleDeletePost(post.id);
+                                          }}
+                                          className="ml-2 text-[#999] hover:text-[#cc0000] inline-flex align-middle"
+                                          title="Borrar publicación"
+                                       >
+                                          <Trash2 size={12} />
+                                       </button>
+                                    )}
                                     <span className="text-[#333] text-[12px]"> {post.content}</span>
                                  </div>
                                  {post.image && (

@@ -4,7 +4,8 @@ import {
     updateUserProfile,
     searchUsers,
     getUserFriends,
-    uploadUserAvatar
+    uploadUserAvatar,
+    deleteUserAccount
 } from '../controllers/user.controller';
 import { authenticateToken } from '../middleware/auth';
 import { checkPrivacy } from '../middleware/privacy';
@@ -17,5 +18,6 @@ router.get('/:id', authenticateToken, checkPrivacy, getUserProfile);
 router.put('/:id', authenticateToken, updateUserProfile);
 router.post('/:id/avatar', authenticateToken, uploadAvatar, uploadUserAvatar);
 router.get('/:id/friends', authenticateToken, checkPrivacy, getUserFriends);
+router.delete('/:id', authenticateToken, deleteUserAccount);
 
 export default router;
