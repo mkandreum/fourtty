@@ -756,7 +756,7 @@ const Profile: React.FC = () => {
                               <div className="flex-1">
                                  <div className="mb-1">
                                     <span
-                                       className="text-[var(--text-secondary)] font-bold text-[12px] hover:underline cursor-pointer"
+                                       className="text-[var(--text-secondary)] font-bold text-[13px] md:text-[14px] hover:underline cursor-pointer transition-colors duration-200"
                                        onClick={() => navigate(`/profile/${post.user.id}`)}
                                     >
                                        {post.user.name} {post.user.lastName}

@@ -277,15 +277,15 @@ const Feed: React.FC = () => {
 
          {/* Status Box - Speech Bubble Style */}
          <div className="mb-4 md:mb-6 relative pt-0">
-            <div className="bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-[8px] p-2 relative shadow-sm transition-colors duration-200">
+            <div className="bg-[var(--card-bg)] [data-theme='dark']:bg-white border-2 border-[var(--border-color)] rounded-[8px] p-2 relative shadow-sm transition-colors duration-200">
                {/* Speech pulse arrow tip */}
                <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--border-color)]"></div>
-               <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--card-bg)]"></div>
+               <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--card-bg)] [data-theme='dark']:border-b-white"></div>
 
                <div className="flex gap-2 items-start">
                   <div className="flex-1 relative">
                      <input
-                        className="w-full border-none p-1 md:p-2 text-[15px] md:text-[18px] text-[var(--text-main)] placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200"
+                        className="w-full border-none p-1 md:p-2 text-[15px] md:text-[18px] text-[var(--text-main)] [data-theme='dark']:text-black placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200"
                         value={statusText}
                         onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                         placeholder="¿Qué estás pensando?"
@@ -429,8 +429,7 @@ const Feed: React.FC = () => {
                Novedades
             </h3>
             <div className="text-[11px] flex gap-2">
-               <span className="font-bold text-[var(--text-main)] hover:text-[#005599] cursor-pointer transition-colors">Amigos</span>
-               <span className="text-[#005599] hover:underline cursor-pointer transition-colors">Páginas</span>
+               <span className="font-bold text-[var(--text-main)] hover:text-[var(--text-secondary)] cursor-pointer transition-colors">Amigos</span>
             </div>
          </div>
 
@@ -476,8 +475,8 @@ const Feed: React.FC = () => {
                               <X size={14} />
                            </button>
                         )}
-                        <div className="text-[12px] leading-snug mb-1">
-                           <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name} {post.user.lastName}</a>
+                        <div className="text-[13px] md:text-[14px] leading-snug mb-1">
+                           <a href="#" className="text-[var(--text-secondary)] font-bold hover:underline transition-colors duration-200">{post.user.name} {post.user.lastName}</a>
                            <div className="text-[var(--text-main)] text-[13px] md:text-[14px] font-bold mt-1 transition-colors duration-200"> {post.content}</div>
                         </div>
 
