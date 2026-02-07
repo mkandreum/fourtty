@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Edit3, Tag, Youtube, Flag, ThumbsUp, UserPlus, Plus, Bell, X, Mail, MessageCircle, BarChart2 } from 'lucide-react';
 import Invitations from './Invitations';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { useSocket } from '../contexts/SocketContext';
@@ -15,6 +15,7 @@ const Feed: React.FC = () => {
    const { user, updateUser } = useAuth();
    const { showToast } = useToast();
    const navigate = useNavigate();
+   const location = useLocation();
    const { openPhoto } = usePhotoModal();
    const { socket } = useSocket();
    const [statusText, setStatusText] = useState('');
@@ -192,6 +193,39 @@ const Feed: React.FC = () => {
       }
    };
 
+   const handleNotificationClick = async (notif: any) => {
+      // Mark as read
+      try {
+         await api.put(`/notifications/${notif.id}/read`);
+         setUnreadNotifications(prev => prev.filter(n => n.id !== notif.id));
+      } catch (e) {
+         console.error(e);
+      }
+
+      // Navigation logic
+      try {
+         if (['comment_photo', 'tag_photo'].includes(notif.type)) {
+            const photoRes = await api.get(`/photos/user/${notif.userId}`);
+            const photos = photoRes.data.photos;
+            const targetPhoto = photos.find((p: any) => p.id === notif.relatedId);
+            if (targetPhoto) openPhoto(targetPhoto, photos);
+            else navigate(`/profile/${notif.userId}`);
+         } else if (['comment_post', 'tag_post', 'status_post', 'video_post', 'photo_post'].includes(notif.type)) {
+            // If we are already on home, we might want to scroll to post, but for now just stay/refresh
+            if (location.pathname === '/') {
+               window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+               navigate('/');
+            }
+         } else if (notif.type === 'message') {
+            navigate('/');
+         }
+      } catch (error) {
+         console.error('Error handling notification click:', error);
+         navigate('/');
+      }
+   };
+
    return (
       <div className="bg-white md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4">
 
@@ -242,70 +276,61 @@ const Feed: React.FC = () => {
          </div>
 
          {/* Unread Notifications - Shown below status box */}
-         {(() => {
-            const groups = {
-               messages: unreadNotifications.filter(n => n.type === 'message'),
-               friendships: unreadNotifications.filter(n => n.type === 'friendship'),
-               comments: unreadNotifications.filter(n => ['comment', 'comment_photo', 'comment_post', 'tag'].includes(n.type)),
-               tags: unreadNotifications.filter(n => ['tag', 'tag_photo'].includes(n.type)),
-            };
-
-            const items = [
-               { key: 'visits', label: 'visitas al perfil', icon: <BarChart2 size={16} />, count: stats.visits },
-               { key: 'messages', label: 'mensajes privados', icon: <Mail size={16} />, count: groups.messages.length },
-               { key: 'friendships', label: 'peticiones de amistad', icon: <UserPlus size={16} />, count: groups.friendships.length },
-               { key: 'comments', label: 'comentarios y menciones', icon: <MessageCircle size={16} />, count: groups.comments.length },
-               { key: 'tags', label: 'etiquetas', icon: <Tag size={16} />, count: groups.tags.length },
-            ].filter(item => item.count > 0);
-
-            if (items.length === 0) return null;
-
-            return (
-               <div className="mb-4">
-                  <div className="flex flex-col gap-1">
-                     {items.map(item => (
+         {unreadNotifications.length > 0 && (
+            <div className="mb-4">
+               <div className="flex flex-col gap-2">
+                  {unreadNotifications.map(notif => (
+                     <div key={notif.id} className="flex flex-col gap-1 w-full animate-in fade-in slide-in-from-top-1 duration-300">
                         <div
-                           key={item.key}
-                           className={`flex items-center gap-2 group cursor-pointer hover:bg-[#F9FBFE] p-1 rounded-sm transition-colors ${item.key === 'visits' ? 'md:hidden' : ''}`}
+                           className="flex items-center gap-2 group cursor-pointer hover:bg-[#F9FBFE] p-1.5 rounded-sm transition-colors border-l-2 border-[#59B200] bg-white shadow-sm"
                            onClick={() => {
-                              if (item.key === 'visits') navigate('/profile');
-                              else if (item.key === 'friendships') navigate('/people');
-                              else if (item.key === 'tags') navigate('/profile/photos');
-                              else navigate('/');
+                              if (notif.type === 'friendship') return; // Handled below
+                              handleNotificationClick(notif);
                            }}
                         >
-                           <div className="text-[#59B200] bg-[#59B200]/10 p-1 rounded-sm">
-                              {item.icon}
+                           <div className="text-[#59B200] bg-[#59B200]/10 p-1.5 rounded-sm">
+                              {['comment_photo', 'comment_post'].includes(notif.type) && <MessageCircle size={16} />}
+                              {['tag_photo', 'tag_post'].includes(notif.type) && <Tag size={16} />}
+                              {['photo_post', 'video_post', 'status_post'].includes(notif.type) && <Bell size={16} />}
+                              {notif.type === 'message' && <Mail size={16} />}
+                              {notif.type === 'friendship' && <UserPlus size={16} />}
                            </div>
-                           <div className="flex flex-col">
-                              <span className="text-[14px] md:text-[16px] font-bold text-[#59B200] group-hover:underline">
-                                 {item.count} {item.label}
+                           <div className="flex flex-col flex-1">
+                              <span className="text-[14px] md:text-[16px] font-bold text-[#59B200] group-hover:underline leading-tight">
+                                 {notif.content}
                               </span>
-                              {item.key === 'visits' && recentVisitors.length > 0 && (
-                                 <div className="md:hidden flex -space-x-1 overflow-hidden mt-1">
-                                    {recentVisitors.slice(0, 6).map((visitor, idx) => (
-                                       <img
-                                          key={visitor.id}
-                                          src={getAvatarUrl(visitor.avatar, visitor.name, visitor.lastName)}
-                                          className="inline-block h-6 w-6 rounded-full ring-1 ring-white object-cover shadow-sm"
-                                          alt={visitor.name}
-                                          style={{ zIndex: 10 - idx }}
-                                       />
-                                    ))}
-                                    {recentVisitors.length > 6 && (
-                                       <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 ring-1 ring-white text-[8px] font-bold text-gray-500 z-0 shadow-sm">
-                                          +{recentVisitors.length - 6}
-                                       </div>
-                                    )}
-                                 </div>
-                              )}
+                              <span className="text-[10px] text-gray-400">
+                                 {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
                            </div>
                         </div>
-                     ))}
-                  </div>
+
+                        {/* Quick actions for Friendships remains expanded */}
+                        {notif.type === 'friendship' && (
+                           <div className="ml-8 flex flex-col gap-2 mt-1 mb-2">
+                              <div className="bg-[#f0f7e6] border border-[#d4e9bc] p-2 rounded-[4px] flex flex-col gap-2 shadow-sm">
+                                 <div className="flex gap-2">
+                                    <button
+                                       onClick={() => handleAcceptFriend(notif.relatedId, notif.id)}
+                                       className="flex-1 bg-[#59B200] text-white text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#4a9600] active:scale-95 transition-all"
+                                    >
+                                       Aceptar
+                                    </button>
+                                    <button
+                                       onClick={() => handleRejectFriend(notif.relatedId, notif.id)}
+                                       className="flex-1 bg-white text-[#cc0000] border border-[#ffcccc] text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#fff5f5] active:scale-95 transition-all"
+                                    >
+                                       Rechazar
+                                    </button>
+                                 </div>
+                              </div>
+                           </div>
+                        )}
+                     </div>
+                  ))}
                </div>
-            );
-         })()}
+            </div>
+         )}
 
          {/* Invitations Panel - Shown only on mobile in Feed */}
          <div className="md:hidden">

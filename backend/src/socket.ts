@@ -1,4 +1,5 @@
 import { Server, Socket } from 'socket.io';
+import jwt from 'jsonwebtoken';
 import { prisma } from './index';
 
 interface ConnectedUser {
@@ -9,29 +10,46 @@ interface ConnectedUser {
 const connectedUsers: ConnectedUser[] = [];
 
 export const initSocketHandlers = (io: Server) => {
+    // Middleware to verify JWT token
+    io.use((socket, next) => {
+        const token = socket.handshake.auth.token;
+        if (!token) {
+            return next(new Error('Authentication error'));
+        }
+
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            console.error('JWT_SECRET not configured');
+            return next(new Error('Internal server error'));
+        }
+
+        jwt.verify(token, secret, (err: any, decoded: any) => {
+            if (err) return next(new Error('Authentication error'));
+            (socket as any).userId = (decoded as { userId: number }).userId;
+            next();
+        });
+    });
+
     const broadcastOnlineUsers = () => {
         const onlineIds = Array.from(new Set(connectedUsers.map(u => u.userId)));
         io.emit('online_users', onlineIds);
     };
 
     io.on('connection', (socket: Socket) => {
-        console.log('👤 New client connected:', socket.id);
+        const userId = (socket as any).userId;
+        if (!userId) {
+            socket.disconnect();
+            return;
+        }
+
+        console.log(`👤 User ${userId} connected via socket ${socket.id}`);
 
         // Join user to their own room for private notifications
-        socket.on('authenticate', (userId: number) => {
-            if (!userId) return;
+        socket.join(`user_${userId}`);
 
-            // Remove previous connections for this user (optional)
-            const index = connectedUsers.findIndex(u => u.socketId === socket.id);
-            if (index !== -1) {
-                connectedUsers.splice(index, 1);
-            }
-
-            connectedUsers.push({ userId, socketId: socket.id });
-            socket.join(`user_${userId}`);
-            console.log(`🔑 User ${userId} authenticated and joined room user_${userId}`);
-            broadcastOnlineUsers();
-        });
+        // Track connected user
+        connectedUsers.push({ userId, socketId: socket.id });
+        broadcastOnlineUsers();
 
         // Request initial online users
         socket.on('get_online_users', () => {
@@ -40,8 +58,9 @@ export const initSocketHandlers = (io: Server) => {
         });
 
         // Chat messaging logic
-        socket.on('send_message', async (data: { recipientId: number, content: string, senderId: number }) => {
-            const { recipientId, content, senderId } = data;
+        socket.on('send_message', async (data: { recipientId: number, content: string }) => {
+            const { recipientId, content } = data;
+            const senderId = userId; // ALWAYS use the verified userId from the token
 
             try {
                 // Save message to DB
@@ -84,18 +103,17 @@ export const initSocketHandlers = (io: Server) => {
         });
 
         // Typing indicators
-        socket.on('typing', (data: { recipientId: number, senderId: number }) => {
-            io.to(`user_${data.recipientId}`).emit('user_typing', { senderId: data.senderId });
+        socket.on('typing', (data: { recipientId: number }) => {
+            io.to(`user_${data.recipientId}`).emit('user_typing', { senderId: userId });
         });
 
-        socket.on('stop_typing', (data: { recipientId: number, senderId: number }) => {
-            io.to(`user_${data.recipientId}`).emit('user_stop_typing', { senderId: data.senderId });
+        socket.on('stop_typing', (data: { recipientId: number }) => {
+            io.to(`user_${data.recipientId}`).emit('user_stop_typing', { senderId: userId });
         });
 
         socket.on('disconnect', () => {
             const index = connectedUsers.findIndex(u => u.socketId === socket.id);
             if (index !== -1) {
-                const userId = connectedUsers[index].userId;
                 connectedUsers.splice(index, 1);
                 console.log(`👤 User ${userId} disconnected`);
                 broadcastOnlineUsers();

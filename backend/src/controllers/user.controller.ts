@@ -11,7 +11,6 @@ export const getUserProfile = async (req: AuthRequest, res: Response): Promise<v
             where: { id: userId },
             select: {
                 id: true,
-                email: true,
                 name: true,
                 lastName: true,
                 avatar: true,
@@ -154,8 +153,7 @@ export const searchUsers = async (req: AuthRequest, res: Response): Promise<void
         if (query && query.trim().length >= 2) {
             where.OR = [
                 { name: { contains: query } },
-                { lastName: { contains: query } },
-                { email: { contains: query } }
+                { lastName: { contains: query } }
             ];
         }
 

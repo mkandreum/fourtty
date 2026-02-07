@@ -113,10 +113,13 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
         const postType = type || (videoUrl ? 'video' : (req.file ? 'photo' : 'status'));
         const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
+        // Basic HTML Sanitization
+        const sanitizedContent = (content || (videoUrl ? 'compartió un vídeo' : (req.file ? 'compartió una foto' : ''))).replace(/<[^>]*>?/gm, '').trim();
+
         const post = await prisma.post.create({
             data: {
                 userId: req.userId!,
-                content: content || (videoUrl ? 'compartió un vídeo' : (req.file ? 'compartió una foto' : '')),
+                content: sanitizedContent,
                 type: postType,
                 image: imageUrl,
                 videoUrl: videoUrl
@@ -159,7 +162,7 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
             await prisma.notification.createMany({
                 data: friendIds.map(friendId => ({
                     userId: friendId,
-                    type: postType === 'photo' ? 'photo' : postType === 'video' ? 'video' : 'status',
+                    type: postType === 'photo' ? 'photo_post' : postType === 'video' ? 'video_post' : 'status_post',
                     content: `${senderName} ha publicado ${postType === 'photo' ? 'una foto' : postType === 'video' ? 'un vídeo' : 'un estado'}`,
                     relatedId: post.id,
                     relatedUserId: req.userId!

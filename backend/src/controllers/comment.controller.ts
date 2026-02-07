@@ -115,8 +115,81 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
             return;
         }
 
+        // --- Privacy Check ---
+        if (targetType === 'post') {
+            const post = await prisma.post.findUnique({
+                where: { id: targetId },
+                include: { user: { select: { privacy: true } } }
+            });
+
+            if (!post) {
+                res.status(404).json({ error: 'Post not found' });
+                return;
+            }
+
+            // If it's your own post, you can comment.
+            // If it's a friend's post, you can comment.
+            // If it's a private post, you can only comment if you are the owner.
+            if (post.userId !== userId) {
+                const privacy = post.user.privacy || 'public';
+                if (privacy === 'private') {
+                    res.status(403).json({ error: 'This post is private' });
+                    return;
+                }
+                if (privacy === 'friends') {
+                    const friendship = await prisma.friendship.findFirst({
+                        where: {
+                            OR: [
+                                { userId: userId, friendId: post.userId, status: 'accepted' },
+                                { userId: post.userId, friendId: userId, status: 'accepted' }
+                            ]
+                        }
+                    });
+                    if (!friendship) {
+                        res.status(403).json({ error: 'You must be friends to comment on this post' });
+                        return;
+                    }
+                }
+            }
+        } else if (targetType === 'photo') {
+            const photo = await prisma.photo.findUnique({
+                where: { id: targetId },
+                include: { user: { select: { privacy: true } } }
+            });
+
+            if (!photo) {
+                res.status(404).json({ error: 'Photo not found' });
+                return;
+            }
+
+            if (photo.userId !== userId) {
+                const privacy = photo.user.privacy || 'public';
+                if (privacy === 'private') {
+                    res.status(403).json({ error: 'This photo is private' });
+                    return;
+                }
+                if (privacy === 'friends') {
+                    const friendship = await prisma.friendship.findFirst({
+                        where: {
+                            OR: [
+                                { userId: userId, friendId: photo.userId, status: 'accepted' },
+                                { userId: photo.userId, friendId: userId, status: 'accepted' }
+                            ]
+                        }
+                    });
+                    if (!friendship) {
+                        res.status(403).json({ error: 'You must be friends to comment on this photo' });
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Basic HTML Sanitization
+        const sanitizedContent = content.replace(/<[^>]*>?/gm, '').trim();
+
         const comment = await prisma.comment.create({
-            data: commentData,
+            data: { ...commentData, content: sanitizedContent },
             include: { user: { select: { id: true, name: true, avatar: true } } }
         });
 
@@ -128,7 +201,7 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
                     const notification = await prisma.notification.create({
                         data: {
                             userId: post.userId,
-                            type: 'comment',
+                            type: 'comment_post',
                             content: `${comment.user.name} ha comentado en tu publicación`,
                             relatedId: targetId!,
                             relatedUserId: userId
@@ -143,7 +216,7 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
                     const notification = await prisma.notification.create({
                         data: {
                             userId: photo.userId,
-                            type: 'comment',
+                            type: 'comment_photo',
                             content: `${comment.user.name} ha comentado en tu foto`,
                             relatedId: targetId!,
                             relatedUserId: userId
@@ -183,7 +256,7 @@ export const createComment = async (req: AuthRequest, res: Response): Promise<vo
                     const notification = await prisma.notification.create({
                         data: {
                             userId: matchedFriend.id,
-                            type: 'tag',
+                            type: targetType === 'post' ? 'tag_post' : 'tag_photo',
                             content: `${comment.user.name} te ha mencionado en un comentario`,
                             relatedId: targetId!,
                             relatedUserId: userId

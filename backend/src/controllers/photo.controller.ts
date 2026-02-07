@@ -41,7 +41,7 @@ export const uploadPhoto = async (req: AuthRequest, res: Response): Promise<void
                 const notification = await prisma.notification.create({
                     data: {
                         userId: parseInt(taggedUid),
-                        type: 'tag',
+                        type: 'tag_photo',
                         content: `${photo.user.name} te ha etiquetado en una foto`,
                         relatedId: photo.id,
                         relatedUserId: userId
@@ -128,12 +128,40 @@ export const getUserPhotos = async (req: AuthRequest, res: Response): Promise<vo
 export const tagPhoto = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const photoId = parseInt(req.params.id as string);
-        const { userId, x, y } = req.body;
+        const { userId: taggedUserId, x, y } = req.body;
+
+        // Check if current user has permission to tag this photo
+        const photo = await prisma.photo.findUnique({
+            where: { id: photoId },
+            select: { userId: true }
+        });
+
+        if (!photo) {
+            res.status(404).json({ error: 'Photo not found' });
+            return;
+        }
+
+        // Only owner or owner's friend can tag
+        if (photo.userId !== req.userId) {
+            const friendship = await prisma.friendship.findFirst({
+                where: {
+                    OR: [
+                        { userId: req.userId!, friendId: photo.userId, status: 'accepted' },
+                        { userId: photo.userId, friendId: req.userId!, status: 'accepted' }
+                    ]
+                }
+            });
+
+            if (!friendship) {
+                res.status(403).json({ error: 'Only the owner or their friends can tag this photo' });
+                return;
+            }
+        }
 
         const tag = await prisma.photoTag.create({
             data: {
                 photoId,
-                userId,
+                userId: taggedUserId,
                 x,
                 y
             },
@@ -149,15 +177,15 @@ export const tagPhoto = async (req: AuthRequest, res: Response): Promise<void> =
         // Notify tagged user
         const notification = await prisma.notification.create({
             data: {
-                userId,
-                type: 'tag',
+                userId: taggedUserId,
+                type: 'tag_photo',
                 content: `${senderName} te ha etiquetado en una foto`,
                 relatedId: photoId,
                 relatedUserId: req.userId!
             }
         });
         // Emit real-time notification
-        io.to(`user_${userId}`).emit('notification', notification);
+        io.to(`user_${taggedUserId}`).emit('notification', notification);
 
         res.status(201).json({ tag });
     } catch (error) {

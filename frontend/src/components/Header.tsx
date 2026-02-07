@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import PhotoUploadModal from './PhotoUploadModal';
 import { useSocket } from '../contexts/SocketContext';
+import { usePhotoModal } from '../contexts/PhotoModalContext';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -128,6 +129,48 @@ const Header: React.FC = () => {
     navigate(path);
     setShowResults(false);
     setSearchQuery('');
+  };
+
+  const { openPhoto } = usePhotoModal();
+
+  const handleNotificationClick = async (notif: any) => {
+    // Mark as read first
+    if (!notif.read) {
+      await handleMarkAsRead(notif.id);
+    }
+
+    setShowNotifs(false);
+
+    // Navigation logic
+    try {
+      if (['comment_photo', 'tag_photo'].includes(notif.type)) {
+        // Fetch photo details to open in modal
+        const res = await api.get(`/photos/user/${notif.userId}`); // This gets all user photos, better to have a single photo endpoint
+        // However, we don't have a getSinglePhoto by ID in backend routes yet that returns full Photo object for modal
+        // Let's check if we can get it from extra.routes.ts... no, let's just navigate to gallery for now if we can't open reliably
+        // Actually, we can fetch all photos and find the one with relatedId
+        const photoRes = await api.get(`/photos/user/${notif.userId}`);
+        const photos = photoRes.data.photos;
+        const targetPhoto = photos.find((p: any) => p.id === notif.relatedId);
+
+        if (targetPhoto) {
+          openPhoto(targetPhoto, photos);
+        } else {
+          handleNavigate(`/profile/${notif.userId}`);
+        }
+      } else if (['comment_post', 'tag_post', 'status_post', 'video_post', 'photo_post'].includes(notif.type)) {
+        handleNavigate('/');
+      } else if (notif.type === 'message') {
+        handleNavigate('/'); // Or inbox if available
+      } else if (notif.type === 'friendship') {
+        handleNavigate('/'); // Handled in Feed/Home
+      } else {
+        handleNavigate('/');
+      }
+    } catch (error) {
+      console.error('Error handling notification click:', error);
+      handleNavigate('/');
+    }
   };
 
   if (!user) return null;
@@ -289,87 +332,64 @@ const Header: React.FC = () => {
                       </button>
                     </div>
 
-                    <div className="max-h-[500px] overflow-y-auto no-scrollbar p-3 bg-white">
-                      {unreadNotifsCount === 0 ? (
+                    <div className="max-h-[400px] overflow-y-auto no-scrollbar bg-white">
+                      {notifications.length === 0 ? (
                         <div className="py-12 px-6 text-center text-gray-400">
                           <Bell size={32} className="opacity-10 mx-auto mb-2" />
-                          <p className="text-[11px] font-medium">No tienes notificaciones nuevas</p>
+                          <p className="text-[11px] font-medium">No tienes notificaciones</p>
                         </div>
-                      ) : (() => {
-                        const unread = notifications.filter(n => !n.read);
-                        const groups = {
-                          messages: unread.filter(n => n.type === 'message'),
-                          friendships: unread.filter(n => n.type === 'friendship'),
-                          comments: unread.filter(n => ['comment', 'comment_photo', 'comment_post', 'tag'].includes(n.type)),
-                          tags: unread.filter(n => ['tag', 'tag_photo'].includes(n.type)),
-                        };
-
-                        const items = [
-                          { key: 'messages', label: 'mensajes privados', icon: <Mail size={16} />, count: groups.messages.length },
-                          { key: 'friendships', label: 'peticiones de amistad', icon: <UserPlus size={16} />, count: groups.friendships.length },
-                          { key: 'comments', label: 'comentarios y menciones', icon: <MessageCircle size={16} />, count: groups.comments.length },
-                          { key: 'tags', label: 'etiquetas', icon: <Tag size={16} />, count: groups.tags.length, thumbnails: groups.tags.slice(0, 5) },
-                        ].filter(item => item.count > 0);
-
-                        return (
-                          <div className="flex flex-col gap-3">
-                            {items.map(item => (
-                              <div key={item.key} className="flex flex-col gap-2">
-                                <div
-                                  className="flex items-center gap-2 group cursor-pointer"
-                                  onClick={() => {
-                                    handleGroupAction(item.key);
-                                    if (item.key === 'friendships') handleNavigate('/people');
-                                    else if (item.key === 'tags') handleNavigate('/profile/photos');
-                                    else handleNavigate('/');
-                                    setShowNotifs(false);
-                                  }}
-                                >
-                                  <div className="text-[#59B200]">
-                                    {item.icon}
-                                  </div>
-                                  <span className="text-[13px] font-bold text-[#59B200] group-hover:underline">
-                                    {item.count} {item.label}
-                                  </span>
-                                </div>
-                                {item.key === 'tags' && item.thumbnails && (
-                                  <div className="flex gap-1.5 pl-6">
-                                    {item.thumbnails.map(t => (
-                                      <div
-                                        key={t.id}
-                                        className="w-10 h-10 border border-[#ccc] p-[1px] bg-white cursor-pointer hover:border-[#59B200]"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeleteNotification(t.id);
-                                          handleNavigate('/profile/photos');
-                                          setShowNotifs(false);
-                                        }}
-                                      >
-                                        <div className="w-full h-full bg-gray-100 flex items-center justify-center overflow-hidden">
-                                          <ImageIcon size={14} className="text-gray-300" />
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                            {notifications.length > 0 && (
-                              <button
-                                onClick={handleDeleteAllNotifications}
-                                className="mt-4 text-[10px] text-red-500 hover:text-red-700 font-bold text-center border-t border-gray-100 pt-3 flex items-center justify-center gap-1 w-full"
-                              >
-                                <X size={12} /> Borrar todas las notificaciones
-                              </button>
-                            )}
+                      ) : (
+                        <div className="flex flex-col">
+                          <div className="flex justify-end p-2 border-b border-[#eee]">
+                            <button
+                              onClick={handleDeleteAllNotifications}
+                              className="text-[9px] text-gray-400 hover:text-red-500 font-bold uppercase transition-colors"
+                            >
+                              Borrar todas
+                            </button>
                           </div>
-                        );
-                      })()}
+                          {notifications.map((notif) => (
+                            <div
+                              key={notif.id}
+                              onClick={() => handleNotificationClick(notif)}
+                              className={`p-3 border-b border-[#f5f5f5] cursor-pointer transition-colors flex gap-3 items-start group relative ${!notif.read ? 'bg-[#f0f7fe]' : 'hover:bg-[#f9fbfe]'}`}
+                            >
+                              <div className={`mt-0.5 p-1.5 rounded-full ${!notif.read ? 'bg-[#59B200] text-white shadow-sm' : 'bg-gray-100 text-gray-400'}`}>
+                                {['comment_photo', 'comment_post'].includes(notif.type) && <MessageCircle size={14} />}
+                                {['tag_photo', 'tag_post'].includes(notif.type) && <Tag size={14} />}
+                                {['photo_post', 'video_post', 'status_post'].includes(notif.type) && <Bell size={14} />}
+                                {notif.type === 'message' && <Mail size={14} />}
+                                {notif.type === 'friendship' && <UserPlus size={14} />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-[11px] leading-tight ${!notif.read ? 'text-[#333] font-bold' : 'text-[#666]'}`}>
+                                  {notif.content}
+                                </p>
+                                <p className="text-[9px] text-[#999] mt-1">
+                                  {new Date(notif.createdAt).toLocaleString()}
+                                </p>
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteNotification(notif.id);
+                                }}
+                                className="opacity-0 group-hover:opacity-100 p-1 text-gray-300 hover:text-red-500 transition-all"
+                              >
+                                <X size={12} />
+                              </button>
+                              {!notif.read && (
+                                <div className="absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#59B200] rounded-full shadow-[0_0_5px_rgba(89,178,0,0.5)]"></div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     <div className="bg-gray-50/50 p-2 text-center border-t border-gray-100">
-                      <span className="text-[9px] text-gray-400">
-                        {notifications.length} notificaciones en total
+                      <span className="text-[9px] text-gray-400 font-medium">
+                        Twentty • Conectando personas
                       </span>
                     </div>
                   </div>

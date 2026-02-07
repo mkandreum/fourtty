@@ -32,36 +32,62 @@ const LeftPanel: React.FC = () => {
 
    /* fetchInvitations moved to Feed */
 
+   const [pendingRequests, setPendingRequests] = React.useState<any[]>([]);
+
+   const fetchData = async () => {
+      try {
+         const [statsRes, eventsRes, requestsRes] = await Promise.all([
+            api.get('/stats'),
+            api.get('/events'),
+            api.get('/friendships/requests')
+         ]);
+         setStats(prev => ({
+            ...prev,
+            visits: statsRes.data.visits,
+            requests: statsRes.data.requests,
+            friends: statsRes.data.friends,
+            posts: user?._count?.posts || 0,
+            photos: user?._count?.photos || 0,
+         }));
+
+         setPendingRequests(requestsRes.data.requests);
+
+         const visitorsRes = await api.get('/visitors');
+         setRecentVisitors(visitorsRes.data.visitors);
+
+         setEvents(eventsRes.data.events);
+      } catch (error) {
+         console.error("Error fetching data:", error);
+      } finally {
+         setIsLoading(false);
+      }
+   };
+
    React.useEffect(() => {
-      const fetchData = async () => {
-         try {
-            const [statsRes, eventsRes] = await Promise.all([
-               api.get('/stats'),
-               api.get('/events')
-            ]);
-            setStats(prev => ({
-               ...prev,
-               visits: statsRes.data.visits,
-               requests: statsRes.data.requests,
-               friends: statsRes.data.friends,
-               posts: user?._count?.posts || 0,
-               photos: user?._count?.photos || 0,
-            }));
-
-            const visitorsRes = await api.get('/visitors');
-            setRecentVisitors(visitorsRes.data.visitors);
-
-            setEvents(eventsRes.data.events);
-         } catch (error) {
-            console.error("Error fetching data:", error);
-         } finally {
-            setIsLoading(false);
-         }
-      };
       if (user) {
          fetchData();
       }
    }, [user]);
+
+   const handleAcceptFriend = async (friendshipId: number) => {
+      try {
+         await api.put(`/friendships/${friendshipId}/accept`);
+         showToast("Solicitud aceptada", "success");
+         fetchData();
+      } catch (error) {
+         showToast("Error al aceptar", "error");
+      }
+   };
+
+   const handleRejectFriend = async (friendshipId: number) => {
+      try {
+         await api.put(`/friendships/${friendshipId}/reject`);
+         showToast("Solicitud rechazada", "info");
+         fetchData();
+      } catch (error) {
+         showToast("Error al rechazar", "error");
+      }
+   };
 
    const getAvatarUrl = (avatar?: string | null, name?: string, lastName?: string) => {
       if (!avatar) return `https://ui-avatars.com/api/?name=${name || ''}+${lastName || ''}&background=random`;
@@ -87,12 +113,46 @@ const LeftPanel: React.FC = () => {
          </div>
 
          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-1 cursor-pointer group">
-               <UserPlus size={14} className="text-[#59B200] fill-[#59B200]" strokeWidth={2} />
-               <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
-                  {stats.requests > 0 ? `${stats.requests} petición de amistad` : '0 peticiones'}
-               </span>
+            <div className="flex flex-col gap-1 mb-1">
+               <div className="flex items-center gap-2 group cursor-pointer" onClick={() => (window as any).location.href = '/people'}>
+                  <UserPlus size={14} className="text-[#59B200] fill-[#59B200]" strokeWidth={2} />
+                  <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
+                     {stats.requests > 0 ? `${stats.requests} petición de amistad` : '0 peticiones'}
+                  </span>
+               </div>
+
+               {/* Pending Requests List in Sidebar */}
+               {pendingRequests.length > 0 && (
+                  <div className="ml-5 flex flex-col gap-2 mt-1 mb-3">
+                     {pendingRequests.map(req => (
+                        <div key={req.id} className="bg-[#f0f7e6] border border-[#d4e9bc] p-1.5 rounded-[2px] shadow-sm flex flex-col gap-1">
+                           <div className="flex items-center gap-1.5">
+                              <img
+                                 src={getAvatarUrl(req.user.avatar, req.user.name, req.user.lastName)}
+                                 className="w-4 h-4 rounded-full object-cover"
+                              />
+                              <span className="text-[9px] font-bold text-[#333] truncate">{req.user.name}</span>
+                           </div>
+                           <div className="flex gap-1">
+                              <button
+                                 onClick={() => handleAcceptFriend(req.id)}
+                                 className="flex-1 bg-[#59B200] text-white text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-[#4a9600]"
+                              >
+                                 Aceptar
+                              </button>
+                              <button
+                                 onClick={() => handleRejectFriend(req.id)}
+                                 className="flex-1 bg-white text-[#cc0000] border border-[#ffcccc] text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-[#fff5f5]"
+                              >
+                                 Rechazar
+                              </button>
+                           </div>
+                        </div>
+                     ))}
+                  </div>
+               )}
             </div>
+
             <MenuItem icon={MessageSquare} count={stats.statusComments} text="estado con comentarios" />
             <div className="flex flex-col">
                <MenuItem icon={BarChart2} count={stats.visits} text="visitas nuevas" />

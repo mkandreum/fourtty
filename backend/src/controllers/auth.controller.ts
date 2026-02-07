@@ -18,8 +18,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         }
 
         // Check if invitation is valid
-        const masterCode = process.env.MASTER_INVITE_CODE || 'TWENTTY2025';
-        const isMaster = inviteCode.toUpperCase() === masterCode.toUpperCase();
+        const masterCode = process.env.MASTER_INVITE_CODE;
+        if (!masterCode && process.env.NODE_ENV === 'production') {
+            console.warn('⚠️ MASTER_INVITE_CODE not set in production. Using insecure default.');
+        }
+        const activeMasterCode = masterCode || 'TWENTTY2025';
+        const isMaster = inviteCode.toUpperCase() === activeMasterCode.toUpperCase();
 
         let invitation: any = null;
         if (!isMaster) {
@@ -142,12 +146,31 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             { expiresIn: '2h' }
         );
 
-        // Return user without password
-        const { password: _, ...userWithoutPassword } = user;
+        // Return user without sensitive data
+        const userWithoutSensitiveData = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                lastName: true,
+                avatar: true,
+                bio: true,
+                gender: true,
+                age: true,
+                relationshipStatus: true,
+                location: true,
+                occupation: true,
+                privacy: true,
+                invitationsCount: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
 
         res.json({
             message: 'Login successful',
-            user: userWithoutPassword,
+            user: userWithoutSensitiveData,
             token
         });
     } catch (error) {
