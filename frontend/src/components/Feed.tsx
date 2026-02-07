@@ -277,15 +277,15 @@ const Feed: React.FC = () => {
 
          {/* Status Box - Speech Bubble Style */}
          <div className="mb-4 md:mb-6 relative pt-0">
-            <div className="bg-[var(--card-bg)] [data-theme='dark']:bg-white border-2 border-[var(--border-color)] rounded-[8px] p-2 relative shadow-sm transition-colors duration-200">
+            <div className="bg-[var(--card-bg)] border-2 border-[var(--border-color)] [data-theme='dark']:border-white rounded-[8px] p-2 relative shadow-sm transition-colors duration-200">
                {/* Speech pulse arrow tip */}
-               <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--border-color)]"></div>
-               <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--card-bg)] [data-theme='dark']:border-b-white"></div>
+               <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--border-color)] [data-theme='dark']:border-b-white"></div>
+               <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--card-bg)]"></div>
 
                <div className="flex gap-2 items-start">
                   <div className="flex-1 relative">
                      <input
-                        className="w-full border-none p-1 md:p-2 text-[15px] md:text-[18px] text-[var(--text-main)] [data-theme='dark']:text-black placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200"
+                        className="w-full border-none p-1 md:p-2 text-[15px] md:text-[18px] text-[var(--text-main)] placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200"
                         value={statusText}
                         onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                         placeholder="¿Qué estás pensando?"
