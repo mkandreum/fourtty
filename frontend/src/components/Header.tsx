@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Search, Image as ImageIcon, Bell, LogOut, User, Menu, X, UserPlus, Mail, MessageCircle, Tag, Camera } from 'lucide-react';
+import { Bell, Camera, Image as ImageIcon, Search, User, X, MessageCircle, Tag, Mail, UserPlus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api';
 import PhotoUploadModal from './PhotoUploadModal';
@@ -56,7 +57,7 @@ const Header: React.FC = () => {
 
   const handleMarkAsRead = async (id: number) => {
     try {
-      await api.put(`/notifications/${id}/read`);
+      await api.put(`/ notifications / ${id}/read`);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
       setUnreadNotifsCount(prev => Math.max(0, prev - 1));
     } catch (e) {
@@ -418,8 +419,9 @@ const Header: React.FC = () => {
                           Twentty • Conectando personas
                         </span>
                       </div>
-                    </div>
+                    </motion.div>
                   )}
+                </AnimatePresence>
               </div>
             )}
 

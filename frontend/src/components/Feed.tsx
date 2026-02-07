@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Edit3, Tag, Youtube, Flag, ThumbsUp, UserPlus, Plus, Bell, X, Mail, MessageCircle, BarChart2 } from 'lucide-react';
+import { MessageSquare, MessageCircle, Tag, Bell, Mail, UserPlus, BarChart2, Heart, Share2, MoreHorizontal, Send } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Invitations from './Invitations';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,7 +10,6 @@ import api from '../api';
 import { Post } from '../types';
 import CommentSection from './CommentSection';
 import { usePhotoModal } from '../contexts/PhotoModalContext';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const Feed: React.FC = () => {
    const { user, updateUser } = useAuth();
