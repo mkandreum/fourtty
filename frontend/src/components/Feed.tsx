@@ -391,17 +391,17 @@ const Feed: React.FC = () => {
                         {/* Quick actions for Friendships remains expanded */}
                         {notif.type === 'friendship' && (
                            <div className="ml-8 flex flex-col gap-2 mt-1 mb-2">
-                              <div className="bg-[#f0f7e6] border border-[#d4e9bc] p-2 rounded-[4px] flex flex-col gap-2 shadow-sm">
+                              <div className="bg-[var(--accent)]/10 border border-[var(--accent)]/20 p-2 rounded-[4px] flex flex-col gap-2 shadow-sm">
                                  <div className="flex gap-2">
                                     <button
                                        onClick={() => handleAcceptFriend(notif.relatedId, notif.id)}
-                                       className="flex-1 bg-[#59B200] text-white text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#4a9600] active:scale-95 transition-all"
+                                       className="flex-1 bg-[var(--accent)] text-white text-[10px] font-bold py-1.5 rounded-[2px] hover:opacity-90 active:scale-95 transition-all"
                                     >
                                        Aceptar
                                     </button>
                                     <button
                                        onClick={() => handleRejectFriend(notif.relatedId, notif.id)}
-                                       className="flex-1 bg-white text-[#cc0000] border border-[#ffcccc] text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#fff5f5] active:scale-95 transition-all"
+                                       className="flex-1 bg-[var(--card-bg)] text-red-500 border border-red-500/30 text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-red-500/10 active:scale-95 transition-all"
                                     >
                                        Rechazar
                                     </button>

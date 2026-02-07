@@ -103,23 +103,23 @@ const AppContent = () => {
   }
 
   const Layout = ({ children, view }: { children: React.ReactNode, view: ViewState }) => (
-    <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
+    <div className="min-h-screen pb-[40px] bg-[var(--bg-color)]">
       <Header />
       <ToastContainer />
       <div className="main-content-container max-w-[980px] mx-auto px-0 sm:px-2">
-        <div className={`flex flex-col md:flex-row md:gap-0 items-start ${view === ViewState.HOME || view === ViewState.PEOPLE ? 'md:bg-white md:border md:border-[#dce5ed] md:rounded-[4px] md:shadow-sm md:mt-4' : ''}`}>
+        <div className={`flex flex-col md:flex-row md:gap-0 items-start ${view === ViewState.HOME || view === ViewState.PEOPLE ? 'md:bg-[var(--card-bg)] md:border md:border-[var(--border-color)] md:rounded-[4px] md:shadow-sm md:mt-4' : ''}`}>
           {view === ViewState.HOME && (
-            <aside className="hidden md:block w-[190px] shrink-0 sticky top-[80px] border-r border-[#eee] min-h-[calc(100vh-80px)]">
+            <aside className="hidden md:block w-[190px] shrink-0 sticky top-[80px] border-r border-[var(--border-soft)] min-h-[calc(100vh-80px)]">
               <div className="p-3">
                 <LeftPanel />
               </div>
             </aside>
           )}
-          <main className={`flex-1 min-w-0 w-full bg-white md:bg-transparent ${view === ViewState.PROFILE ? 'max-w-4xl mx-auto' : ''}`}>
+          <main className={`flex-1 min-w-0 w-full bg-[var(--card-bg)] md:bg-transparent ${view === ViewState.PROFILE ? 'max-w-4xl mx-auto' : ''}`}>
             {children}
           </main>
           {(view === ViewState.HOME || view === ViewState.PEOPLE) && (
-            <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[80px] border-l border-[#eee] min-h-[calc(100vh-80px)]">
+            <aside className="hidden lg:block w-[200px] shrink-0 sticky top-[80px] border-l border-[var(--border-soft)] min-h-[calc(100vh-80px)]">
               <div className="p-3">
                 <Sidebar />
               </div>

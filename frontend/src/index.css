@@ -8,7 +8,7 @@
     --text-link: #005599;
     --border-color: #DCE5ED;
     --border-soft: #EEEEEE;
-    --header-bg: #2B7BB9;
+    --header-bg: #3B6C92;
     --header-active: rgba(0, 0, 0, 0.1);
     --input-bg: #FFFFFF;
     --input-text: #333333;
@@ -18,24 +18,20 @@
 }
 
 .dark {
-    --bg-color: #0F172A;
-    /* Deep midnight blue */
-    --card-bg: #1E293B;
-    /* Sleek slate gray */
-    --text-main: #F1F5F9;
-    --text-muted: #94A3B8;
-    --text-link: #38BDF8;
-    /* Vibrand cyan/blue sky */
-    --border-color: #334155;
-    --border-soft: #1E293B;
-    --header-bg: #0F172A;
-    --header-active: rgba(255, 255, 255, 0.05);
-    --input-bg: #0F172A;
-    --input-text: #F1F5F9;
-    --scrollbar-track: #0F172A;
-    --scrollbar-thumb: #334155;
-    --accent: #4ADE80;
-    /* Vibrant emerald green */
+    --bg-color: #0B1120;
+    --card-bg: #111827;
+    --text-main: #F3F4F6;
+    --text-muted: #9CA3AF;
+    --text-link: #60A5FA;
+    --border-color: #1F2937;
+    --border-soft: #111827;
+    --header-bg: #0B1120;
+    --header-active: rgba(255, 255, 255, 0.1);
+    --input-bg: #0B1120;
+    --input-text: #F3F4F6;
+    --scrollbar-track: #0B1120;
+    --scrollbar-thumb: #374151;
+    --accent: #59B200;
 }
 
 * {
@@ -66,12 +62,12 @@ body {
 
 /* STICKY HEADER SPACING */
 .main-content-container {
-    padding-top: 60px !important;
+    padding-top: 70px !important;
 }
 
 @media (max-width: 768px) {
     .main-content-container {
-        padding-top: 60px !important;
+        padding-top: 66px !important;
     }
 }
 

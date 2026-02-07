@@ -182,11 +182,11 @@ const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-[40px] md:h-[42px] bg-[var(--header-bg)] shadow-[0_1px_3px_rgba(0,0,0,0.2)] z-[100] transition-colors duration-200">
+    <header className="fixed top-0 left-0 right-0 h-[50px] bg-[var(--header-bg)] shadow-[0_1px_3px_rgba(0,0,0,0.2)] z-[100] transition-colors duration-200">
       <div className="max-w-[980px] mx-auto h-full flex items-center px-1 md:px-2">
         {/* Logo and Navigation Group */}
         <div className="flex items-center gap-1.5 md:gap-8 shrink-0">
-          <Link to="/" className="text-white text-[20px] md:text-[22px] font-black tracking-tighter hover:opacity-90 transition-opacity">
+          <Link to="/" className="text-white text-[22px] md:text-[24px] font-black tracking-tighter hover:opacity-90 transition-opacity">
             twentty<span className="text-[#59B200]">.</span>
           </Link>
 
@@ -238,7 +238,7 @@ const Header: React.FC = () => {
             <input
               type="text"
               placeholder="Buscar"
-              className="w-full h-[22px] md:h-[24px] pl-2 pr-5 rounded-[2px] border-none text-[10px] md:text-[11px] outline-none bg-white text-gray-800"
+              className="w-full h-[26px] pl-2 pr-5 rounded-[2px] border-none text-[11px] outline-none bg-white text-gray-800"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -247,7 +247,7 @@ const Header: React.FC = () => {
               onFocus={() => setShowResults(true)}
               onBlur={() => setTimeout(() => setShowResults(false), 200)}
             />
-            <Search className="absolute right-1 top-1 md:top-1.5 w-3 h-3 text-gray-400" />
+            <Search className="absolute right-1 top-2 w-3.5 h-3.5 text-gray-400" />
           </div>
 
           <div className="flex items-center gap-1.5 md:gap-4 shrink-0">
@@ -269,7 +269,7 @@ const Header: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => document.getElementById('photo-upload')?.click()}
-              className="bg-[#2B7BB9] text-white text-[10px] md:text-[11px] font-bold px-1.5 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm hover:bg-[#256ca3] transition-all flex items-center gap-1 shrink-0 px-2"
+              className="bg-[#2B7BB9] text-white text-[11px] font-bold px-3 py-1.5 rounded-[3px] border border-[#1e5a8c] shadow-sm hover:bg-[#256ca3] transition-all flex items-center gap-1 shrink-0"
             >
               <span>Subir</span>
               <Camera size={14} />

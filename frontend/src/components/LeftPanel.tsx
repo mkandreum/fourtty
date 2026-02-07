@@ -125,24 +125,24 @@ const LeftPanel: React.FC = () => {
                {pendingRequests.length > 0 && (
                   <div className="ml-5 flex flex-col gap-2 mt-1 mb-3">
                      {pendingRequests.map(req => (
-                        <div key={req.id} className="bg-[#f0f7e6] border border-[#d4e9bc] p-1.5 rounded-[2px] shadow-sm flex flex-col gap-1">
+                        <div key={req.id} className="bg-[var(--accent)]/10 border border-[var(--accent)]/20 p-1.5 rounded-[2px] shadow-sm flex flex-col gap-1">
                            <div className="flex items-center gap-1.5">
                               <img
                                  src={getAvatarUrl(req.user.avatar, req.user.name, req.user.lastName)}
-                                 className="w-4 h-4 rounded-full object-cover"
+                                 className="w-4 h-4 rounded-full object-cover border border-[var(--border-soft)]"
                               />
-                              <span className="text-[9px] font-bold text-[#333] truncate">{req.user.name}</span>
+                              <span className="text-[9px] font-bold text-[var(--text-main)] truncate">{req.user.name}</span>
                            </div>
                            <div className="flex gap-1">
                               <button
                                  onClick={() => handleAcceptFriend(req.id)}
-                                 className="flex-1 bg-[#59B200] text-white text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-[#4a9600]"
+                                 className="flex-1 bg-[var(--accent)] text-white text-[8px] font-bold py-0.5 rounded-[1px] hover:opacity-90"
                               >
                                  Aceptar
                               </button>
                               <button
                                  onClick={() => handleRejectFriend(req.id)}
-                                 className="flex-1 bg-white text-[#cc0000] border border-[#ffcccc] text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-[#fff5f5]"
+                                 className="flex-1 bg-[var(--card-bg)] text-red-500 border border-red-500/30 text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-red-500/10"
                               >
                                  Rechazar
                               </button>
