@@ -1,10 +1,53 @@
 @import "tailwindcss";
 
+:root {
+    --bg-color: #E8EEF4;
+    --card-bg: #FFFFFF;
+    --text-main: #333333;
+    --text-muted: #666666;
+    --text-link: #005599;
+    --border-color: #DCE5ED;
+    --border-soft: #EEEEEE;
+    --header-bg: #2B7BB9;
+    --header-active: rgba(0, 0, 0, 0.1);
+    --input-bg: #FFFFFF;
+    --input-text: #333333;
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #ccc;
+    --accent: #59B200;
+}
+
+.dark {
+    --bg-color: #0F172A;
+    /* Deep midnight blue */
+    --card-bg: #1E293B;
+    /* Sleek slate gray */
+    --text-main: #F1F5F9;
+    --text-muted: #94A3B8;
+    --text-link: #38BDF8;
+    /* Vibrand cyan/blue sky */
+    --border-color: #334155;
+    --border-soft: #1E293B;
+    --header-bg: #0F172A;
+    --header-active: rgba(255, 255, 255, 0.05);
+    --input-bg: #0F172A;
+    --input-text: #F1F5F9;
+    --scrollbar-track: #0F172A;
+    --scrollbar-thumb: #334155;
+    --accent: #4ADE80;
+    /* Vibrant emerald green */
+}
+
+* {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #E8EEF4;
+    background-color: var(--bg-color);
+    color: var(--text-main);
     scroll-behavior: smooth;
 }
 
@@ -32,22 +75,23 @@ body {
     }
 }
 
-/* GLOBAL FORCED WHITE BACKGROUND */
+/* GLOBAL FORCED BACKGROUNDS - Updated to use variables */
 input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea {
-    background-color: white !important;
-    background: white !important;
-    color: black !important;
+    background-color: var(--input-bg) !important;
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border-color: var(--border-color) !important;
 }
 
-/* Fix browser autofill blue color and persistent overlays */
+/* Fix browser autofill variables */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-    -webkit-text-fill-color: black !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+    -webkit-text-fill-color: var(--input-text) !important;
     transition: background-color 5000s ease-in-out 0s !important;
 }
 
@@ -65,11 +109,11 @@ form input {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: var(--scrollbar-thumb);
     border-radius: 3px;
 }
 

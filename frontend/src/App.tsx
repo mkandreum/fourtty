@@ -16,6 +16,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { PhotoModalProvider } from './contexts/PhotoModalContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import ToastContainer from './components/ToastContainer';
 import PhotoModal from './components/PhotoModal';
 
@@ -35,7 +36,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen pb-[40px] bg-[#eef4f9]">
+    <div className="min-h-screen pb-[40px] bg-[var(--bg-color)] text-[var(--text-main)] transition-colors duration-200">
       <Header />
 
       {/* Main Container */}
@@ -225,18 +226,20 @@ const AppContent = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <SocketProvider>
-        <PhotoModalProvider>
-          <ToastProvider>
-            <Router>
-              <AppContent />
-              <PhotoModal />
-            </Router>
-          </ToastProvider>
-        </PhotoModalProvider>
-      </SocketProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <SocketProvider>
+          <PhotoModalProvider>
+            <ToastProvider>
+              <Router>
+                <AppContent />
+                <PhotoModal />
+              </Router>
+            </ToastProvider>
+          </PhotoModalProvider>
+        </SocketProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

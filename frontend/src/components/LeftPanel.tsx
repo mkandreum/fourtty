@@ -7,8 +7,8 @@ import { motion } from 'framer-motion';
 
 const MenuItem = ({ icon: Icon, count, text }: { icon: any, count: number, text: string }) => (
    <div className="flex items-center gap-2 mb-1 cursor-pointer group">
-      <Icon size={14} className="text-[#59B200] fill-[#59B200]" strokeWidth={2} />
-      <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
+      <Icon size={14} className="text-[var(--accent)] fill-[var(--accent)]" strokeWidth={2} />
+      <span className="text-[11px] font-bold text-[var(--accent)] group-hover:underline">
          {count} {text}
       </span>
    </div>
@@ -103,7 +103,7 @@ const LeftPanel: React.FC = () => {
       >
          {/* Profile Summary */}
          <div className="flex gap-3">
-            <div className="bg-white p-1 border border-[#ccc] shadow-sm">
+            <div className="bg-[var(--card-bg)] p-1 border border-[var(--border-color)] shadow-sm">
                <img
                   src={getAvatarUrl(user?.avatar)}
                   alt="Profile"
@@ -115,8 +115,8 @@ const LeftPanel: React.FC = () => {
          <div className="mb-4">
             <div className="flex flex-col gap-1 mb-1">
                <div className="flex items-center gap-2 group cursor-pointer" onClick={() => (window as any).location.href = '/people'}>
-                  <UserPlus size={14} className="text-[#59B200] fill-[#59B200]" strokeWidth={2} />
-                  <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
+                  <UserPlus size={14} className="text-[var(--accent)] fill-[var(--accent)]" strokeWidth={2} />
+                  <span className="text-[11px] font-bold text-[var(--accent)] group-hover:underline">
                      {stats.requests > 0 ? `${stats.requests} petición de amistad` : '0 peticiones'}
                   </span>
                </div>
@@ -185,32 +185,32 @@ const LeftPanel: React.FC = () => {
 
          {/* Sponsored Events */}
          <div className="mb-6">
-            <h4 className="font-bold text-[#333] text-[11px] mb-2 border-b border-[#eee] pb-1">Eventos</h4>
+            <h4 className="font-bold text-[var(--text-main)] text-[11px] mb-2 border-b border-[var(--border-soft)] pb-1">Eventos</h4>
             <div className="flex flex-col gap-3">
                {events.length > 0 ? events.map(event => (
                   <div key={event.id} className="flex gap-2">
-                     <div className="w-8 h-8 bg-gray-200 rounded-sm shrink-0 flex items-center justify-center text-[8px] font-bold text-gray-500 uppercase overflow-hidden">
+                     <div className="w-8 h-8 bg-[var(--header-active)] rounded-sm shrink-0 flex items-center justify-center text-[8px] font-bold text-[var(--text-muted)] uppercase overflow-hidden">
                         {event.image ? <img src={event.image} className="w-full h-full object-cover" /> : 'EVENT'}
                      </div>
                      <div>
-                        <div className="text-[10px] text-[#005599] font-bold hover:underline cursor-pointer leading-tight">{event.title}</div>
-                        <div className="text-[9px] text-[#999]">
+                        <div className="text-[10px] text-[var(--text-link)] font-bold hover:underline cursor-pointer leading-tight">{event.title}</div>
+                        <div className="text-[9px] text-[var(--text-muted)]">
                            {new Date(event.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} ({event._count.attendees})
                         </div>
                      </div>
                   </div>
                )) : (
-                  <div className="text-[9px] text-gray-400">No hay eventos próximos</div>
+                  <div className="text-[9px] text-[var(--text-muted)]">No hay eventos próximos</div>
                )}
             </div>
          </div>
 
          {/* Calendar */}
          <div className="mb-4">
-            <h4 className="font-bold text-[#333] text-[11px] mb-2 border-b border-[#eee] pb-1 flex justify-between items-center">
+            <h4 className="font-bold text-[var(--text-main)] text-[11px] mb-2 border-b border-[var(--border-soft)] pb-1 flex justify-between items-center">
                <span>Calendario</span>
                <span
-                  className="text-[#005599] text-[9px] font-normal hover:underline cursor-pointer"
+                  className="text-[var(--text-link)] text-[9px] font-normal hover:underline cursor-pointer"
                   onClick={() => alert("Función de crear evento en desarrollo.")}
                >
                   Crear evento
@@ -226,16 +226,16 @@ const LeftPanel: React.FC = () => {
 
                return (
                   <>
-                     <div className="text-[10px] text-[#333] mb-1">
+                     <div className="text-[10px] text-[var(--text-main)] mb-1">
                         <span className="font-bold">Hoy</span> {todayEvents.length > 0 ? todayEvents[0].title : 'no tienes ningún evento.'}
                      </div>
-                     <div className="text-[10px] text-[#333]">
+                     <div className="text-[10px] text-[var(--text-main)]">
                         <span className="font-bold">Mañana</span> {tomorrowEvents.length > 0 ? tomorrowEvents[0].title : 'no tienes ningún evento.'}
                      </div>
                   </>
                );
             })()}
-            <div className="mt-2 text-[#005599] text-[10px] hover:underline cursor-pointer">
+            <div className="mt-2 text-[var(--text-link)] text-[10px] hover:underline cursor-pointer">
                Ver todos
             </div>
          </div>

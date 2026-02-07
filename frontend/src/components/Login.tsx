@@ -74,7 +74,7 @@ const Login: React.FC = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
+                    className="w-full md:w-32 p-1 rounded-sm border border-[var(--border-color)] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-[var(--accent)] bg-[var(--input-bg)]"
                     placeholder="Tu nombre"
                     required
                   />
@@ -88,7 +88,7 @@ const Login: React.FC = () => {
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
+                    className="w-full md:w-32 p-1 rounded-sm border border-[var(--border-color)] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-[var(--accent)] bg-[var(--input-bg)]"
                     placeholder="Tus apellidos"
                     required
                   />
@@ -102,7 +102,7 @@ const Login: React.FC = () => {
                     type="text"
                     value={inviteCode}
                     onChange={(e) => setInviteCode(e.target.value)}
-                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
+                    className="w-full md:w-32 p-1 rounded-sm border border-[var(--border-color)] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-[var(--accent)] bg-[var(--input-bg)]"
                     placeholder="ABCD..."
                     required
                   />
@@ -115,7 +115,7 @@ const Login: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
+                  className="w-full md:w-32 p-1 rounded-sm border border-[var(--border-color)] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-[var(--accent)] bg-[var(--input-bg)]"
                   placeholder="laura@twentty.com"
                   required
                 />
@@ -133,7 +133,7 @@ const Login: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] text-black outline-none focus:ring-2 focus:ring-yellow-300 bg-white"
+                  className="w-full md:w-32 p-1 rounded-sm border border-[var(--border-color)] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-[var(--accent)] bg-[var(--input-bg)]"
                   placeholder="********"
                   required
                 />
@@ -149,7 +149,7 @@ const Login: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="md:mt-[19px] bg-[#2B7BB9] hover:bg-[#256ca3] text-white border border-[#205e8e] px-3 py-1 rounded-sm font-bold shadow-sm disabled:opacity-50 min-w-20"
+                  className="md:mt-[19px] bg-[var(--accent)] hover:opacity-90 text-white border border-[var(--border-color)] px-3 py-1 rounded-sm font-bold shadow-sm disabled:opacity-50 min-w-20"
                 >
                   {isLoading ? '...' : (isRegister ? 'Registrarse' : 'Entrar')}
                 </button>
