@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, MessageCircle, Tag, Bell, Mail, UserPlus, BarChart2, Heart, Share2, MoreHorizontal, Send } from 'lucide-react';
+import { MessageSquare, MessageCircle, Tag, Bell, Mail, UserPlus, BarChart2, Heart, Share2, MoreHorizontal, Send, X, ThumbsUp, Youtube, Flag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Invitations from './Invitations';
 import { useNavigate, useLocation } from 'react-router-dom';
