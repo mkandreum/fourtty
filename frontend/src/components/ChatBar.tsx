@@ -9,38 +9,21 @@ import api from '../api';
 const ChatWindow = ({
    friend,
    onClose,
-   currentUser
+   currentUser,
+   bottomOffset
 }: {
    friend: User,
    onClose: () => void,
-   currentUser: User
+   currentUser: User,
+   bottomOffset: number
 }) => {
    const { socket } = useSocket();
    const [messages, setMessages] = useState<any[]>([]);
    const [inputText, setInputText] = useState('');
    const [isFriendTyping, setIsFriendTyping] = useState(false);
-   const [bottomOffset, setBottomOffset] = useState(30);
    const scrollRef = React.useRef<HTMLDivElement>(null);
 
-   // Handle Visual Viewport for mobile keyboard
-   useEffect(() => {
-      if (!window.visualViewport) return;
-
-      const handleResize = () => {
-         const viewport = window.visualViewport!;
-         // On mobile, if the viewport height is significantly less than window height,
-         // it usually means the keyboard is open.
-         const offset = window.innerHeight - viewport.height;
-         setBottomOffset(Math.max(30, offset));
-      };
-
-      window.visualViewport.addEventListener('resize', handleResize);
-      window.visualViewport.addEventListener('scroll', handleResize);
-      return () => {
-         window.visualViewport?.removeEventListener('resize', handleResize);
-         window.visualViewport?.removeEventListener('scroll', handleResize);
-      };
-   }, []);
+   // Remove the internal viewport effect and bottomOffset state from here
 
    useEffect(() => {
       fetchMessages();
@@ -228,8 +211,29 @@ const ChatBar: React.FC = () => {
    const [activeChatUser, setActiveChatUser] = useState<User | null>(null);
    const [friends, setFriends] = useState<User[]>([]);
    const [onlineUserIds, setOnlineUserIds] = useState<number[]>([]);
+   const [bottomOffset, setBottomOffset] = useState(0); // Base is 0 for the sticky bar
    const chatListRef = useRef<HTMLDivElement>(null);
    const chatTriggerRef = useRef<HTMLDivElement>(null);
+
+   // Unified Viewport Handler
+   useEffect(() => {
+      if (!window.visualViewport) return;
+
+      const handleViewportChange = () => {
+         const viewport = window.visualViewport!;
+         // More accurate offset calculation for modern browsers
+         const offset = window.innerHeight - (viewport.height + viewport.offsetTop);
+         setBottomOffset(Math.max(0, offset));
+      };
+
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener('scroll', handleViewportChange);
+
+      return () => {
+         window.visualViewport?.removeEventListener('resize', handleViewportChange);
+         window.visualViewport?.removeEventListener('scroll', handleViewportChange);
+      };
+   }, []);
 
    useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -280,7 +284,10 @@ const ChatBar: React.FC = () => {
    return (
       <>
          {/* Sticky Bottom Bar */}
-         <div className="fixed bottom-0 left-0 w-full h-[30px] bg-[#1a1a1a]/90 border-t border-[#333] flex items-center justify-between px-4 z-50 text-white font-sans">
+         <div
+            className="fixed bottom-0 left-0 w-full h-[30px] bg-[#1a1a1a]/90 border-t border-[#333] flex items-center justify-between px-4 z-50 text-white font-sans transition-[bottom] duration-300"
+            style={{ bottom: `${bottomOffset}px` }}
+         >
 
             {/* Left: Chat Trigger */}
             <div
@@ -309,7 +316,11 @@ const ChatBar: React.FC = () => {
 
          {/* Friends List Popup */}
          {isOpen && (
-            <div ref={chatListRef} className="fixed bottom-[30px] left-2 w-[200px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg rounded-t-[4px] z-40 max-h-[400px] flex flex-col transition-colors duration-200">
+            <div
+               ref={chatListRef}
+               className="fixed left-2 w-[200px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-lg rounded-t-[4px] z-40 max-h-[400px] flex flex-col transition-[bottom,colors] duration-200"
+               style={{ bottom: `${bottomOffset + 30}px` }}
+            >
                <div className="bg-[var(--bg-color)] p-2 border-b border-[var(--border-soft)] flex justify-between items-center transition-colors duration-200">
                   <span className="text-[11px] font-bold text-[var(--text-main)] transition-colors duration-200">Amigos {friends.length > 0 && `(${onlineFriends.length}/${friends.length})`}</span>
                   <div className="flex gap-1">
@@ -350,6 +361,7 @@ const ChatBar: React.FC = () => {
                friend={activeChatUser}
                currentUser={user}
                onClose={() => setActiveChatUser(null)}
+               bottomOffset={bottomOffset + 30}
             />
          )}
       </>
