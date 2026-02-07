@@ -132,7 +132,7 @@ const ChatWindow = ({
 
    return (
       <div
-         className="fixed right-2 md:right-20 w-[calc(100%-16px)] md:w-[280px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-2xl rounded-t-lg z-40 flex flex-col transition-all duration-300 ease-in-out"
+         className="fixed right-2 md:right-20 w-[calc(100%-16px)] md:w-[280px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-2xl rounded-t-lg z-40 flex flex-col transition-[bottom,opacity] duration-300 ease-in-out"
          style={{ bottom: `${bottomOffset}px` }}
       >
          {/* Header */}
@@ -201,8 +201,7 @@ const ChatWindow = ({
                <div className="relative flex-1">
                   <input
                      type="text"
-                     className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-full py-1.5 px-3 text-[12px] focus:outline-none focus:border-[#005599] focus:ring-1 focus:ring-[#005599]/30 transition-all"
-                     autoFocus
+                     className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-full py-1.5 px-3 text-[12px] focus:outline-none focus:border-[#005599] focus:ring-1 focus:ring-[#005599]/30 transition-[border-color,box-shadow]"
                      value={inputText}
                      onChange={handleInputChange}
                      onBlur={() => socket?.emit('stop_typing', { recipientId: friend.id, senderId: currentUser.id })}
@@ -212,7 +211,7 @@ const ChatWindow = ({
                <button
                   type="submit"
                   disabled={!inputText.trim()}
-                  className={`p-1.5 rounded-full transition-all flex items-center justify-center ${inputText.trim() ? 'bg-[#005599] text-white hover:bg-[#004488] shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                  className={`p-1.5 rounded-full transition-[background-color,transform,opacity] flex items-center justify-center ${inputText.trim() ? 'bg-[#005599] text-white hover:bg-[#004488] shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                >
                   <Send size={16} />
                </button>
