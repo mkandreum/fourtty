@@ -295,105 +295,131 @@ const Header: React.FC = () => {
                 e.target.value = '';
               }}
             />
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => document.getElementById('photo-upload')?.click()}
-              className="bg-[#2B7BB9] text-white text-[10px] md:text-[11px] font-bold px-2 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm hover:bg-[#256ca3] active:scale-95 transition-all flex items-center gap-1"
+              className="bg-[#2B7BB9] text-white text-[10px] md:text-[11px] font-bold px-2 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm hover:bg-[#256ca3] transition-all flex items-center gap-1"
             >
               <span>Subir</span>
               <Camera size={14} />
-            </button>
+            </motion.button>
 
             {unreadNotifsCount >= 0 && (
               <div className="flex items-center gap-1 relative">
                 {/* Removed UserPlus icon as it is now in Feed/Home */}
 
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
                   onClick={() => setShowNotifs(!showNotifs)}
-                  className={`${unreadNotifsCount > 0 ? 'bg-[#cc0000]' : 'bg-black/10'} text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center hover:scale-110 transition-transform`}
+                  className={`${unreadNotifsCount > 0 ? 'bg-[#cc0000]' : 'bg-black/10'} text-white text-[9px] px-1 rounded-sm font-bold min-w-[20px] h-[18px] flex items-center justify-center transition-transform`}
                   title="Notificaciones"
                 >
                   <Bell size={10} className="mr-0.5" />
                   {unreadNotifsCount}
-                </button>
+                </motion.button>
 
                 {/* Notifications Dropdown */}
-                {showNotifs && (
-                  <div className="absolute top-[35px] right-0 w-[300px] md:w-[340px] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-[#ccc] rounded-[4px] z-[100] animate-in fade-in slide-in-from-top-2 duration-300 text-left overflow-hidden ring-1 ring-black/5">
-                    <div className="bg-[#005599] text-white p-3 flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <Bell size={14} className="animate-pulse" />
-                        <span className="text-[12px] font-bold tracking-tight">Centro de Notificaciones</span>
+                <AnimatePresence>
+                  {showNotifs && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+                      className="absolute top-[35px] right-0 w-[300px] md:w-[340px] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-[#ccc] rounded-[4px] z-[100] text-left overflow-hidden ring-1 ring-black/5 origin-top-right"
+                    >
+                      <div className="bg-[#005599] text-white p-3 flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <Bell size={14} className="animate-pulse" />
+                          <span className="text-[12px] font-bold tracking-tight">Centro de Notificaciones</span>
+                        </div>
+                        <button
+                          onClick={() => setShowNotifs(false)}
+                          className="text-white/80 hover:text-white transition-colors"
+                        >
+                          <X size={16} />
+                        </button>
                       </div>
-                      <button
-                        onClick={() => setShowNotifs(false)}
-                        className="text-white/80 hover:text-white transition-colors"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
 
-                    <div className="max-h-[400px] overflow-y-auto no-scrollbar bg-white">
-                      {notifications.length === 0 ? (
-                        <div className="py-12 px-6 text-center text-gray-400">
-                          <Bell size={32} className="opacity-10 mx-auto mb-2" />
-                          <p className="text-[11px] font-medium">No tienes notificaciones</p>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col">
-                          <div className="flex justify-end p-2 border-b border-[#eee]">
-                            <button
-                              onClick={handleDeleteAllNotifications}
-                              className="text-[9px] text-gray-400 hover:text-red-500 font-bold uppercase transition-colors"
-                            >
-                              Borrar todas
-                            </button>
+                      <div className="max-h-[400px] overflow-y-auto no-scrollbar bg-white">
+                        {notifications.length === 0 ? (
+                          <div className="py-12 px-6 text-center text-gray-400">
+                            <Bell size={32} className="opacity-10 mx-auto mb-2" />
+                            <p className="text-[11px] font-medium">No tienes notificaciones</p>
                           </div>
-                          {notifications.map((notif) => (
-                            <div
-                              key={notif.id}
-                              onClick={() => handleNotificationClick(notif)}
-                              className={`p-3 border-b border-[#f5f5f5] cursor-pointer transition-colors flex gap-3 items-start group relative ${!notif.read ? 'bg-[#f0f7fe]' : 'hover:bg-[#f9fbfe]'}`}
-                            >
-                              <div className={`mt-0.5 p-1.5 rounded-full ${!notif.read ? 'bg-[#59B200] text-white shadow-sm' : 'bg-gray-100 text-gray-400'}`}>
-                                {['comment_photo', 'comment_post'].includes(notif.type) && <MessageCircle size={14} />}
-                                {['tag_photo', 'tag_post'].includes(notif.type) && <Tag size={14} />}
-                                {['photo_post', 'video_post', 'status_post'].includes(notif.type) && <Bell size={14} />}
-                                {notif.type === 'message' && <Mail size={14} />}
-                                {notif.type === 'friendship' && <UserPlus size={14} />}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className={`text-[11px] leading-tight ${!notif.read ? 'text-[#333] font-bold' : 'text-[#666]'}`}>
-                                  {notif.content}
-                                </p>
-                                <p className="text-[9px] text-[#999] mt-1">
-                                  {new Date(notif.createdAt).toLocaleString()}
-                                </p>
-                              </div>
+                        ) : (
+                          <motion.div
+                            className="flex flex-col"
+                            initial="hidden"
+                            animate="visible"
+                            variants={{
+                              visible: {
+                                transition: {
+                                  staggerChildren: 0.05
+                                }
+                              }
+                            }}
+                          >
+                            <div className="flex justify-end p-2 border-b border-[#eee]">
                               <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteNotification(notif.id);
-                                }}
-                                className="opacity-0 group-hover:opacity-100 p-1 text-gray-300 hover:text-red-500 transition-all"
+                                onClick={handleDeleteAllNotifications}
+                                className="text-[9px] text-gray-400 hover:text-red-500 font-bold uppercase transition-colors"
                               >
-                                <X size={12} />
+                                Borrar todas
                               </button>
-                              {!notif.read && (
-                                <div className="absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#59B200] rounded-full shadow-[0_0_5px_rgba(89,178,0,0.5)]"></div>
-                              )}
                             </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                            {notifications.map((notif) => (
+                              <motion.div
+                                key={notif.id}
+                                variants={{
+                                  hidden: { opacity: 0, x: -10 },
+                                  visible: { opacity: 1, x: 0 }
+                                }}
+                                onClick={() => handleNotificationClick(notif)}
+                                className={`p-3 border-b border-[#f5f5f5] cursor-pointer transition-colors flex gap-3 items-start group relative ${!notif.read ? 'bg-[#f0f7fe]' : 'hover:bg-[#f9fbfe]'}`}
+                              >
+                                <div className={`mt-0.5 p-1.5 rounded-full ${!notif.read ? 'bg-[#59B200] text-white shadow-sm' : 'bg-gray-100 text-gray-400'}`}>
+                                  {['comment_photo', 'comment_post'].includes(notif.type) && <MessageCircle size={14} />}
+                                  {['tag_photo', 'tag_post'].includes(notif.type) && <Tag size={14} />}
+                                  {['photo_post', 'video_post', 'status_post'].includes(notif.type) && <Bell size={14} />}
+                                  {notif.type === 'message' && <Mail size={14} />}
+                                  {notif.type === 'friendship' && <UserPlus size={14} />}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className={`text-[11px] leading-tight ${!notif.read ? 'text-[#333] font-bold' : 'text-[#666]'}`}>
+                                    {notif.content}
+                                  </p>
+                                  <p className="text-[9px] text-[#999] mt-1">
+                                    {new Date(notif.createdAt).toLocaleString()}
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteNotification(notif.id);
+                                  }}
+                                  className="opacity-0 group-hover:opacity-100 p-1 text-gray-300 hover:text-red-500 transition-all"
+                                >
+                                  <X size={12} />
+                                </button>
+                                {!notif.read && (
+                                  <div className="absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#59B200] rounded-full shadow-[0_0_5px_rgba(89,178,0,0.5)]"></div>
+                                )}
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </div>
 
-                    <div className="bg-gray-50/50 p-2 text-center border-t border-gray-100">
-                      <span className="text-[9px] text-gray-400 font-medium">
-                        Twentty • Conectando personas
-                      </span>
+                      <div className="bg-gray-50/50 p-2 text-center border-t border-gray-100">
+                        <span className="text-[9px] text-gray-400 font-medium">
+                          Twentty • Conectando personas
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             )}
 

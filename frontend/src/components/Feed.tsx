@@ -289,13 +289,15 @@ const Feed: React.FC = () => {
                <div className="text-[13px] md:text-[15px] text-[#888] italic truncate max-w-[70%]">
                   Última: <span className="text-[#333] font-bold not-italic">"{user?.bio || 'Sin estado'}"</span>
                </div>
-               <button
+               <motion.button
+                  whileHover={!isSubmitting && statusText.trim() ? { scale: 1.02 } : {}}
+                  whileTap={!isSubmitting && statusText.trim() ? { scale: 0.98 } : {}}
                   onClick={handleUpdateStatus}
                   disabled={isSubmitting || !statusText.trim()}
-                  className={`bg-[#2B7BB9] text-white text-[11px] md:text-[12px] font-bold px-4 md:px-6 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm transition-all ${isSubmitting || !statusText.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#256ca3] active:scale-95'}`}
+                  className={`bg-[#2B7BB9] text-white text-[11px] md:text-[12px] font-bold px-4 md:px-6 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm transition-all ${isSubmitting || !statusText.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#256ca3]'}`}
                >
                   {isSubmitting ? '...' : 'Publicar'}
-               </button>
+               </motion.button>
             </div>
          </div>
 

@@ -80,6 +80,19 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 
+const AnimatedPage: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 10 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
 const AppContent = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
@@ -118,65 +131,89 @@ const AppContent = () => {
   );
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/login" element={
-          isAuthenticated ? <Navigate to="/" /> : <Login />
+          isAuthenticated ? <Navigate to="/" /> : (
+            <AnimatedPage>
+              <Login />
+            </AnimatedPage>
+          )
         } />
 
         <Route path="/forgot-password" element={
-          isAuthenticated ? <Navigate to="/" /> : <ForgotPassword />
+          isAuthenticated ? <Navigate to="/" /> : (
+            <AnimatedPage>
+              <ForgotPassword />
+            </AnimatedPage>
+          )
         } />
 
         <Route path="/reset-password/:token" element={
-          isAuthenticated ? <Navigate to="/" /> : <ResetPassword />
+          isAuthenticated ? <Navigate to="/" /> : (
+            <AnimatedPage>
+              <ResetPassword />
+            </AnimatedPage>
+          )
         } />
 
         <Route path="/" element={
           isAuthenticated ? (
-            <Layout view={ViewState.HOME}>
-              <Feed />
-            </Layout>
+            <AnimatedPage>
+              <Layout view={ViewState.HOME}>
+                <Feed />
+              </Layout>
+            </AnimatedPage>
           ) : <Navigate to="/login" />
         } />
 
         <Route path="/profile" element={
           isAuthenticated ? (
-            <Layout view={ViewState.PROFILE}>
-              <Profile />
-            </Layout>
+            <AnimatedPage>
+              <Layout view={ViewState.PROFILE}>
+                <Profile />
+              </Layout>
+            </AnimatedPage>
           ) : <Navigate to="/login" />
         } />
 
         <Route path="/profile/:id" element={
           isAuthenticated ? (
-            <Layout view={ViewState.PROFILE}>
-              <Profile />
-            </Layout>
+            <AnimatedPage>
+              <Layout view={ViewState.PROFILE}>
+                <Profile />
+              </Layout>
+            </AnimatedPage>
           ) : <Navigate to="/login" />
         } />
 
         <Route path="/profile/photos/:id" element={
           isAuthenticated ? (
-            <Layout view={ViewState.PROFILE}>
-              <Gallery />
-            </Layout>
+            <AnimatedPage>
+              <Layout view={ViewState.PROFILE}>
+                <Gallery />
+              </Layout>
+            </AnimatedPage>
           ) : <Navigate to="/login" />
         } />
 
         <Route path="/profile/photos" element={
           isAuthenticated ? (
-            <Layout view={ViewState.PROFILE}>
-              <Gallery />
-            </Layout>
+            <AnimatedPage>
+              <Layout view={ViewState.PROFILE}>
+                <Gallery />
+              </Layout>
+            </AnimatedPage>
           ) : <Navigate to="/login" />
         } />
 
         <Route path="/people" element={
           isAuthenticated ? (
-            <Layout view={ViewState.PEOPLE}>
-              <People />
-            </Layout>
+            <AnimatedPage>
+              <Layout view={ViewState.PEOPLE}>
+                <People />
+              </Layout>
+            </AnimatedPage>
           ) : <Navigate to="/login" />
         } />
 
