@@ -19,6 +19,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const root = window.document.documentElement;
         root.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
+
+        // Sync theme-color meta tag
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', theme === 'dark' ? '#020617' : '#005599');
+        }
     }, [theme]);
 
     const toggleTheme = () => {
