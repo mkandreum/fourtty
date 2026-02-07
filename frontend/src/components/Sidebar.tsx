@@ -82,18 +82,19 @@ const Sidebar: React.FC = () => {
             <div className="flex flex-col gap-0.5 max-h-[300px] overflow-y-auto pr-1">
                {isLoading ? (
                   <div className="text-[10px] text-gray-400 p-2">Cargando amigos...</div>
+                  <div className="text-[10px] text-[var(--text-muted)] p-2">Cargando amigos...</div>
                ) : filteredFriends.length > 0 ? (
                   filteredFriends.map(friend => {
                      const isOnline = onlineUserIds.includes(friend.id);
                      return (
                         <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[#59B200]/10 cursor-pointer group rounded-sm transition-colors duration-200">
                            <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-400'}`}></div>
-                           <span className={`text-[11px] ${isOnline ? 'text-[var(--text-main)]' : 'text-gray-400'} group-hover:text-[#59B200] truncate transition-colors duration-200`}>{friend.name}</span>
+                           <span className={`text-[11px] ${isOnline ? 'text-[var(--text-main)]' : 'text-[var(--text-muted)]'} group-hover:text-[#59B200] truncate transition-colors duration-200`}>{friend.name}</span>
                         </div>
                      );
                   })
                ) : (
-                  <div className="text-[10px] text-gray-400 p-2">
+                  <div className="text-[10px] text-[var(--text-muted)] p-2">
                      {filterQuery ? 'No se encontraron amigos' : 'No tienes amigos todavía'}
                   </div>
                )}

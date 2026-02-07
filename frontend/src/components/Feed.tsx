@@ -297,7 +297,7 @@ const Feed: React.FC = () => {
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
                               exit={{ scale: 0 }}
-                              className="absolute top-[-24px] right-0 bg-[#f0f0f0] border border-[#ccc] text-[#999] text-[11px] w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-sm z-10"
+                              className="absolute top-[-24px] right-0 bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-muted)] text-[11px] w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-sm z-10"
                            >
                               {140 - statusText.length}
                            </motion.div>
@@ -308,8 +308,8 @@ const Feed: React.FC = () => {
             </div>
 
             <div className="flex justify-between items-center mt-2 px-1 gap-2">
-               <div className="text-[13px] md:text-[15px] text-[#888] italic truncate max-w-[70%]">
-                  Última: <span className="text-[#333] font-bold not-italic">"{user?.bio || 'Sin estado'}"</span>
+               <div className="text-[13px] md:text-[15px] text-[var(--text-muted)] italic truncate max-w-[70%] transition-colors duration-200">
+                  Última: <span className="text-[var(--text-main)] font-bold not-italic">"{user?.bio || 'Sin estado'}"</span>
                </div>
                <motion.button
                   whileHover={!isSubmitting && statusText.trim() ? { scale: 1.02 } : {}}
@@ -382,7 +382,7 @@ const Feed: React.FC = () => {
                               <span className="text-[14px] md:text-[16px] font-bold text-[#59B200] group-hover:underline leading-tight">
                                  {notif.content}
                               </span>
-                              <span className="text-[10px] text-gray-400">
+                              <span className="text-[10px] text-[var(--text-muted)] transition-colors duration-200">
                                  {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </span>
                            </div>
@@ -478,10 +478,10 @@ const Feed: React.FC = () => {
                         )}
                         <div className="text-[12px] leading-snug mb-1">
                            <a href="#" className="text-[#005599] font-bold hover:underline">{post.user.name} {post.user.lastName}</a>
-                           <span className="text-[var(--text-main)] text-[12px] transition-colors duration-200"> {post.content}</span>
+                           <div className="text-[var(--text-main)] text-[13px] md:text-[14px] font-bold mt-1 transition-colors duration-200"> {post.content}</div>
                         </div>
 
-                        <div className="text-[10px] text-[#999] mb-1 flex items-center gap-2">
+                        <div className="text-[10px] text-[var(--text-muted)] mb-1 flex items-center gap-2 transition-colors duration-200">
                            {new Date(post.createdAt).toLocaleString()}
                            <span className="mx-1">·</span>
                            <button
@@ -583,7 +583,7 @@ const Feed: React.FC = () => {
                </div>
             )}
             {!hasMore && posts.length > 0 && (
-               <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+               <span className="text-[11px] text-[var(--text-muted)] font-bold uppercase tracking-wider transition-colors duration-200">
                   No hay más novedades por ahora
                </span>
             )}

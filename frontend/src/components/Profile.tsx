@@ -756,7 +756,7 @@ const Profile: React.FC = () => {
                               <div className="flex-1">
                                  <div className="mb-1">
                                     <span
-                                       className="text-[#005599] font-bold text-[12px] hover:underline cursor-pointer"
+                                       className="text-[var(--text-secondary)] font-bold text-[12px] hover:underline cursor-pointer"
                                        onClick={() => navigate(`/profile/${post.user.id}`)}
                                     >
                                        {post.user.name} {post.user.lastName}
@@ -767,13 +767,13 @@ const Profile: React.FC = () => {
                                              e.stopPropagation();
                                              handleDeletePost(post.id);
                                           }}
-                                          className="ml-2 text-[#999] hover:text-[#cc0000] inline-flex align-middle"
+                                          className="ml-2 text-gray-500 hover:text-[#cc0000] inline-flex align-middle"
                                           title="Borrar publicación"
                                        >
                                           <Trash2 size={12} />
                                        </button>
                                     )}
-                                    <span className="text-[var(--text-main)] text-[12px] transition-colors duration-200"> {post.content}</span>
+                                    <div className="text-[var(--text-main)] text-[13px] md:text-[14px] font-bold mt-1 transition-colors duration-200"> {post.content}</div>
                                  </div>
                                  {post.image && (
                                     <div className="mb-2 mt-1">
@@ -796,7 +796,7 @@ const Profile: React.FC = () => {
                                        />
                                     </div>
                                  )}
-                                 <div className="text-[#999] text-[10px] mb-1">
+                                 <div className="text-[var(--text-muted)] text-[10px] mb-1 transition-colors duration-200">
                                     {new Date(post.createdAt).toLocaleDateString()}
                                  </div>
                                  <CommentSection

@@ -16,9 +16,10 @@
     --toast-error-bg: #fee2e2;
     --toast-error-border: #fecaca;
     --toast-error-text: #991b1b;
-    --toast-info-bg: #f0f7fd;
-    --toast-info-border: #d1e7fe;
-    --toast-info-text: #004085;
+    --toast-info-bg: #e3f2fd;
+    --toast-info-border: #bbdefb;
+    --toast-info-text: #0d47a1;
+    --text-muted: #666666;
 }
 
 [data-theme='dark'] {
@@ -40,6 +41,7 @@
     --toast-info-bg: #1e3a8a;
     --toast-info-border: #1e40af;
     --toast-info-text: #93c5fd;
+    --text-muted: #94a3b8;
 }
 
 body {

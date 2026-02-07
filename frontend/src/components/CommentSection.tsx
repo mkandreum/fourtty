@@ -165,7 +165,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                                         <span className="text-[var(--text-main)] transition-colors duration-200"> {renderCommentContent(comment.content)}</span>
                                     </div>
                                     <div className="text-[10px] flex items-center gap-2 mt-0.5">
-                                        <span className="text-[#999]">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        <span className="text-[var(--text-muted)] transition-colors duration-200">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                         <span className="text-[#999]">·</span>
                                         <button
                                             onClick={() => handleToggleCommentLike(comment.id)}
