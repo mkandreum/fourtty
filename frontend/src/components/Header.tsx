@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Bell, Camera, Image as ImageIcon, Search, User, X, MessageCircle, Tag, Mail, UserPlus, Sun, Moon } from 'lucide-react';
+import { Bell, Camera, Image as ImageIcon, Search, User, X, MessageCircle, Tag, Mail, UserPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
 import api from '../api';
 import PhotoUploadModal from './PhotoUploadModal';
 import { useSocket } from '../contexts/SocketContext';
@@ -11,7 +10,6 @@ import { usePhotoModal } from '../contexts/PhotoModalContext';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
@@ -182,18 +180,26 @@ const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-[50px] bg-[var(--header-bg)] shadow-[0_1px_3px_rgba(0,0,0,0.2)] z-[100] transition-colors duration-200">
-      <div className="max-w-[980px] mx-auto h-full flex items-center px-1 md:px-2">
-        {/* Logo and Navigation Group */}
-        <div className="flex items-center gap-1.5 md:gap-8 shrink-0">
-          <Link to="/" className="text-white text-[22px] md:text-[24px] font-black tracking-tighter hover:opacity-90 transition-opacity">
-            twentty<span className="text-[#59B200]">.</span>
-          </Link>
+    <header className="fixed top-0 left-0 w-full h-[60px] bg-[#005599] z-50 border-b border-[#003366] shadow-sm">
+      <div className="max-w-[980px] mx-auto h-full flex items-center justify-between px-2">
 
-          <nav className="flex items-center gap-0.5 md:gap-1">
+        {/* Left Side: Logo + Navigation */}
+        <div className="flex items-center gap-1 md:gap-4 shrink-0">
+          <div
+            className="flex items-center cursor-pointer group"
+            onClick={() => handleNavigate('/')}
+          >
+            <span className="text-white text-[18px] md:text-[24px] font-black tracking-tighter drop-shadow-md flex items-center gap-1">
+              <span className="text-lg md:text-2xl">;)</span>
+              twentty
+              <span className="text-[6px] md:text-[8px] font-normal align-top ml-0.5 mt-[-10px] md:mt-[-12px] opacity-60">TM</span>
+            </span>
+          </div>
+
+          <nav className="flex items-center gap-0.5 md:gap-1 border-l border-white/10 pl-1 md:pl-4 overflow-x-auto no-scrollbar">
             <Link
               to="/"
-              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/') ? 'bg-[var(--header-active)]' : 'hover:bg-white/10'}`}
+              className={`flex items-center gap-1 px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/') ? 'bg-black/10' : 'hover:bg-white/10'}`}
               title="Inicio"
             >
               <div className="w-5 h-5 flex items-center justify-center bg-white/10 rounded">
@@ -222,7 +228,7 @@ const Header: React.FC = () => {
 
             <Link
               to="/profile"
-              className={`flex items-center px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile') ? 'bg-[var(--header-active)]' : 'hover:bg-white/10'}`}
+              className={`flex items-center px-1.5 md:px-3 py-1 rounded-md text-white transition-colors shrink-0 ${isActive('/profile') ? 'bg-black/10' : 'hover:bg-white/10'}`}
               title="Mi Perfil"
             >
               <User size={16} className="sm:hidden opacity-80" />
@@ -238,7 +244,7 @@ const Header: React.FC = () => {
             <input
               type="text"
               placeholder="Buscar"
-              className="w-full h-[26px] pl-2 pr-5 rounded-[2px] border-none text-[11px] outline-none bg-white text-gray-800"
+              className="w-full h-[22px] md:h-[24px] pl-2 pr-5 rounded-[2px] border-none text-[10px] md:text-[11px] text-gray-700 placeholder-gray-400 outline-none bg-white"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -247,7 +253,7 @@ const Header: React.FC = () => {
               onFocus={() => setShowResults(true)}
               onBlur={() => setTimeout(() => setShowResults(false), 200)}
             />
-            <Search className="absolute right-1 top-2 w-3.5 h-3.5 text-gray-400" />
+            <Search className="absolute right-1 top-1 md:top-1.5 w-3 h-3 text-gray-400" />
           </div>
 
           <div className="flex items-center gap-1.5 md:gap-4 shrink-0">
@@ -269,7 +275,7 @@ const Header: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => document.getElementById('photo-upload')?.click()}
-              className="bg-[#2B7BB9] text-white text-[11px] font-bold px-3 py-1.5 rounded-[3px] border border-[#1e5a8c] shadow-sm hover:bg-[#256ca3] transition-all flex items-center gap-1 shrink-0"
+              className="bg-[#2B7BB9] text-white text-[10px] md:text-[11px] font-bold px-1.5 md:px-3 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm hover:bg-[#256ca3] transition-all flex items-center gap-1 shrink-0 px-2"
             >
               <span>Subir</span>
               <Camera size={14} />
@@ -296,7 +302,7 @@ const Header: React.FC = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-                      className="absolute top-[35px] right-0 w-[300px] md:w-[340px] bg-[var(--card-bg)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-[var(--border-color)] rounded-[4px] z-[100] text-left overflow-hidden ring-1 ring-black/5 origin-top-right text-[var(--text-main)]"
+                      className="absolute top-[35px] right-0 w-[300px] md:w-[340px] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-[#ccc] rounded-[4px] z-[100] text-left overflow-hidden ring-1 ring-black/5 origin-top-right"
                     >
                       <div className="bg-[#005599] text-white p-3 flex justify-between items-center">
                         <div className="flex items-center gap-2">
@@ -311,9 +317,9 @@ const Header: React.FC = () => {
                         </button>
                       </div>
 
-                      <div className="max-h-[400px] overflow-y-auto no-scrollbar">
+                      <div className="max-h-[400px] overflow-y-auto no-scrollbar bg-white">
                         {notifications.length === 0 ? (
-                          <div className="py-12 px-6 text-center text-[var(--text-muted)]">
+                          <div className="py-12 px-6 text-center text-gray-400">
                             <Bell size={32} className="opacity-10 mx-auto mb-2" />
                             <p className="text-[11px] font-medium">No tienes notificaciones</p>
                           </div>
@@ -330,10 +336,10 @@ const Header: React.FC = () => {
                               }
                             }}
                           >
-                            <div className="flex justify-end p-2 border-b border-[var(--border-soft)]">
+                            <div className="flex justify-end p-2 border-b border-[#eee]">
                               <button
                                 onClick={handleDeleteAllNotifications}
-                                className="text-[9px] text-[var(--text-muted)] hover:text-red-500 font-bold uppercase transition-colors"
+                                className="text-[9px] text-gray-400 hover:text-red-500 font-bold uppercase transition-colors"
                               >
                                 Borrar todas
                               </button>
@@ -346,7 +352,7 @@ const Header: React.FC = () => {
                                   visible: { opacity: 1, x: 0 }
                                 }}
                                 onClick={() => handleNotificationClick(notif)}
-                                className={`p-3 border-b border-[var(--border-soft)] cursor-pointer transition-colors flex gap-3 items-start group relative ${!notif.read ? 'bg-[var(--header-active)]/20' : 'hover:bg-[var(--header-active)]/10'}`}
+                                className={`p-3 border-b border-[#f5f5f5] cursor-pointer transition-colors flex gap-3 items-start group relative ${!notif.read ? 'bg-[#f0f7fe]' : 'hover:bg-[#f9fbfe]'}`}
                               >
                                 <div className={`mt-0.5 p-1.5 rounded-full ${!notif.read ? 'bg-[#59B200] text-white shadow-sm' : 'bg-gray-100 text-gray-400'}`}>
                                   {['comment_photo', 'comment_post'].includes(notif.type) && <MessageCircle size={14} />}
@@ -356,10 +362,10 @@ const Header: React.FC = () => {
                                   {notif.type === 'friendship' && <UserPlus size={14} />}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className={`text-[11px] leading-tight ${!notif.read ? 'text-[var(--text-main)] font-bold' : 'text-[var(--text-muted)]'}`}>
+                                  <p className={`text-[11px] leading-tight ${!notif.read ? 'text-[#333] font-bold' : 'text-[#666]'}`}>
                                     {notif.content}
                                   </p>
-                                  <p className="text-[9px] text-[var(--text-muted)] mt-1">
+                                  <p className="text-[9px] text-[#999] mt-1">
                                     {new Date(notif.createdAt).toLocaleString()}
                                   </p>
                                 </div>
@@ -381,8 +387,8 @@ const Header: React.FC = () => {
                         )}
                       </div>
 
-                      <div className="bg-[var(--header-active)]/5 p-2 text-center border-t border-[var(--border-soft)]">
-                        <span className="text-[9px] text-[var(--text-muted)] font-medium">
+                      <div className="bg-gray-50/50 p-2 text-center border-t border-gray-100">
+                        <span className="text-[9px] text-gray-400 font-medium">
                           Twentty • Conectando personas
                         </span>
                       </div>
@@ -391,14 +397,6 @@ const Header: React.FC = () => {
                 </AnimatePresence>
               </div>
             )}
-
-            <button
-              onClick={toggleTheme}
-              className="text-white/80 hover:text-white transition-colors p-1"
-              title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
-            >
-              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-            </button>
 
             <button
               onClick={logout}

@@ -92,9 +92,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                 return (
                     <span
                         key={i}
-                        className="text-[var(--text-link)] font-bold hover:underline cursor-pointer"
+                        className="text-[#005599] font-bold hover:underline cursor-pointer"
                         onClick={(e) => {
                             e.stopPropagation();
+                            // In a real app we'd need the userId for the mention, 
+                            // here we'll just try to find it or let navigate handle it
+                            // For now just styling it as requested.
                         }}
                     >
                         {part}
@@ -120,8 +123,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                         className="flex items-center gap-1 cursor-pointer group"
                         onClick={handleToggleComments}
                     >
-                        <MessageSquare size={10} className="text-[var(--accent)] fill-[var(--accent)]" />
-                        <span className="text-[var(--accent)] font-bold group-hover:underline">
+                        <MessageSquare size={10} className="text-[#59B200] fill-[#59B200]" />
+                        <span className="text-[#59B200] font-bold group-hover:underline">
                             {commentCount} comentarios
                         </span>
                     </div>
@@ -129,7 +132,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
 
                 {commentCount === 0 && (
                     <div
-                        className="text-[var(--text-link)] hover:underline cursor-pointer font-bold"
+                        className="text-[#005599] hover:underline cursor-pointer font-bold"
                         onClick={() => setIsExpanded(true)}
                     >
                         Comentar
@@ -139,40 +142,40 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
 
             {/* Comments List & Input */}
             {isExpanded && (
-                <div className="bg-[var(--header-active)] p-2 rounded-[2px] mt-1 border border-[var(--border-soft)]">
-                    {isLoading && <div className="text-[10px] text-[var(--text-muted)] mb-2">Cargando...</div>}
+                <div className="bg-[#f2fbff] p-2 rounded-[2px] mt-1 border border-[#cfe2f3]">
+                    {isLoading && <div className="text-[10px] text-gray-500 mb-2">Cargando...</div>}
 
                     <div className="flex flex-col gap-3 mb-2">
                         {comments.map(comment => (
                             <div key={comment.id} className="flex gap-2">
                                 <img
                                     src={getAvatarUrl(comment.user.avatar, comment.user.name)}
-                                    className="w-8 h-8 object-cover border border-[var(--border-color)] rounded-[2px] p-[1px] bg-[var(--card-bg)] shadow-sm cursor-pointer"
+                                    className="w-8 h-8 object-cover border border-[#ccc] rounded-[2px] p-[1px] bg-white shadow-sm cursor-pointer"
                                     alt={comment.user.name}
                                     onClick={() => navigate(`/profile/${comment.userId}`)}
                                 />
                                 <div className="flex-1">
                                     <div className="text-[12px] leading-snug">
                                         <span
-                                            className="text-[var(--text-link)] font-bold cursor-pointer hover:underline"
+                                            className="text-[#005599] font-bold cursor-pointer hover:underline"
                                             onClick={() => navigate(`/profile/${comment.userId}`)}
                                         >
                                             {comment.user.name}
                                         </span>
-                                        <span className="text-[var(--text-main)]"> {renderCommentContent(comment.content)}</span>
+                                        <span className="text-[#333]"> {renderCommentContent(comment.content)}</span>
                                     </div>
                                     <div className="text-[10px] flex items-center gap-2 mt-0.5">
-                                        <span className="text-[var(--text-muted)]">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                        <span className="text-[var(--text-muted)]">·</span>
+                                        <span className="text-[#999]">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        <span className="text-[#999]">·</span>
                                         <button
                                             onClick={() => handleToggleCommentLike(comment.id)}
-                                            className={`font-bold hover:underline ${comment.isLiked ? 'text-[var(--accent)]' : 'text-[var(--text-link)]'}`}
+                                            className={`font-bold hover:underline ${comment.isLiked ? 'text-[#59B200]' : 'text-[#005599]'}`}
                                         >
                                             Mola
                                         </button>
                                         {comment.likeCount && comment.likeCount > 0 && (
-                                            <div className="flex items-center gap-0.5 text-[var(--accent)] font-bold">
-                                                <ThumbsUp size={10} fill="currentColor" />
+                                            <div className="flex items-center gap-0.5 text-[#59B200] font-bold">
+                                                <ThumbsUp size={10} fill="#59B200" />
                                                 {comment.likeCount}
                                             </div>
                                         )}
@@ -183,23 +186,23 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                     </div>
 
                     {/* Input */}
-                    <div className="flex gap-2 mt-2 pt-2 border-t border-[var(--border-soft)]">
+                    <div className="flex gap-2 mt-2 pt-2 border-t border-[#dcecf9]">
                         <img
                             src={getAvatarUrl(user?.avatar, user?.name)}
-                            className="w-7 h-7 object-cover border border-[var(--border-color)] rounded-[2px] bg-[var(--card-bg)]"
+                            className="w-7 h-7 object-cover border border-[#ccc] rounded-[2px]"
                             alt="Me"
                         />
                         <form onSubmit={handleSubmitComment} className="flex-1 flex gap-1">
                             <input
                                 type="text"
-                                className="flex-1 border border-[var(--border-color)] rounded-[2px] p-1.5 text-[11px] bg-[var(--input-bg)] text-[var(--input-text)] focus:outline-none focus:border-[var(--accent)] shadow-inner"
+                                className="flex-1 border border-[#b2c2d1] rounded-[2px] p-1.5 text-[11px] !bg-white focus:outline-none focus:border-[#5C95C4] shadow-inner"
                                 placeholder="Escribe un comentario..."
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
                             />
                             <button
                                 type="submit"
-                                className="bg-[var(--accent)] text-white text-[11px] font-bold px-3 py-1 rounded-[2px] hover:opacity-90 transition-colors"
+                                className="bg-[#005599] text-white text-[11px] font-bold px-3 py-1 rounded-[2px] hover:bg-[#00447a] transition-colors"
                                 disabled={!newComment.trim()}
                             >
                                 Publicar

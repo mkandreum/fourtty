@@ -1,49 +1,10 @@
 @import "tailwindcss";
 
-:root {
-    --bg-color: #E8EEF4;
-    --card-bg: #FFFFFF;
-    --text-main: #333333;
-    --text-muted: #666666;
-    --text-link: #005599;
-    --border-color: #DCE5ED;
-    --border-soft: #EEEEEE;
-    --header-bg: #3B6C92;
-    --header-active: rgba(0, 0, 0, 0.1);
-    --input-bg: #FFFFFF;
-    --input-text: #333333;
-    --scrollbar-track: #f1f1f1;
-    --scrollbar-thumb: #ccc;
-    --accent: #59B200;
-}
-
-.dark {
-    --bg-color: #0B1120;
-    --card-bg: #111827;
-    --text-main: #F3F4F6;
-    --text-muted: #9CA3AF;
-    --text-link: #60A5FA;
-    --border-color: #1F2937;
-    --border-soft: #111827;
-    --header-bg: #0B1120;
-    --header-active: rgba(255, 255, 255, 0.1);
-    --input-bg: #0B1120;
-    --input-text: #F3F4F6;
-    --scrollbar-track: #0B1120;
-    --scrollbar-thumb: #374151;
-    --accent: #59B200;
-}
-
-* {
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-main);
+    background-color: #E8EEF4;
     scroll-behavior: smooth;
 }
 
@@ -62,32 +23,31 @@ body {
 
 /* STICKY HEADER SPACING */
 .main-content-container {
-    padding-top: 70px !important;
+    padding-top: 60px !important;
 }
 
 @media (max-width: 768px) {
     .main-content-container {
-        padding-top: 66px !important;
+        padding-top: 60px !important;
     }
 }
 
-/* GLOBAL FORCED BACKGROUNDS - Updated to use variables */
+/* GLOBAL FORCED WHITE BACKGROUND */
 input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea {
-    background-color: var(--input-bg) !important;
-    background: var(--input-bg) !important;
-    color: var(--input-text) !important;
-    border-color: var(--border-color) !important;
+    background-color: white !important;
+    background: white !important;
+    color: black !important;
 }
 
-/* Fix browser autofill variables */
+/* Fix browser autofill blue color and persistent overlays */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
-    -webkit-text-fill-color: var(--input-text) !important;
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: black !important;
     transition: background-color 5000s ease-in-out 0s !important;
 }
 
@@ -105,11 +65,11 @@ form input {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
+    background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
+    background: #ccc;
     border-radius: 3px;
 }
 

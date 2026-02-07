@@ -391,17 +391,17 @@ const Feed: React.FC = () => {
                         {/* Quick actions for Friendships remains expanded */}
                         {notif.type === 'friendship' && (
                            <div className="ml-8 flex flex-col gap-2 mt-1 mb-2">
-                              <div className="bg-[var(--accent)]/10 border border-[var(--accent)]/20 p-2 rounded-[4px] flex flex-col gap-2 shadow-sm">
+                              <div className="bg-[#f0f7e6] border border-[#d4e9bc] p-2 rounded-[4px] flex flex-col gap-2 shadow-sm">
                                  <div className="flex gap-2">
                                     <button
                                        onClick={() => handleAcceptFriend(notif.relatedId, notif.id)}
-                                       className="flex-1 bg-[var(--accent)] text-white text-[10px] font-bold py-1.5 rounded-[2px] hover:opacity-90 active:scale-95 transition-all"
+                                       className="flex-1 bg-[#59B200] text-white text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#4a9600] active:scale-95 transition-all"
                                     >
                                        Aceptar
                                     </button>
                                     <button
                                        onClick={() => handleRejectFriend(notif.relatedId, notif.id)}
-                                       className="flex-1 bg-[var(--card-bg)] text-red-500 border border-red-500/30 text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-red-500/10 active:scale-95 transition-all"
+                                       className="flex-1 bg-white text-[#cc0000] border border-[#ffcccc] text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#fff5f5] active:scale-95 transition-all"
                                     >
                                        Rechazar
                                     </button>
@@ -513,7 +513,7 @@ const Feed: React.FC = () => {
                                     allowFullScreen
                                  ></iframe>
                               </div>
-                              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[var(--accent)] font-bold">
+                              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[#59B200] font-bold">
                                  <Youtube size={14} /> Vídeo de YouTube
                               </div>
                            </div>
@@ -522,7 +522,7 @@ const Feed: React.FC = () => {
                         {/* Photo specific */}
                         {post.type === 'photo' && post.image && (
                            <div className="mt-2 flex flex-col gap-2">
-                              <div className="border border-[var(--border-soft)] p-1 bg-[var(--card-bg)] inline-block shadow-sm hover:border-[var(--text-link)] cursor-pointer transition-all hover:scale-[1.01] self-start">
+                              <div className="border border-[#ddd] p-1 bg-white inline-block shadow-sm hover:border-[#2B7BB9] cursor-pointer transition-all hover:scale-[1.01] self-start">
                                  <img
                                     src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
                                     loading="lazy"
@@ -545,7 +545,7 @@ const Feed: React.FC = () => {
                               <div className="flex justify-start">
                                  <button
                                     onClick={() => handleToggleLike(post.id)}
-                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[var(--accent)] text-white' : 'bg-[var(--bg-color)] text-[var(--text-main)] border border-[var(--border-color)] hover:bg-[var(--header-active)]'}`}
+                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[#59B200] text-white' : 'bg-[#f2f6f9] text-[#555] border border-[#ccc] hover:bg-[#e1e9f0]'}`}
                                  >
                                     <ThumbsUp size={12} fill={post.likedByMe ? 'white' : 'transparent'} />
                                     {post.likedByMe ? '¡Me mola!' : 'Me mola'}
@@ -563,8 +563,8 @@ const Feed: React.FC = () => {
 
                            {post.type === 'photo' && (
                               <div className="flex items-center gap-1 text-[11px]">
-                                 <Tag size={10} className="text-[var(--accent)] fill-[var(--accent)]" />
-                                 <span className="text-[var(--accent)] font-bold">Etiquetas</span>
+                                 <Tag size={10} className="text-[#59B200] fill-[#59B200]" />
+                                 <span className="text-[#59B200] font-bold">Etiquetas</span>
                               </div>
                            )}
                         </div>
@@ -577,8 +577,8 @@ const Feed: React.FC = () => {
          {/* Infinite Scroll Sentinel */}
          <div ref={lastPostElementRef} className="h-10 flex items-center justify-center">
             {isLoadingMore && (
-               <div className="flex items-center gap-2 text-[11px] text-[var(--text-link)] font-bold">
-                  <div className="w-4 h-4 border-2 border-[var(--text-link)] border-t-transparent rounded-full animate-spin"></div>
+               <div className="flex items-center gap-2 text-[11px] text-[#005599] font-bold">
+                  <div className="w-4 h-4 border-2 border-[#005599] border-t-transparent rounded-full animate-spin"></div>
                   Cargando más novedades...
                </div>
             )}
