@@ -303,10 +303,10 @@ const Feed: React.FC = () => {
          {(unreadNotifications.length > 0 || stats.visits > 0) && (
             <div className="mb-4">
                <div className="flex flex-col gap-2">
-                  {/* Visits - Mobile only */}
+                  {/* Visits - Mobile only - Clean style */}
                   {stats.visits > 0 && (
                      <div
-                        className="md:hidden flex items-center gap-2 group cursor-pointer hover:bg-[#F9FBFE] p-1.5 rounded-sm transition-colors border-l-2 border-[#59B200] bg-white shadow-sm"
+                        className="md:hidden flex items-center gap-3 group cursor-pointer hover:bg-gray-50/80 p-1.5 rounded-md transition-all active:scale-[0.98]"
                         onClick={() => navigate('/profile')}
                      >
                         <div className="text-[#59B200] bg-[#59B200]/10 p-1.5 rounded-sm">
