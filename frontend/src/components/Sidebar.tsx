@@ -81,7 +81,6 @@ const Sidebar: React.FC = () => {
             </div>
             <div className="flex flex-col gap-0.5 max-h-[300px] overflow-y-auto pr-1">
                {isLoading ? (
-                  <div className="text-[10px] text-gray-400 p-2">Cargando amigos...</div>
                   <div className="text-[10px] text-[var(--text-muted)] p-2">Cargando amigos...</div>
                ) : filteredFriends.length > 0 ? (
                   filteredFriends.map(friend => {

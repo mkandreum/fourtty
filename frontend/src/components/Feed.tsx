@@ -435,7 +435,7 @@ const Feed: React.FC = () => {
          </div>
 
          {isLoading ? (
-            <div className="p-4 text-center text-gray-500 text-xs">Cargando novedades...</div>
+            <div className="p-4 text-center text-[var(--text-muted)] text-xs transition-colors duration-200">Cargando novedades...</div>
          ) : (
             <div className="flex flex-col gap-4">
                {posts.length === 0 && (
