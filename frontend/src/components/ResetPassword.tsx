@@ -48,11 +48,11 @@ const ResetPassword: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col font-sans bg-gradient-to-b from-[#5C95C4] via-[#5C95C4] to-[#6FA3CD]">
+        <div className="min-h-screen flex flex-col font-sans bg-gradient-to-br from-slate-900 via-violet-900 to-slate-900 relative overflow-hidden">
             <div className="flex-1 flex items-center justify-center p-4">
-                <div className="max-w-md w-full bg-[var(--card-bg)] rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in duration-300 border border-[var(--border-color)] transition-colors duration-200">
-                    <div className="bg-[#005599] p-6 text-center text-white">
-                        <h1 className="text-3xl font-bold tracking-tighter">;) twentty</h1>
+                <div className="max-w-md w-full bg-[var(--card-bg)] rounded-xl-[2.5rem] shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl overflow-hidden animate-in fade-in zoom-in duration-300 border border-[var(--border-color)] transition-colors duration-200">
+                    <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-6 text-center text-white">
+                        <h1 className="text-3xl font-bold tracking-tighter">;) fourtty</h1>
                         <p className="mt-2 opacity-80 text-sm italic">Seguridad primero</p>
                     </div>
 
@@ -62,7 +62,7 @@ const ResetPassword: React.FC = () => {
                                 <h2 className="text-xl font-bold text-[var(--text-main)] mb-6 text-center transition-colors duration-200">Elige tu nueva contraseña</h2>
 
                                 {error && (
-                                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6 text-xs">
+                                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-xs">
                                         {error}
                                     </div>
                                 )}
@@ -76,7 +76,7 @@ const ResetPassword: React.FC = () => {
                                                 type="password"
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-2 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded text-sm outline-none focus:ring-2 focus:ring-[#59B200] transition-all"
+                                                className="w-full pl-10 pr-4 py-2 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-violet-500/20 transition-all"
                                                 placeholder="Mínimo 6 caracteres"
                                                 required
                                             />
@@ -91,7 +91,7 @@ const ResetPassword: React.FC = () => {
                                                 type="password"
                                                 value={confirmPassword}
                                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-2 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded text-sm outline-none focus:ring-2 focus:ring-[#59B200] transition-all"
+                                                className="w-full pl-10 pr-4 py-2 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-violet-500/20 transition-all"
                                                 placeholder="********"
                                                 required
                                             />
@@ -101,7 +101,7 @@ const ResetPassword: React.FC = () => {
                                     <button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="w-full bg-[#59B200] hover:bg-[#4d9a00] text-white font-bold py-2 rounded shadow-md transition-colors disabled:opacity-50 text-sm"
+                                        className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold py-2 rounded-xl shadow-md transition-colors disabled:opacity-50 text-sm"
                                     >
                                         {isLoading ? 'Actualizando...' : 'Cambiar contraseña'}
                                     </button>
@@ -119,7 +119,7 @@ const ResetPassword: React.FC = () => {
                                 </p>
                                 <Link
                                     to="/login"
-                                    className="inline-block bg-[#005599] text-white font-bold px-6 py-2 rounded text-sm"
+                                    className="inline-block bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold px-6 py-2 rounded-xl text-sm"
                                 >
                                     Entrar ahora
                                 </Link>
@@ -130,7 +130,7 @@ const ResetPassword: React.FC = () => {
                             <div className="mt-8 pt-6 border-t border-[var(--border-soft)] text-center transition-colors duration-200">
                                 <Link
                                     to="/login"
-                                    className="inline-flex items-center text-sm font-bold text-[#005599] hover:text-[#59B200] transition-colors"
+                                    className="inline-flex items-center text-sm font-bold text-violet-400 hover:text-violet-300 transition-colors"
                                 >
                                     <ArrowLeft className="w-4 h-4 mr-2" />
                                     Volver al inicio de sesión
@@ -142,7 +142,7 @@ const ResetPassword: React.FC = () => {
             </div>
 
             <div className="p-4 text-center text-white/60 text-[10px]">
-                © Twentty 2026 • Seguridad avanzada
+                © Fourtty 2026 • Seguridad avanzada
             </div>
         </div>
     );

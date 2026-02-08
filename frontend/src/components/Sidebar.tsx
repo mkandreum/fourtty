@@ -64,16 +64,16 @@ const Sidebar: React.FC = () => {
          <div className="">
             <h4 className="text-[var(--text-main)] font-bold text-[11px] mb-2 flex items-center justify-between border-b border-[var(--border-soft)] pb-1 transition-colors duration-200">
                <div className="flex items-center gap-1">
-                  <span className={`w-2 h-2 rounded-full ${onlineFriendsCount > 0 ? 'bg-[#59B200]' : 'bg-gray-400'}`}></span>
+                  <span className={`w-2 h-2 rounded-full ${onlineFriendsCount > 0 ? 'bg-[var(--accent)]' : 'bg-gray-400'}`}></span>
                   Chat ({onlineFriendsCount})
                </div>
-               <span className="text-[#005599] hover:underline cursor-pointer text-[10px]">Ajustes</span>
+               <span className="text-[var(--text-secondary)] hover:underline cursor-pointer text-[10px]">Ajustes</span>
             </h4>
             <div className="relative mb-2">
                <input
                   type="text"
                   placeholder="Buscar amigo"
-                  className="w-full bg-[var(--input-bg)] border border-[var(--border-color)] text-[var(--input-text)] rounded-[2px] py-0.5 px-1 text-[11px] pl-5 focus:outline-none transition-colors"
+                  className="w-full bg-[var(--input-bg)] border border-[var(--border-color)] text-[var(--input-text)] rounded-xl py-0.5 px-1 text-[11px] pl-5 focus:outline-none transition-colors"
                   value={filterQuery}
                   onChange={(e) => setFilterQuery(e.target.value)}
                />
@@ -86,9 +86,9 @@ const Sidebar: React.FC = () => {
                   filteredFriends.map(friend => {
                      const isOnline = onlineUserIds.includes(friend.id);
                      return (
-                        <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[#59B200]/10 cursor-pointer group rounded-sm transition-colors duration-200">
-                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-400'}`}></div>
-                           <span className={`text-[11px] ${isOnline ? 'text-[var(--text-main)]' : 'text-[var(--text-muted)]'} group-hover:text-[#59B200] truncate transition-colors duration-200`}>{friend.name}</span>
+                        <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[var(--accent)]/10 cursor-pointer group rounded-lg transition-colors duration-200">
+                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[var(--accent)]' : 'bg-gray-400'}`}></div>
+                           <span className={`text-[11px] ${isOnline ? 'text-[var(--text-main)]' : 'text-[var(--text-muted)]'} group-hover:text-[var(--accent)] truncate transition-colors duration-200`}>{friend.name}</span>
                         </div>
                      );
                   })

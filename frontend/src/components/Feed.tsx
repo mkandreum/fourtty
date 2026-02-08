@@ -275,29 +275,31 @@ const Feed: React.FC = () => {
    return (
       <div className="bg-[var(--bg-color)] md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4 transition-colors duration-200">
 
-         {/* Status Box - Speech Bubble Style */}
-         <div className="mb-4 md:mb-6 relative pt-0">
-            <div className="bg-[var(--card-bg)] border-2 border-[var(--status-border)] rounded-[8px] p-2 relative shadow-sm transition-colors duration-200">
-               {/* Speech pulse arrow tip */}
-               <div className="absolute top-[-10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--status-border)]"></div>
-               <div className="absolute top-[-7px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-[var(--card-bg)]"></div>
-
-               <div className="flex gap-2 items-start">
+         {/* Status Box - Modern Card Style */}
+         <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+         >
+            <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl p-4 shadow-sm transition-all duration-200">
+               <div className="flex gap-4 items-start">
+                  <div className="w-12 h-12 shrink-0">
+                     <img src={user?.avatar} alt={user?.name} className="w-full h-full object-cover rounded-full ring-2 ring-[var(--accent)]/10" />
+                  </div>
                   <div className="flex-1 relative">
-                     <input
-                        className="w-full border-none p-1 md:p-2 text-[15px] md:text-[18px] text-[var(--text-main)] placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200"
+                     <textarea
+                        className="w-full border-none p-2 text-[16px] md:text-[18px] text-[var(--text-main)] placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200 min-h-[60px] resize-none"
                         value={statusText}
                         onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
-                        placeholder="¿Qué estás pensando?"
+                        placeholder={`¿Qué pasa, ${user?.name}?`}
                      />
-                     {/* Character count bubble */}
                      <AnimatePresence>
                         {statusText.length > 0 && (
                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              exit={{ scale: 0 }}
-                              className="absolute top-[-24px] right-0 bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-muted)] text-[11px] w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-sm z-10"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              className="absolute top-[-30px] right-0 bg-[var(--accent)] text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-md z-10"
                            >
                               {140 - statusText.length}
                            </motion.div>
@@ -305,23 +307,25 @@ const Feed: React.FC = () => {
                      </AnimatePresence>
                   </div>
                </div>
-            </div>
 
-            <div className="flex justify-between items-center mt-2 px-1 gap-2">
-               <div className="text-[13px] md:text-[15px] text-[var(--text-muted)] italic truncate max-w-[70%] transition-colors duration-200">
-                  Última: <span className="text-[var(--text-main)] font-bold not-italic">"{user?.status || 'Sin estado'}"</span>
+               <div className="flex justify-between items-center mt-3 pt-3 border-t border-[var(--border-soft)] gap-2">
+                  <div className="text-[12px] md:text-[14px] text-[var(--text-muted)] italic truncate max-w-[65%]">
+                     <span className="text-[var(--accent)] font-semibold not-italic">Estado:</span> "{user?.status || 'Sin estado'}"
+                  </div>
+                  <motion.button
+                     whileHover={!isSubmitting && statusText.trim() ? { scale: 1.05 } : {}}
+                     whileTap={!isSubmitting && statusText.trim() ? { scale: 0.95 } : {}}
+                     onClick={handleUpdateStatus}
+                     disabled={isSubmitting || !statusText.trim()}
+                     className={`px-5 py-2 rounded-full font-bold text-[13px] shadow-lg transition-all ${isSubmitting || !statusText.trim()
+                        ? 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-[var(--accent)] to-[var(--text-secondary)] text-white'}`}
+                  >
+                     {isSubmitting ? '...' : 'Publicar'}
+                  </motion.button>
                </div>
-               <motion.button
-                  whileHover={!isSubmitting && statusText.trim() ? { scale: 1.02 } : {}}
-                  whileTap={!isSubmitting && statusText.trim() ? { scale: 0.98 } : {}}
-                  onClick={handleUpdateStatus}
-                  disabled={isSubmitting || !statusText.trim()}
-                  className={`bg-[#2B7BB9] text-white text-[11px] md:text-[12px] font-bold px-4 md:px-6 py-1 rounded-[3px] border border-[#1e5a8c] shadow-sm transition-all ${isSubmitting || !statusText.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#256ca3]'}`}
-               >
-                  {isSubmitting ? '...' : 'Publicar'}
-               </motion.button>
             </div>
-         </div>
+         </motion.div>
 
          {/* Unread Notifications & Visits - Shown below status box */}
          {(unreadNotifications.length > 0 || stats.visits > 0) && (
@@ -333,11 +337,11 @@ const Feed: React.FC = () => {
                         className="md:hidden flex items-center gap-3 group cursor-pointer hover:bg-gray-50/80 p-1.5 rounded-md transition-all active:scale-[0.98]"
                         onClick={() => navigate('/profile')}
                      >
-                        <div className="text-[#59B200] bg-[#59B200]/10 p-1.5 rounded-sm">
+                        <div className="text-[var(--accent)] bg-[var(--accent)]/10 p-1.5 rounded-sm">
                            <BarChart2 size={16} />
                         </div>
                         <div className="flex flex-col flex-1">
-                           <span className="text-[14px] md:text-[16px] font-bold text-[#59B200] group-hover:underline leading-tight">
+                           <span className="text-[14px] md:text-[16px] font-bold text-[var(--accent)] group-hover:underline leading-tight">
                               {stats.visits} visitas al perfil
                            </span>
                            {recentVisitors.length > 0 && (
@@ -365,13 +369,13 @@ const Feed: React.FC = () => {
                   {unreadNotifications.map(notif => (
                      <div key={notif.id} className="flex flex-col gap-1 w-full animate-in fade-in slide-in-from-top-1 duration-300">
                         <div
-                           className="flex items-center gap-2 group cursor-pointer hover:bg-[var(--border-soft)] p-1.5 rounded-sm transition-colors border-l-2 border-[#59B200] bg-[var(--card-bg)] shadow-sm"
+                           className="flex items-center gap-2 group cursor-pointer hover:bg-[var(--border-soft)] p-1.5 rounded-sm transition-colors border-l-2 border-[var(--accent)] bg-[var(--card-bg)] shadow-sm"
                            onClick={() => {
                               if (notif.type === 'friendship') return; // Handled below
                               handleNotificationClick(notif);
                            }}
                         >
-                           <div className="text-[#59B200] bg-[#59B200]/10 p-1.5 rounded-sm">
+                           <div className="text-[var(--accent)] bg-[var(--accent)]/10 p-1.5 rounded-sm">
                               {['comment_photo', 'comment_post'].includes(notif.type) && <MessageCircle size={16} />}
                               {['tag_photo', 'tag_post'].includes(notif.type) && <Tag size={16} />}
                               {['photo_post', 'video_post', 'status_post'].includes(notif.type) && <Bell size={16} />}
@@ -379,7 +383,7 @@ const Feed: React.FC = () => {
                               {notif.type === 'friendship' && <UserPlus size={16} />}
                            </div>
                            <div className="flex flex-col flex-1">
-                              <span className="text-[14px] md:text-[16px] font-bold text-[#59B200] group-hover:underline leading-tight">
+                              <span className="text-[14px] md:text-[16px] font-bold text-[var(--accent)] group-hover:underline leading-tight">
                                  {notif.content}
                               </span>
                               <span className="text-[10px] text-[var(--text-muted)] transition-colors duration-200">
@@ -395,7 +399,7 @@ const Feed: React.FC = () => {
                                  <div className="flex gap-2">
                                     <button
                                        onClick={() => handleAcceptFriend(notif.relatedId, notif.id)}
-                                       className="flex-1 bg-[#59B200] text-white text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#4a9600] active:scale-95 transition-all"
+                                       className="flex-1 bg-[var(--accent)] text-white text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#4a9600] active:scale-95 transition-all"
                                     >
                                        Aceptar
                                     </button>
@@ -422,8 +426,8 @@ const Feed: React.FC = () => {
 
 
          <div className="flex items-center justify-between mb-2 border-b border-[var(--border-soft)] pb-1 transition-colors duration-200">
-            <h3 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1">
-               <div className="bg-[#59B200] text-white p-0.5 rounded-[3px] shadow-sm">
+            <h3 className="text-[var(--accent)] font-bold text-[14px] flex items-center gap-1">
+               <div className="bg-[var(--accent)] text-white p-0.5 rounded-[3px] shadow-sm">
                   <MessageSquare size={14} fill="white" strokeWidth={0} />
                </div>
                Novedades
@@ -485,15 +489,15 @@ const Feed: React.FC = () => {
                            <span className="mx-1">·</span>
                            <button
                               onClick={() => handleToggleLike(post.id)}
-                              className={`font-bold hover:underline ${post.likedByMe ? 'text-[#59B200]' : 'text-[#005599]'}`}
+                              className={`font-bold hover:underline ${post.likedByMe ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}
                            >
                               {post.likedByMe ? 'Ya no me mola' : '¡Me mola!'}
                            </button>
                         </div>
 
                         {post._count && post._count.likes > 0 && (
-                           <div className="flex items-center gap-1 text-[10px] text-[#59B200] font-bold mt-1 mb-1">
-                              <ThumbsUp size={10} fill="#59B200" /> {post._count.likes} {post._count.likes === 1 ? 'persona le mola esto' : 'personas les mola esto'}
+                           <div className="flex items-center gap-1 text-[10px] text-[var(--accent)] font-bold mt-1 mb-1">
+                              <ThumbsUp size={10} fill="var(--accent)" /> {post._count.likes} {post._count.likes === 1 ? 'persona le mola esto' : 'personas les mola esto'}
                            </div>
                         )}
 
@@ -512,7 +516,7 @@ const Feed: React.FC = () => {
                                     allowFullScreen
                                  ></iframe>
                               </div>
-                              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[#59B200] font-bold">
+                              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[var(--accent)] font-bold">
                                  <Youtube size={14} /> Vídeo de YouTube
                               </div>
                            </div>
@@ -544,7 +548,7 @@ const Feed: React.FC = () => {
                               <div className="flex justify-start">
                                  <button
                                     onClick={() => handleToggleLike(post.id)}
-                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[#59B200] text-white' : 'bg-[#f2f6f9] text-[#555] border border-[#ccc] hover:bg-[#e1e9f0]'}`}
+                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[var(--accent)] text-white' : 'bg-[#f2f6f9] text-[#555] border border-[#ccc] hover:bg-[#e1e9f0]'}`}
                                  >
                                     <ThumbsUp size={12} fill={post.likedByMe ? 'white' : 'transparent'} />
                                     {post.likedByMe ? '¡Me mola!' : 'Me mola'}
@@ -562,8 +566,8 @@ const Feed: React.FC = () => {
 
                            {post.type === 'photo' && (
                               <div className="flex items-center gap-1 text-[11px]">
-                                 <Tag size={10} className="text-[#59B200] fill-[#59B200]" />
-                                 <span className="text-[#59B200] font-bold">Etiquetas</span>
+                                 <Tag size={10} className="text-[var(--accent)] fill-[var(--accent)]" />
+                                 <span className="text-[var(--accent)] font-bold">Etiquetas</span>
                               </div>
                            )}
                         </div>
@@ -576,8 +580,8 @@ const Feed: React.FC = () => {
          {/* Infinite Scroll Sentinel */}
          <div ref={lastPostElementRef} className="h-10 flex items-center justify-center">
             {isLoadingMore && (
-               <div className="flex items-center gap-2 text-[11px] text-[#005599] font-bold">
-                  <div className="w-4 h-4 border-2 border-[#005599] border-t-transparent rounded-full animate-spin"></div>
+               <div className="flex items-center gap-2 text-[11px] text-[var(--text-secondary)] font-bold">
+                  <div className="w-4 h-4 border-2 border-[var(--text-secondary)] border-t-transparent rounded-full animate-spin"></div>
                   Cargando más novedades...
                </div>
             )}

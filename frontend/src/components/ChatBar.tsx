@@ -115,16 +115,16 @@ const ChatWindow = ({
 
    return (
       <div
-         className="fixed right-2 md:right-20 w-[calc(100%-16px)] md:w-[280px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-2xl rounded-t-lg z-40 flex flex-col transition-[bottom,opacity] duration-300 ease-in-out"
+         className="fixed right-2 md:right-20 w-[calc(100%-16px)] md:w-[280px] bg-[var(--card-bg)] border border-[var(--border-color)] shadow-2xl rounded-t-2xl z-40 flex flex-col transition-[bottom,opacity] duration-300 ease-in-out"
          style={{ bottom: `${bottomOffset}px` }}
       >
          {/* Header */}
          <div
-            className="bg-[#005599] text-white p-2.5 px-3 flex justify-between items-center rounded-t-lg cursor-pointer"
+            className="bg-[var(--accent)] text-white p-2.5 px-3 flex justify-between items-center rounded-t-2xl cursor-pointer"
             onClick={onClose}
          >
             <div className="flex items-center gap-2 font-bold text-[13px]">
-               <div className="w-2.5 h-2.5 rounded-full bg-[#59B200] border border-white shadow-[0_0_4px_rgba(89,178,0,0.5)]"></div>
+               <div className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] border border-white shadow-[0_0_4px_rgba(89,178,0,0.5)]"></div>
                {friend.name}
             </div>
             <div className="flex gap-2.5">
@@ -146,7 +146,7 @@ const ChatWindow = ({
                const isMe = msg.senderId === currentUser.id;
                return (
                   <div key={idx} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} group`}>
-                     <div className={`max-w-[85%] rounded-[12px] p-2 px-3 shadow-sm ${isMe ? 'bg-[#005599] text-white rounded-tr-none' : 'bg-[var(--bg-color)] text-[var(--text-main)] rounded-tl-none border border-[var(--border-soft)]'}`}>
+                     <div className={`max-w-[85%] rounded-2xl p-2 px-3 shadow-sm ${isMe ? 'bg-[var(--accent)] text-white rounded-tr-none' : 'bg-[var(--bg-color)] text-[var(--text-main)] rounded-tl-none border border-[var(--border-soft)]'}`}>
                         <div className="leading-relaxed break-words">{msg.content}</div>
                         <div className={`flex items-center gap-1 mt-1 justify-end ${isMe ? 'text-white/70' : 'text-[#999]'}`}>
                            <span className="text-[9px]">
@@ -168,8 +168,8 @@ const ChatWindow = ({
             })}
             {isFriendTyping && (
                <div className="flex items-start">
-                  <div className="bg-[var(--bg-color)] rounded-[12px] rounded-tl-none p-2 px-3 flex gap-1 items-baseline transition-colors duration-200 border border-[var(--border-soft)]">
-                     <span className="text-[10px] text-[#005599] italic font-bold">Escribiendo</span>
+                  <div className="bg-[var(--bg-color)] rounded-2xl rounded-tl-none p-2 px-3 flex gap-1 items-baseline transition-colors duration-200 border border-[var(--border-soft)]">
+                     <span className="text-[10px] text-[var(--accent)] italic font-bold">Escribiendo</span>
                      <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>.</motion.span>
                      <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }}>.</motion.span>
                      <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.6 }}>.</motion.span>
@@ -184,7 +184,7 @@ const ChatWindow = ({
                <div className="relative flex-1">
                   <input
                      type="text"
-                     className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-full py-1.5 px-3 text-[12px] focus:outline-none focus:border-[#005599] focus:ring-1 focus:ring-[#005599]/30 transition-[border-color,box-shadow]"
+                     className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-full py-1.5 px-3 text-[12px] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/30 transition-[border-color,box-shadow]"
                      value={inputText}
                      onChange={handleInputChange}
                      onBlur={() => socket?.emit('stop_typing', { recipientId: friend.id, senderId: currentUser.id })}
@@ -194,7 +194,7 @@ const ChatWindow = ({
                <button
                   type="submit"
                   disabled={!inputText.trim()}
-                  className={`p-1.5 rounded-full transition-[background-color,transform,opacity] flex items-center justify-center ${inputText.trim() ? 'bg-[#005599] text-white hover:bg-[#004488] shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                  className={`p-1.5 rounded-full transition-[background-color,transform,opacity] flex items-center justify-center ${inputText.trim() ? 'bg-[var(--accent)] text-white hover:bg-[#004488] shadow-md' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                >
                   <Send size={16} />
                </button>
@@ -285,17 +285,17 @@ const ChatBar: React.FC = () => {
       <>
          {/* Sticky Bottom Bar */}
          <div
-            className="fixed bottom-0 left-0 w-full h-[30px] bg-[#1a1a1a]/90 border-t border-[#333] flex items-center justify-between px-4 z-50 text-white font-sans transition-[bottom] duration-300"
+            className="fixed bottom-0 left-0 w-full h-[30px] bg-[var(--card-bg)]/90 border-t border-[var(--border-color)] flex items-center justify-between px-4 z-50 text-white font-sans transition-[bottom] duration-300"
             style={{ bottom: `${bottomOffset}px` }}
          >
 
             {/* Left: Chat Trigger */}
             <div
                ref={chatTriggerRef}
-               className="flex items-center gap-2 h-full px-3 hover:bg-[#333] cursor-pointer border-r border-[#333] select-none"
+               className="flex items-center gap-2 h-full px-3 hover:bg-[var(--border-color)] cursor-pointer border-r border-[var(--border-color)] select-none"
                onClick={() => setIsOpen(!isOpen)}
             >
-               <div className={`w-2 h-2 rounded-full ${onlineFriends.length > 0 ? 'bg-[#59B200] shadow-[0_0_4px_#59B200]' : 'bg-gray-500'}`}></div>
+               <div className={`w-2 h-2 rounded-full ${onlineFriends.length > 0 ? 'bg-[var(--accent)] shadow-[0_0_4px_var(--accent)]' : 'bg-gray-500'}`}></div>
                <span className="font-bold text-[12px]">Chat ({onlineFriends.length})</span>
             </div>
 
@@ -303,10 +303,10 @@ const ChatBar: React.FC = () => {
             <div className="flex items-center gap-4 h-full">
                {activeChatUser && (
                   <div
-                     className="h-full px-3 bg-[#005599] flex items-center gap-2 cursor-pointer text-[12px] font-bold"
+                     className="h-full px-3 bg-[var(--accent)] flex items-center gap-2 cursor-pointer text-[12px] font-bold"
                      onClick={() => setActiveChatUser(activeChatUser)}
                   >
-                     <span className={`w-2 h-2 rounded-full ${onlineUserIds.includes(activeChatUser.id) ? 'bg-[#59B200]' : 'bg-gray-400'}`}></span>
+                     <span className={`w-2 h-2 rounded-full ${onlineUserIds.includes(activeChatUser.id) ? 'bg-[var(--accent)]' : 'bg-gray-400'}`}></span>
                      {activeChatUser.name}
                   </div>
                )}
@@ -324,25 +324,25 @@ const ChatBar: React.FC = () => {
                <div className="bg-[var(--bg-color)] p-2 border-b border-[var(--border-soft)] flex justify-between items-center transition-colors duration-200">
                   <span className="text-[11px] font-bold text-[var(--text-main)] transition-colors duration-200">Amigos {friends.length > 0 && `(${onlineFriends.length}/${friends.length})`}</span>
                   <div className="flex gap-1">
-                     <span className="text-[9px] text-[#005599] hover:underline cursor-pointer">Ajustes</span>
+                     <span className="text-[9px] text-[var(--accent)] hover:underline cursor-pointer">Ajustes</span>
                   </div>
                </div>
                <div className="overflow-y-auto p-1 flex-1 h-[300px]">
-                  <input type="text" placeholder="Buscar amigo" className="w-full text-[11px] p-1 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] mb-2 focus:outline-none transition-colors" />
+                  <input type="text" placeholder="Buscar amigo" className="w-full text-[11px] p-1 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg mb-2 focus:outline-none transition-colors" />
                   {friends.length > 0 ? friends.map(friend => {
                      const isOnline = onlineUserIds.includes(friend.id);
                      return (
                         <div
                            key={friend.id}
-                           className="flex items-center gap-2 p-1.5 hover:bg-[var(--border-soft)] cursor-pointer rounded-[2px] transition-colors duration-200"
+                           className="flex items-center gap-2 p-1.5 hover:bg-[var(--border-soft)] cursor-pointer rounded-lg transition-colors duration-200"
                            onClick={() => {
                               setActiveChatUser(friend);
                            }}
                         >
-                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#59B200]' : 'bg-gray-300'}`}></div>
+                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[var(--accent)]' : 'bg-gray-300'}`}></div>
                            <img
                               src={friend.avatar || `/api/proxy/avatar?name=${encodeURIComponent(friend.name)}`}
-                              className={`w-5 h-5 rounded-sm object-cover bg-[var(--bg-color)] ${!isOnline ? 'grayscale opacity-70' : ''}`}
+                              className={`w-5 h-5 rounded-lg object-cover bg-[var(--bg-color)] ${!isOnline ? 'grayscale opacity-70' : ''}`}
                               alt={friend.name}
                            />
                            <span className={`text-[11px] ${isOnline ? 'text-[var(--text-main)] font-bold' : 'text-gray-500'} truncate transition-colors duration-200`}>{friend.name}</span>

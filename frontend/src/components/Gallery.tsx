@@ -51,14 +51,14 @@ const Gallery: React.FC = () => {
         <div className="bg-[var(--bg-color)] min-h-screen transition-colors duration-200">
             <div className="max-w-[980px] mx-auto p-4 flex flex-col gap-4">
 
-                <div className="bg-[var(--card-bg)] rounded-[4px] border border-[var(--border-color)] p-4 shadow-sm transition-colors duration-200">
+                <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--border-color)] p-4 shadow-sm transition-colors duration-200">
                     <div className="flex justify-between items-center mb-6 border-b border-[var(--border-soft)] pb-4 transition-colors duration-200">
                         <h1 className="text-[20px] font-bold text-[var(--text-main)] transition-colors duration-200">
                             Fotos de {userName} <span className="text-gray-400 font-normal text-[14px]">({photos.length})</span>
                         </h1>
                         <button
                             onClick={() => navigate(-1)}
-                            className="text-[#005599] text-[12px] font-bold hover:underline"
+                            className="text-[var(--text-secondary)] text-[12px] font-bold hover:underline"
                         >
                             « Volver al perfil
                         </button>
@@ -104,8 +104,8 @@ const Gallery: React.FC = () => {
                                     <div className="flex justify-between items-center px-1">
                                         <div className="text-[9px] text-gray-500">{new Date(photo.createdAt).toLocaleDateString()}</div>
                                         {photo.photoTags?.length > 0 && (
-                                            <div className="flex items-center gap-0.5 text-[9px] text-[#59B200] font-bold">
-                                                <Tag size={8} fill="#59B200" /> {photo.photoTags.length}
+                                            <div className="flex items-center gap-0.5 text-[9px] text-[var(--accent)] font-bold">
+                                                <Tag size={8} fill="var(--accent)" /> {photo.photoTags.length}
                                             </div>
                                         )}
                                     </div>

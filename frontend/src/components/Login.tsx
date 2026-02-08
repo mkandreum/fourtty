@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User as UserIcon, MapPin, Smartphone, Info } from 'lucide-react';
+import { User as UserIcon, MapPin, Smartphone, Info, Mail, Lock, UserPlus, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api';
 import { LoginResponse } from '../types';
 
@@ -25,7 +26,6 @@ const Login: React.FC = () => {
 
     try {
       if (isRegister) {
-        // Register flow
         const response = await api.post('/auth/register', {
           name,
           lastName,
@@ -35,7 +35,6 @@ const Login: React.FC = () => {
         });
         login(response.data.token, response.data.user);
       } else {
-        // Login flow
         const response = await api.post<LoginResponse>('/auth/login', {
           email,
           password
@@ -55,222 +54,207 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col font-sans transition-colors duration-200">
-      {/* Background Gradient similar to the original */}
-      <div className="flex-1 bg-gradient-to-b from-[#5C95C4] via-[#5C95C4] to-[#6FA3CD] [data-theme='dark']:from-[#000000] [data-theme='dark']:via-[#000000] [data-theme='dark']:to-[#0a0a0a] relative overflow-hidden transition-colors duration-500">
+      {/* Optimized Gradient Background */}
+      <div className="flex-1 bg-gradient-to-br from-slate-900 via-violet-900 to-slate-900 relative flex items-center justify-center p-4 overflow-hidden">
 
-        {/* Top Login Bar */}
-        <div className="md:absolute top-0 w-full p-4 flex justify-center z-20 bg-[#5C95C4] [data-theme='dark']:bg-[#000000] md:bg-transparent">
-          <div className="max-w-[980px] w-full flex flex-col md:flex-row justify-between md:justify-end gap-4 md:gap-0">
-            {/* Logo for mobile in header */}
-            <div className="md:hidden flex items-center gap-1 select-none">
-              <span className="text-2xl font-bold tracking-tighter text-white">;) twentty</span>
+        {/* Decorative blobs */}
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-600/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px]" />
+
+        <div className="max-w-[1100px] w-full flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+
+          {/* Left Side: Brand Narrative */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="w-full lg:w-1/2 text-left"
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <div className="glass p-3 rounded-2xl shadow-xl">
+                <span className="brand-font text-5xl md:text-7xl">;)</span>
+              </div>
+              <h1 className="brand-font text-6xl md:text-8xl py-2">fourtty</h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-wrap items-end md:items-start gap-2 md:gap-3 text-white text-[10px] md:text-[11px]">
-              {isRegister && (
-                <div className="flex flex-col animate-in fade-in slide-in-from-top-2">
-                  <label className="mb-1 ml-1 opacity-90">Nombre</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] [data-theme='dark']:border-[#222] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-yellow-300 bg-[var(--input-bg)] transition-colors duration-200"
-                    placeholder="Tu nombre"
-                    required
-                  />
-                </div>
-              )}
-
-              {isRegister && (
-                <div className="flex flex-col animate-in fade-in slide-in-from-top-2">
-                  <label className="mb-1 ml-1 opacity-90">Apellidos</label>
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] [data-theme='dark']:border-[#222] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-yellow-300 bg-[var(--input-bg)] transition-colors duration-200"
-                    placeholder="Tus apellidos"
-                    required
-                  />
-                </div>
-              )}
-
-              {isRegister && (
-                <div className="flex flex-col animate-in fade-in slide-in-from-top-2">
-                  <label className="mb-1 ml-1 opacity-90">Código Invitación</label>
-                  <input
-                    type="text"
-                    value={inviteCode}
-                    onChange={(e) => setInviteCode(e.target.value)}
-                    className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] [data-theme='dark']:border-[#222] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-yellow-300 bg-[var(--input-bg)] transition-colors duration-200"
-                    placeholder="ABCD..."
-                    required
-                  />
-                </div>
-              )}
-
-              <div className="flex flex-col">
-                <label className="mb-1 ml-1 opacity-90">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] [data-theme='dark']:border-[#222] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-yellow-300 bg-[var(--input-bg)] transition-colors duration-200"
-                  placeholder="laura@twentty.com"
-                  required
-                />
-                {!isRegister && (
-                  <div className="flex items-center mt-1">
-                    <input type="checkbox" id="remember" className="mr-1 h-3 w-3" />
-                    <label htmlFor="remember">Recordarme</label>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <label className="mb-1 ml-1 opacity-90">Contraseña</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full md:w-32 p-1 rounded-sm border border-[#4a7aa3] [data-theme='dark']:border-[#222] text-[var(--input-text)] outline-none focus:ring-2 focus:ring-yellow-300 bg-[var(--input-bg)] transition-colors duration-200"
-                  placeholder="********"
-                  required
-                />
-                {/* Forgot Password Link */}
-                {!isRegister && (
-                  <Link to="/forgot-password" data-testid="forgot-password-link" className="mt-1 text-blue-100 hover:underline">
-                    ¿Has olvidado tu contraseña?
-                  </Link>
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="md:mt-[19px] bg-[#2B7BB9] hover:bg-[#256ca3] text-white border border-[#205e8e] px-3 py-1 rounded-sm font-bold shadow-sm disabled:opacity-50 min-w-20"
-                >
-                  {isLoading ? '...' : (isRegister ? 'Registrarse' : 'Entrar')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsRegister(!isRegister);
-                    setError('');
-                    setName('');
-                    setLastName('');
-                    setInviteCode('');
-                  }}
-                  className="mt-1 text-blue-100 hover:underline text-left"
-                >
-                  {isRegister ? 'Ya tengo cuenta' : '¡Regístrate ahora!'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Error Message Toast */}
-        {error && (
-          <div className="absolute top-20 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-30 text-xs">
-            {error}
-          </div>
-        )}
-
-        {/* Main Content Area */}
-        <div className="max-w-[980px] mx-auto mt-12 md:mt-32 px-4 flex flex-col md:flex-row items-center justify-between text-white relative z-10 pb-40">
-
-          {/* Left Side: Logo & Description */}
-          <div className="w-full md:w-1/2 md:pr-12 text-center md:text-left mb-12 md:mb-0">
-            <div className="mb-6">
-              {/* Recreated Logo */}
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-1 mb-8 select-none">
-                <div className="bg-white/20 rounded-lg p-2 backdrop-blur-sm hidden md:block">
-                  <span className="text-4xl md:text-6xl font-bold tracking-tighter text-white drop-shadow-md">;)</span>
-                </div>
-                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-white drop-shadow-md pb-2 mt-2">twentty</h1>
-              </div>
-
-              <h2 className="text-lg md:text-xl font-bold mb-2 md:text-right w-full border-b border-white/30 pb-2">
-                ¿Qué es Twentty?
+            <div className="space-y-6 max-w-lg">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
+                Tu mundo social, <span className="text-violet-400">rediseñado.</span>
               </h2>
-              <p className="text-[13px] leading-relaxed text-justify opacity-90">
-                Twentty es una plataforma social privada, a la que se accede únicamente por invitación.
-                Cada día la usan millones de personas para comunicarse entre ellas y compartir información
-                de forma segura y privada.
+              <p className="text-slate-300 text-lg leading-relaxed">
+                Fourtty es una plataforma social premium y privada. Conecta de forma segura, comparte momentos y descubre qué está pasando en tu mundo con un estilo moderno.
               </p>
-            </div>
-          </div>
 
-          {/* Vertical Separator */}
-          <div className="hidden md:block w-[1px] h-64 bg-gradient-to-b from-transparent via-white/30 to-transparent mx-8"></div>
-
-          {/* Right Side: Features */}
-          <div className="w-full md:w-1/2 flex flex-col gap-6 md:gap-8 pl-0 md:pl-4">
-
-            <div className="flex items-start gap-4 group cursor-pointer">
-              <UserIcon className="w-10 h-10 mt-1 opacity-80 group-hover:opacity-100 transition-opacity" />
-              <div>
-                <h3 className="font-bold text-lg mb-1">Social</h3>
-                <p className="text-[12px] opacity-80 leading-snug">
-                  Conéctate, comparte y comunícate con tus amigos, compañeros de trabajo y familia.
-                </p>
+              <div className="hidden md:grid grid-cols-2 gap-4 pt-6">
+                <div className="glass p-4 rounded-xl flex items-center gap-3">
+                  <ShieldCheck className="text-violet-400" />
+                  <span className="text-sm font-semibold text-slate-200">Seguridad Total</span>
+                </div>
+                <div className="glass p-4 rounded-xl flex items-center gap-3">
+                  <Smartphone className="text-violet-400" />
+                  <span className="text-sm font-semibold text-slate-200">Experiencia PWA</span>
+                </div>
               </div>
             </div>
+          </motion.div>
 
-            <div className="flex items-start gap-4 group cursor-pointer">
-              <MapPin className="w-10 h-10 mt-1 opacity-80 group-hover:opacity-100 transition-opacity" />
-              <div>
-                <h3 className="font-bold text-lg mb-1">Local</h3>
-                <p className="text-[12px] opacity-80 leading-snug">
-                  Descubre servicios locales y participa con las marcas que realmente te importan.
-                </p>
-              </div>
+          {/* Right Side: Centered Modern Card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-[440px]"
+          >
+            <div className="glass p-8 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={isRegister ? 'register' : 'login'}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {isRegister ? 'Crea tu cuenta' : '¡Hola de nuevo!'}
+                  </h3>
+                  <p className="text-slate-400 text-sm mb-6">
+                    {isRegister ? 'Únete a la plataforma más exclusiva.' : 'Nos alegra verte. Introduce tus datos.'}
+                  </p>
+
+                  {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-3 rounded-xl text-xs mb-4 animate-in fade-in zoom-in">
+                      {error}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {isRegister && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-400 ml-1">Nombre</label>
+                          <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full !bg-white/5 !border-white/10 p-3 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                            placeholder="Nombre"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-400 ml-1">Apellidos</label>
+                          <input
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            className="w-full !bg-white/5 !border-white/10 p-3 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                            placeholder="Apellidos"
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {isRegister && (
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-400 ml-1">Código de Invitación</label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={inviteCode}
+                            onChange={(e) => setInviteCode(e.target.value)}
+                            className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                            placeholder="CÓDIGO-INVI"
+                            required
+                          />
+                          <Info size={16} className="absolute left-3 top-3.5 text-slate-500" />
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-400 ml-1">Correo Electrónico</label>
+                      <div className="relative">
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                          placeholder="gmail@ejemplo.com"
+                          required
+                        />
+                        <Mail size={16} className="absolute left-3 top-3.5 text-slate-500" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center">
+                        <label className="text-xs font-bold text-slate-400 ml-1">Contraseña</label>
+                        {!isRegister && (
+                          <Link to="/forgot-password"  className="text-[10px] text-violet-400 hover:text-violet-300 font-bold transition-colors">
+                            ¿La olvidaste?
+                          </Link>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                          placeholder="••••••••"
+                          required
+                        />
+                        <Lock size={16} className="absolute left-3 top-3.5 text-slate-500" />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white p-4 rounded-2xl font-bold text-[15px] shadow-lg shadow-violet-500/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+                    >
+                      {isLoading ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <>
+                          {isRegister ? 'Unirse ahora' : 'Iniciar Sesión'}
+                          <ArrowRight size={18} />
+                        </>
+                      )}
+                    </button>
+                  </form>
+
+                  <div className="mt-8 text-center">
+                    <button
+                      onClick={() => {
+                        setIsRegister(!isRegister);
+                        setError('');
+                      }}
+                      className="text-slate-400 text-sm hover:text-white transition-colors flex items-center gap-2 justify-center mx-auto"
+                    >
+                      {isRegister ? (
+                        <>¿Ya tienes cuenta? <span className="text-violet-400 font-bold">Entrar</span></>
+                      ) : (
+                        <>¿No tienes cuenta? <span className="text-violet-400 font-bold">Registrarse</span></>
+                      )}
+                    </button>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
-
-            <div className="flex items-start gap-4 group cursor-pointer">
-              <Smartphone className="w-10 h-10 mt-1 opacity-80 group-hover:opacity-100 transition-opacity" />
-              <div>
-                <h3 className="font-bold text-lg mb-1">Móvil</h3>
-                <p className="text-[12px] opacity-80 leading-snug">
-                  Accede a Twentty desde tu móvil en tiempo real estés donde estés.
-                </p>
-              </div>
-            </div>
-
-          </div>
+          </motion.div>
         </div>
 
-        {/* Bottom Footer Area in Login */}
-        <div className="md:absolute bottom-0 w-full bg-[#5C95C4] [data-theme='dark']:bg-[#000000] border-t border-white/20 p-4 mt-8 transition-colors duration-500">
-          <div className="max-w-[980px] mx-auto flex justify-between text-[11px] text-blue-100">
-            <div className="flex flex-wrap gap-2 md:gap-4">
-              <span>© Twentty 2026</span>
-              <span className="hover:underline cursor-pointer">Español</span>
-              <span className="hover:underline cursor-pointer hidden sm:inline">Català</span>
-              <span className="hover:underline cursor-pointer">English</span>
-              <span className="hover:underline cursor-pointer hidden sm:inline">Euskara</span>
-              <span className="hover:underline cursor-pointer hidden sm:inline">Galego</span>
-            </div>
-            <div className="hidden md:flex gap-4">
-              <span className="hover:underline cursor-pointer">Acerca de</span>
-              <span className="hover:underline cursor-pointer">Empleo</span>
-              <span className="hover:underline cursor-pointer">Anúnciate</span>
-              <span className="hover:underline cursor-pointer">Prensa</span>
-              <span className="hover:underline cursor-pointer">Blog</span>
-              <span className="hover:underline cursor-pointer">Ayuda</span>
-            </div>
+        {/* Bottom Footer Area */}
+        <div className="absolute bottom-6 w-full px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-[11px] font-medium opacity-60">
+          <div className="flex gap-6 order-2 md:order-1">
+            <span className="hover:text-slate-300 cursor-pointer">Seguridad</span>
+            <span className="hover:text-slate-300 cursor-pointer">Privacidad</span>
+            <span className="hover:text-slate-300 cursor-pointer">Condiciones</span>
           </div>
-          {/* Mock Logos */}
-          <div className="max-w-[980px] mx-auto mt-4 flex gap-6 opacity-40 grayscale hover:grayscale-0 transition-all">
-            <div className="text-white font-bold text-xs flex items-center gap-1"><Info size={12} /> Páginas Premium {'>'} </div>
-            <div className="h-4 w-12 bg-white/50 rounded"></div>
-            <div className="h-4 w-8 bg-white/50 rounded"></div>
-            <div className="h-4 w-16 bg-white/50 rounded"></div>
+          <div className="flex gap-4 order-1 md:order-2">
+            <span>© Fourtty 2026</span>
           </div>
         </div>
-
       </div>
     </div>
   );

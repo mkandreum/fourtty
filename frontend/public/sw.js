@@ -1,4 +1,4 @@
-const CACHE_NAME = 'twentty-cache-v3';
+const CACHE_NAME = 'fourtty-cache-v3';
 const urlsToCache = [
     '/',
     '/index.html',

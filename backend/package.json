@@ -1,7 +1,7 @@
 {
-    "name": "twenty-backend",
+    "name": "fourtty-backend",
     "version": "1.0.0",
-    "description": "Backend API for Twenty - Tuenti Clone",
+    "description": "Backend API for Fourtty",
     "main": "dist/index.js",
     "type": "commonjs",
     "scripts": {

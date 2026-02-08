@@ -193,7 +193,7 @@ const Header: React.FC = () => {
           >
             <span className="text-white text-[18px] md:text-[24px] font-black tracking-tighter drop-shadow-md flex items-center gap-1">
               <span className="text-lg md:text-2xl">;)</span>
-              twentty
+              fourtty
             </span>
           </div>
 
@@ -402,7 +402,7 @@ const Header: React.FC = () => {
 
                       <div className="bg-[var(--bg-color)] p-2 text-center border-t border-[var(--border-soft)] transition-colors duration-200">
                         <span className="text-[9px] text-gray-500 font-medium">
-                          Twentty • Conectando personas
+                          Fourtty • Conectando personas
                         </span>
                       </div>
                     </motion.div>

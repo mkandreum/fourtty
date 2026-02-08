@@ -29,31 +29,41 @@ transporter.verify((error, success) => {
 export const sendInvitationEmail = async (to: string, inviterName: string, inviteCode: string): Promise<{ success: boolean; error?: any }> => {
     const mailOptions = {
         from: {
-            name: "Twentty",
+            name: "Fourtty",
             address: process.env.SMTP_USER || ""
         },
         to,
-        subject: `¡${inviterName} te ha invitado a Twentty!`,
-        text: `Hola,\n\n${inviterName} te ha invitado a unirte a Twentty, la red social privada.\n\nTu código de invitación es: ${inviteCode}\n\nRegístrate en: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/login\n\n¡Te esperamos!`,
+        subject: `¡${inviterName} te ha invitado a Fourtty!`,
+        text: `Hola,\n\n${inviterName} te ha invitado a unirte a Fourtty, la red social privada.\n\nTu código de invitación es: ${inviteCode}\n\nRegístrate en: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/login\n\n¡Te esperamos!`,
         html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #dce5ed; border-radius: 8px; overflow: hidden;">
-                <div style="background-color: #005599; padding: 20px; text-align: center;">
-                    <h1 style="color: white; margin: 0; font-size: 28px;">;) twentty</h1>
-                </div>
-                <div style="padding: 30px; background-color: white;">
-                    <p style="font-size: 16px; color: #333;">Hola,</p>
-                    <p style="font-size: 16px; color: #333;"><strong>${inviterName}</strong> te ha invitado a unirte a <strong>Twentty</strong>, la red social privada que revive los mejores momentos.</p>
-                    <div style="background-color: #f2f6f9; border: 1px dashed #005599; padding: 20px; text-align: center; margin: 30px 0;">
-                        <p style="margin: 0; font-size: 14px; color: #555;">Tu código de invitación exclusivo:</p>
-                        <p style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; color: #005599; letter-spacing: 5px;">${inviteCode}</p>
+            <div style="background-color: #f8fafc; padding: 40px 20px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                    <div style="background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); padding: 40px 20px; text-align: center;">
+                        <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">fourtty</h1>
+                        <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0; font-size: 16px;">Tu mundo social, rediseñado.</p>
                     </div>
-                    <p style="font-size: 14px; color: #555; text-align: center;">Usa este código en la pantalla de registro.</p>
-                    <div style="text-align: center; margin-top: 40px;">
-                        <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background-color: #59B200; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 16px;">Unirse a Twentty</a>
+                    <div style="padding: 40px; text-align: center;">
+                        <p style="font-size: 18px; color: #1e293b; margin-bottom: 24px;">¡Hola!</p>
+                        <p style="font-size: 16px; color: #475569; line-height: 1.6; margin-bottom: 32px;">
+                            <strong>${inviterName}</strong> te ha invitado a formar parte de <strong>Fourtty</strong>, la red social exclusiva donde conectas con lo que de verdad importa.
+                        </p>
+                        
+                        <div style="background-color: #f1f5f9; border-radius: 16px; padding: 24px; margin-bottom: 32px;">
+                            <p style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #64748b;">Tu código de acceso exclusivo</p>
+                            <p style="margin: 0; font-size: 36px; font-weight: 800; color: #7c3aed; letter-spacing: 4px;">${inviteCode}</p>
+                        </div>
+
+                        <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.3);">
+                            Unirse a Fourtty
+                        </a>
+                        
+                        <p style="font-size: 13px; color: #94a3b8; margin-top: 32px;">
+                            Usa este código en la pantalla de registro para activar tu cuenta.
+                        </p>
                     </div>
-                </div>
-                <div style="background-color: #f9fbfd; padding: 15px; text-align: center; border-top: 1px solid #dce5ed;">
-                    <p style="margin: 0; font-size: 12px; color: #999;">© Twentty 2026. Todos los derechos reservados.</p>
+                    <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
+                        <p style="margin: 0; font-size: 12px; color: #94a3b8;">&copy; 2026 Fourtty. Todos los derechos reservados.</p>
+                    </div>
                 </div>
             </div>
         `,
@@ -77,30 +87,41 @@ export const sendInvitationEmail = async (to: string, inviterName: string, invit
 export const sendResetPasswordEmail = async (to: string, resetUrl: string): Promise<{ success: boolean; error?: any }> => {
     const mailOptions = {
         from: {
-            name: "Twentty",
+            name: "Fourtty",
             address: process.env.SMTP_USER || ""
         },
         to,
-        subject: 'Restablece tu contraseña de Twentty',
+        subject: 'Restablece tu contraseña de Fourtty',
         text: `Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para hacerlo: ${resetUrl}\n\nSi no has solicitado esto, ignora este email.`,
         html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #dce5ed; border-radius: 8px; overflow: hidden;">
-                <div style="background-color: #005599; padding: 20px; text-align: center;">
-                    <h1 style="color: white; margin: 0; font-size: 28px;">;) twentty</h1>
-                </div>
-                <div style="padding: 30px; background-color: white;">
-                    <p style="font-size: 16px; color: #333;">Hola,</p>
-                    <p style="font-size: 16px; color: #333;">Has solicitado restablecer tu contraseña de <strong>Twentty</strong>.</p>
-                    <p style="font-size: 16px; color: #333;">Haz clic en el botón de abajo para elegir una nueva contraseña:</p>
-                    <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
-                        <a href="${resetUrl}" style="background-color: #59B200; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 16px;">Restablecer Contraseña</a>
+            <div style="background-color: #f8fafc; padding: 40px 20px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                    <div style="background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); padding: 40px 20px; text-align: center;">
+                        <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">fourtty</h1>
                     </div>
-                    <p style="font-size: 12px; color: #999;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p>
-                    <p style="font-size: 12px; color: #999;">${resetUrl}</p>
-                    <p style="font-size: 14px; color: #555; margin-top: 30px;">Si no has solicitado este cambio, puedes ignorar este correo de forma segura.</p>
-                </div>
-                <div style="background-color: #f9fbfd; padding: 15px; text-align: center; border-top: 1px solid #dce5ed;">
-                    <p style="margin: 0; font-size: 12px; color: #999;">© Twentty 2026. Todos los derechos reservados.</p>
+                    <div style="padding: 40px; text-align: center;">
+                        <p style="font-size: 18px; color: #1e293b; margin-bottom: 24px;">Recuperar contraseña</p>
+                        <p style="font-size: 16px; color: #475569; line-height: 1.6; margin-bottom: 32px;">
+                            Has solicitado restablecer tu contraseña de <strong>Fourtty</strong>. Haz clic en el siguiente botón para continuar:
+                        </p>
+                        
+                        <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color: #ffffff; padding: 16px 40px; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.3);">
+                            Restablecer Contraseña
+                        </a>
+                        
+                        <p style="font-size: 12px; color: #94a3b8; margin-top: 40px; margin-bottom: 8px;">
+                            Si el botón no funciona, copia y pega este enlace en tu navegador:
+                        </p>
+                        <p style="font-size: 12px; color: #7c3aed; word-break: break-all;">
+                            ${resetUrl}
+                        </p>
+                        <p style="font-size: 14px; color: #64748b; margin-top: 32px;">
+                            Si no has solicitado este cambio, puedes ignorar este correo de forma segura.
+                        </p>
+                    </div>
+                    <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
+                        <p style="margin: 0; font-size: 12px; color: #94a3b8;">&copy; 2026 Fourtty. Todos los derechos reservados.</p>
+                    </div>
                 </div>
             </div>
         `,

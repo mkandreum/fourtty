@@ -299,9 +299,9 @@ const Profile: React.FC = () => {
          return (
             <button
                onClick={() => setIsEditing(!isEditing)}
-               className="flex items-center gap-1 bg-[#f2f6f9] border border-[#ccc] px-2 py-1 rounded-[3px] text-[11px] text-[#333] font-bold hover:bg-[#e1e9f0]"
+               className="flex items-center gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-3 py-1.5 rounded-xl text-[12px] text-[var(--text-main)] font-bold hover:bg-[var(--accent)]/10 hover:border-[var(--accent)]/30 transition-all shadow-sm"
             >
-               <Edit3 size={12} /> {isEditing ? 'Cancelar' : 'Editar mi perfil'}
+               <Edit3 size={14} /> {isEditing ? 'Cancelar' : 'Editar perfil'}
             </button>
          );
       }
@@ -311,14 +311,14 @@ const Profile: React.FC = () => {
             return (
                <button
                   onClick={handleAddFriend}
-                  className="flex items-center gap-1 bg-[#59B200] border border-[#4a9600] px-2 py-1 rounded-[3px] text-[11px] text-white font-bold hover:bg-[#4a9600]"
+                  className="flex items-center gap-1.5 bg-[var(--accent)] border border-[var(--accent)]/20 px-4 py-1.5 rounded-xl text-[12px] text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-[var(--accent)]/20"
                >
-                  <UserIcon size={12} /> Añadir a amigos
+                  <UserIcon size={14} /> Añadir a amigos
                </button>
             );
          case 'pending_sent':
             return (
-               <button className="flex items-center gap-1 bg-[#f2f6f9] border border-[#ccc] px-2 py-1 rounded-[3px] text-[11px] text-[#999] cursor-default">
+               <button className="flex items-center gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-4 py-1.5 rounded-xl text-[12px] text-[var(--text-muted)] cursor-default transition-all">
                   Solicitud enviada
                </button>
             );
@@ -327,7 +327,7 @@ const Profile: React.FC = () => {
                <div className="flex gap-2">
                   <button
                      onClick={handleAcceptFriend}
-                     className="flex items-center gap-1 bg-[#59B200] border border-[#4a9600] px-2 py-1 rounded-[3px] text-[11px] text-white font-bold hover:bg-[#4a9600]"
+                     className="flex items-center gap-1.5 bg-[var(--accent)] border border-[var(--accent)]/20 px-4 py-1.5 rounded-xl text-[12px] text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-[var(--accent)]/20"
                   >
                      Aceptar solicitud
                   </button>
@@ -336,15 +336,15 @@ const Profile: React.FC = () => {
          case 'accepted':
             return (
                <div className="flex gap-2">
-                  <button className="flex items-center gap-1 bg-[#f2f6f9] border border-[#ccc] px-2 py-1 rounded-[3px] text-[11px] text-[#333] hover:bg-[#e1e9f0]">
-                     <Mail size={12} /> Enviar mensaje
+                  <button className="flex items-center gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-3 py-1.5 rounded-xl text-[12px] text-[var(--text-main)] hover:bg-[var(--accent)]/10 transition-all shadow-sm">
+                     <Mail size={14} /> Enviar mensaje
                   </button>
-                  <button className="flex items-center gap-1 bg-[#f2f6f9] border border-[#ccc] px-2 py-1 rounded-[3px] text-[11px] text-[#333] hover:bg-[#e1e9f0] cursor-default">
+                  <button className="flex items-center gap-1.5 bg-[var(--accent)]/10 border border-[var(--accent)]/20 px-3 py-1.5 rounded-xl text-[12px] text-[var(--accent)] font-bold transition-all cursor-default">
                      Amigo
                   </button>
                   <button
                      onClick={handleRemoveFriend}
-                     className="text-[10px] text-[#cc0000] hover:underline px-1"
+                     className="text-[10px] text-red-500 hover:text-red-600 hover:underline px-1 font-medium"
                   >
                      (Eliminar)
                   </button>
@@ -359,7 +359,7 @@ const Profile: React.FC = () => {
    if (!profileUser) return <div className="p-4">Usuario no encontrado</div>;
 
    return (
-      <div className="bg-[var(--bg-color)] md:bg-[var(--card-bg)] md:rounded-[4px] md:border border-[var(--border-color)] p-3 md:p-4 min-h-[600px] transition-colors duration-200">
+      <div className="bg-[var(--bg-color)] md:bg-[var(--card-bg)] md:rounded-2xl md:border border-[var(--border-color)] p-3 md:p-4 min-h-[600px] transition-colors duration-200">
          <AnimatePresence>
             {imageToCrop && (
                <motion.div
@@ -414,7 +414,7 @@ const Profile: React.FC = () => {
                            <button
                               onClick={handleUploadCroppedAvatar}
                               disabled={isUploading}
-                              className="px-6 py-2 bg-[#59B200] text-white text-[12px] font-bold rounded shadow-sm hover:bg-[#4a9600] disabled:opacity-50"
+                              className="px-6 py-2 bg-[var(--accent)] text-white text-[12px] font-bold rounded shadow-sm hover:bg-[#4a9600] disabled:opacity-50"
                            >
                               {isUploading ? 'Guardando...' : 'Guardar foto'}
                            </button>
@@ -431,8 +431,8 @@ const Profile: React.FC = () => {
             </h1>
             {/* Status (latest thought) */}
             {profileUser.status && (
-               <div className="bg-[#59B200]/5 border border-[#59B200]/20 rounded-md p-2 mb-3 text-[13px] italic text-[var(--text-main)] transition-colors duration-200">
-                  <span className="font-bold text-[#59B200] not-italic mr-1">Estado:</span>
+               <div className="bg-[var(--accent)]/5 border border-[var(--accent)]/20 rounded-md p-2 mb-3 text-[13px] italic text-[var(--text-main)] transition-colors duration-200">
+                  <span className="font-bold text-[var(--accent)] not-italic mr-1">Estado:</span>
                   "{profileUser.status}"
                </div>
             )}
@@ -453,9 +453,9 @@ const Profile: React.FC = () => {
             {/* Mobile visits counter */}
             {isOwnProfile && (
                <div className="md:hidden mt-2 mb-4 flex items-center gap-2">
-                  <div className="flex items-center gap-1.5 bg-[#59B200]/10 px-2 py-0.5 rounded-full border border-[#59B200]/20">
-                     <div className="w-1.5 h-1.5 bg-[#59B200] rounded-full animate-pulse"></div>
-                     <span className="text-[11px] font-bold text-[#59B200]">
+                  <div className="flex items-center gap-1.5 bg-[var(--accent)]/10 px-2 py-0.5 rounded-full border border-[var(--accent)]/20">
+                     <div className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full animate-pulse"></div>
+                     <span className="text-[11px] font-bold text-[var(--accent)]">
                         {stats.visits} visitas al perfil
                      </span>
                   </div>
@@ -466,14 +466,16 @@ const Profile: React.FC = () => {
             </div>
          </div>
 
-         <div className="flex flex-col md:flex-row gap-6">
-            <div className="w-full md:w-[30%] flex flex-col gap-4">
-               <div className="p-1 bg-[var(--card-bg)] border border-[var(--border-color)] shadow-sm inline-block group relative cursor-pointer transition-colors duration-200">
-                  <img
-                     src={getAvatarUrl(profileUser.avatar)}
-                     className="w-full h-auto min-h-[150px] object-cover group-hover:scale-[1.01] transition-transform"
-                     alt="Profile"
-                  />
+         <div className="flex flex-col md:flex-row gap-8 items-start">
+            <div className="w-full md:w-[280px] shrink-0">
+               <div className="bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-[2.5rem] p-4 shadow-xl transition-all duration-300 group relative">
+                  <div className="aspect-square rounded-[2rem] overflow-hidden border border-[var(--border-soft)] shadow-inner">
+                     <img
+                        src={getAvatarUrl(profileUser.avatar)}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                        alt="Profile"
+                     />
+                  </div>
                   {isOwnProfile && (
                      <label className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                         <Camera className="text-white mb-1" />
@@ -491,8 +493,8 @@ const Profile: React.FC = () => {
 
                {/* Desktop visits counter */}
                {isOwnProfile && (
-                  <div className="hidden md:flex items-center justify-center gap-1.5 py-1 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[2px] mt-1 transition-colors duration-200">
-                     <span className="text-[11px] font-bold text-[#59B200]">{stats.visits} visitas al perfil</span>
+                  <div className="hidden md:flex items-center justify-center gap-1.5 py-1 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl mt-1 transition-colors duration-200">
+                     <span className="text-[11px] font-bold text-[var(--accent)]">{stats.visits} visitas al perfil</span>
                   </div>
                )}
 
@@ -502,7 +504,7 @@ const Profile: React.FC = () => {
                         <label className="block font-bold text-gray-400 mb-1">Nombre</label>
                         <input
                            type="text"
-                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1.5 focus:border-[#59B200] outline-none transition-colors"
+                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors"
                            value={editData.name || ''}
                            onChange={(e) => setEditData({ ...editData, name: e.target.value })}
                         />
@@ -511,7 +513,7 @@ const Profile: React.FC = () => {
                         <label className="block font-bold text-[#666] mb-1">Apellidos</label>
                         <input
                            type="text"
-                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1.5 focus:border-[#59B200] outline-none transition-colors"
+                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors"
                            value={editData.lastName || ''}
                            onChange={(e) => setEditData({ ...editData, lastName: e.target.value })}
                         />
@@ -520,7 +522,7 @@ const Profile: React.FC = () => {
                         <label className="block font-bold text-gray-400 mb-1">Estado actual</label>
                         <input
                            type="text"
-                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1.5 focus:border-[#59B200] outline-none transition-colors"
+                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors"
                            value={editData.status || ''}
                            onChange={(e) => setEditData({ ...editData, status: e.target.value })}
                         />
@@ -528,7 +530,7 @@ const Profile: React.FC = () => {
                      <div>
                         <label className="block font-bold text-gray-400 mb-1">Biografía</label>
                         <textarea
-                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1.5 focus:border-[#59B200] outline-none transition-colors"
+                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors"
                            rows={3}
                            value={editData.bio || ''}
                            onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
@@ -539,7 +541,7 @@ const Profile: React.FC = () => {
                         <div className="flex-1">
                            <label className="block font-bold text-[#666] mb-1">Sexo</label>
                            <select
-                              className="w-full border border-[#ccc] rounded-[2px] p-1"
+                              className="w-full border border-[#ccc] rounded-xl p-1"
                               value={editData.gender || ''}
                               onChange={(e) => setEditData({ ...editData, gender: e.target.value })}
                            >
@@ -552,7 +554,7 @@ const Profile: React.FC = () => {
                            <label className="block font-bold text-[#666] mb-1">Edad</label>
                            <input
                               type="number"
-                              className="w-full border border-[#ccc] rounded-[2px] p-1"
+                              className="w-full border border-[#ccc] rounded-xl p-1"
                               value={editData.age || ''}
                               onChange={(e) => setEditData({ ...editData, age: Number(e.target.value) })}
                            />
@@ -562,7 +564,7 @@ const Profile: React.FC = () => {
                         <label className="block font-bold text-[#666] mb-1">Situación sentimental</label>
                         <input
                            type="text"
-                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           className="w-full border border-[#ccc] rounded-xl p-1"
                            value={editData.relationshipStatus || ''}
                            onChange={(e) => setEditData({ ...editData, relationshipStatus: e.target.value })}
                            placeholder="Soltero, Casado..."
@@ -572,7 +574,7 @@ const Profile: React.FC = () => {
                         <label className="block font-bold text-[#666] mb-1">Localidad</label>
                         <input
                            type="text"
-                           className="w-full border border-[#ccc] rounded-[2px] p-1"
+                           className="w-full border border-[#ccc] rounded-xl p-1"
                            value={editData.location || ''}
                            onChange={(e) => setEditData({ ...editData, location: e.target.value })}
                         />
@@ -580,7 +582,7 @@ const Profile: React.FC = () => {
                      <div>
                         <label className="block font-bold text-[#666] mb-1">Privacidad del perfil</label>
                         <select
-                           className="w-full border border-[var(--border-color)] rounded-[2px] p-1 bg-[var(--input-bg)] text-[var(--input-text)] outline-none"
+                           className="w-full border border-[var(--border-color)] rounded-xl p-1 bg-[var(--input-bg)] text-[var(--input-text)] outline-none"
                            value={editData.privacy || 'public'}
                            onChange={(e) => setEditData({ ...editData, privacy: e.target.value })}
                         >
@@ -594,7 +596,7 @@ const Profile: React.FC = () => {
                      </div>
                      <button
                         onClick={handleUpdateProfile}
-                        className="bg-[#59B200] text-white font-bold py-1.5 rounded-[2px] border border-[#4a9600] mt-1 hover:bg-[#4a9600] transition-colors"
+                        className="bg-[var(--accent)] text-white font-bold py-1.5 rounded-xl border border-[#4a9600] mt-1 hover:bg-[#4a9600] transition-colors"
                      >
                         Guardar cambios
                      </button>
@@ -602,7 +604,7 @@ const Profile: React.FC = () => {
                      <div className="mt-4 pt-4 border-t border-[var(--border-soft)]">
                         <button
                            onClick={handleDeleteAccount}
-                           className="flex items-center justify-center gap-1.5 w-full bg-[var(--card-bg)] text-[#cc0000] border border-[#cc0000] font-bold py-1.5 rounded-[2px] hover:bg-red-900/10 transition-colors text-[10px]"
+                           className="flex items-center justify-center gap-1.5 w-full bg-[var(--card-bg)] text-[#cc0000] border border-[#cc0000] font-bold py-1.5 rounded-xl hover:bg-red-900/10 transition-colors text-[10px]"
                         >
                            <UserX size={12} /> Eliminar mi cuenta permanentemente
                         </button>
@@ -660,7 +662,7 @@ const Profile: React.FC = () => {
                               className="w-full aspect-square object-cover border border-[#eee] group-hover:scale-105 transition-transform"
                               alt={friend.name}
                            />
-                           <div className="text-[9px] text-center mt-0.5 truncate text-[#005599] group-hover:underline">
+                           <div className="text-[9px] text-center mt-0.5 truncate text-[var(--text-secondary)] group-hover:underline">
                               {friend.name.split(' ')[0]}
                            </div>
                         </div>
@@ -683,7 +685,7 @@ const Profile: React.FC = () => {
                            >
                               <img
                                  src={getAvatarUrl(visitor.avatar)}
-                                 className="w-full aspect-square object-cover border border-[#eee] group-hover:border-[#005599] transition-colors"
+                                 className="w-full aspect-square object-cover border border-[#eee] group-hover:border-[var(--text-secondary)] transition-colors"
                                  alt={visitor.name}
                               />
                               <div className="text-[8px] text-center mt-0.5 truncate text-[#666]">
@@ -710,10 +712,10 @@ const Profile: React.FC = () => {
 
             <div className="flex-1">
                {isOwnProfile && (
-                  <div className="bg-[var(--border-soft)] p-3 rounded-[4px] border border-[var(--border-color)] mb-4 shadow-sm animate-in slide-in-from-right-2 duration-300 transition-colors duration-200">
+                  <div className="bg-[var(--border-soft)] p-3 rounded-2xl border border-[var(--border-color)] mb-4 shadow-sm animate-in slide-in-from-right-2 duration-300 transition-colors duration-200">
                      <div className="text-[var(--text-secondary)] font-bold text-[12px] mb-1">Escribe algo en tu tablón...</div>
                      <textarea
-                        className="w-full h-16 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1 text-[12px] resize-none focus:border-[var(--text-secondary)] outline-none transition-colors"
+                        className="w-full h-16 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1 text-[12px] resize-none focus:border-[var(--text-secondary)] outline-none transition-colors"
                         value={wallInput}
                         onChange={(e) => setWallInput(e.target.value)}
                      ></textarea>
@@ -728,14 +730,14 @@ const Profile: React.FC = () => {
                            />
                            <button
                               onClick={() => document.getElementById('post-image')?.click()}
-                              className={`flex items-center gap-1 text-[11px] font-bold ${postImage ? 'text-[#59B200]' : 'text-[#888]'} hover:text-[#555] transition-colors`}
+                              className={`flex items-center gap-1 text-[11px] font-bold ${postImage ? 'text-[var(--accent)]' : 'text-[#888]'} hover:text-[#555] transition-colors`}
                            >
                               <Camera size={14} /> {postImage ? 'Imagen lista' : 'Adjuntar foto'}
                            </button>
                         </div>
                         <button
                            onClick={handlePostToWall}
-                           className="bg-[#005599] text-white text-[11px] font-bold px-3 py-1 rounded-[3px] hover:bg-[#00447a] transition-colors shadow-sm"
+                           className="bg-[var(--text-secondary)] text-white text-[11px] font-bold px-3 py-1 rounded-lg hover:bg-[#00447a] transition-colors shadow-sm"
                         >
                            Publicar
                         </button>
@@ -791,7 +793,7 @@ const Profile: React.FC = () => {
                                     <div className="mb-2 mt-1">
                                        <img
                                           src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
-                                          className="max-w-full max-h-[300px] rounded-[2px] border border-[#eee] cursor-pointer hover:scale-[1.01] transition-transform"
+                                          className="max-w-full max-h-[300px] rounded-xl border border-[#eee] cursor-pointer hover:scale-[1.01] transition-transform"
                                           onClick={() => {
                                              const photoObj = {
                                                 id: post.id,

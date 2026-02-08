@@ -7,8 +7,8 @@ import { motion } from 'framer-motion';
 
 const MenuItem = ({ icon: Icon, count, text }: { icon: any, count: number, text: string }) => (
    <div className="flex items-center gap-2 mb-1 cursor-pointer group">
-      <Icon size={14} className="text-[#59B200] fill-[#59B200]" strokeWidth={2} />
-      <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
+      <Icon size={14} className="text-[var(--accent)] fill-[var(--accent)]" strokeWidth={2} />
+      <span className="text-[11px] font-bold text-[var(--accent)] group-hover:underline">
          {count} {text}
       </span>
    </div>
@@ -115,8 +115,8 @@ const LeftPanel: React.FC = () => {
          <div className="mb-4">
             <div className="flex flex-col gap-1 mb-1">
                <div className="flex items-center gap-2 group cursor-pointer" onClick={() => (window as any).location.href = '/people'}>
-                  <UserPlus size={14} className="text-[#59B200] fill-[#59B200]" strokeWidth={2} />
-                  <span className="text-[11px] font-bold text-[#59B200] group-hover:underline">
+                  <UserPlus size={14} className="text-[var(--accent)] fill-[var(--accent)]" strokeWidth={2} />
+                  <span className="text-[11px] font-bold text-[var(--accent)] group-hover:underline">
                      {stats.requests > 0 ? `${stats.requests} petición de amistad` : '0 peticiones'}
                   </span>
                </div>
@@ -125,7 +125,7 @@ const LeftPanel: React.FC = () => {
                {pendingRequests.length > 0 && (
                   <div className="ml-5 flex flex-col gap-2 mt-1 mb-3">
                      {pendingRequests.map(req => (
-                        <div key={req.id} className="bg-[var(--card-bg)] border border-[var(--border-color)] p-1.5 rounded-[2px] shadow-sm flex flex-col gap-1 transition-colors duration-200">
+                        <div key={req.id} className="bg-[var(--card-bg)] border border-[var(--border-color)] p-1.5 rounded-xl shadow-sm flex flex-col gap-1 transition-colors duration-200">
                            <div className="flex items-center gap-1.5">
                               <img
                                  src={getAvatarUrl(req.user.avatar, req.user.name, req.user.lastName)}
@@ -136,13 +136,13 @@ const LeftPanel: React.FC = () => {
                            <div className="flex gap-1">
                               <button
                                  onClick={() => handleAcceptFriend(req.id)}
-                                 className="flex-1 bg-[#59B200] text-white text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-[#4a9600]"
+                                 className="flex-1 bg-[var(--accent)] text-white text-[8px] font-bold py-0.5 rounded-lg hover:bg-[#4a9600]"
                               >
                                  Aceptar
                               </button>
                               <button
                                  onClick={() => handleRejectFriend(req.id)}
-                                 className="flex-1 bg-[var(--card-bg)] text-[#cc0000] border border-[#ff3333]/30 text-[8px] font-bold py-0.5 rounded-[1px] hover:bg-red-900/10 transition-colors"
+                                 className="flex-1 bg-[var(--card-bg)] text-[#cc0000] border border-[#ff3333]/30 text-[8px] font-bold py-0.5 rounded-lg hover:bg-red-900/10 transition-colors"
                               >
                                  Rechazar
                               </button>
@@ -193,7 +193,7 @@ const LeftPanel: React.FC = () => {
                         {event.image ? <img src={event.image} className="w-full h-full object-cover" /> : 'EVENT'}
                      </div>
                      <div>
-                        <div className="text-[10px] text-[#005599] font-bold hover:underline cursor-pointer leading-tight">{event.title}</div>
+                        <div className="text-[10px] text-[var(--text-secondary)] font-bold hover:underline cursor-pointer leading-tight">{event.title}</div>
                         <div className="text-[9px] text-[#999]">
                            {new Date(event.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} ({event._count.attendees})
                         </div>
@@ -210,7 +210,7 @@ const LeftPanel: React.FC = () => {
             <h4 className="font-bold text-[var(--text-main)] text-[11px] mb-2 border-b border-[var(--border-soft)] pb-1 flex justify-between items-center transition-colors duration-200">
                <span>Calendario</span>
                <span
-                  className="text-[#005599] text-[9px] font-normal hover:underline cursor-pointer"
+                  className="text-[var(--text-secondary)] text-[9px] font-normal hover:underline cursor-pointer"
                   onClick={() => alert("Función de crear evento en desarrollo.")}
                >
                   Crear evento
@@ -235,7 +235,7 @@ const LeftPanel: React.FC = () => {
                   </>
                );
             })()}
-            <div className="mt-2 text-[#005599] text-[10px] hover:underline cursor-pointer">
+            <div className="mt-2 text-[var(--text-secondary)] text-[10px] hover:underline cursor-pointer">
                Ver todos
             </div>
          </div>

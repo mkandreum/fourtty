@@ -49,7 +49,7 @@ const People: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4 p-3 md:p-0">
             {/* Left Column: Filters */}
             <aside className="w-full md:w-[200px] shrink-0">
-                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[4px] shadow-sm overflow-hidden transition-colors duration-200">
+                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl shadow-sm overflow-hidden transition-colors duration-200">
                     <div className="bg-[var(--bg-color)] border-b border-[var(--border-color)] p-2 flex items-center gap-2 transition-colors duration-200">
                         <Filter size={14} className="text-[var(--text-main)] transition-colors duration-200" />
                         <span className="text-[11px] font-bold text-[var(--text-main)] transition-colors duration-200">Filtros de búsqueda</span>
@@ -59,7 +59,7 @@ const People: React.FC = () => {
                         <div>
                             <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Sexo</label>
                             <select
-                                className="w-full border border-[var(--border-color)] rounded-[2px] p-1 text-[11px] bg-[var(--input-bg)] text-[var(--input-text)] transition-colors"
+                                className="w-full border border-[var(--border-color)] rounded-lg p-1 text-[11px] bg-[var(--input-bg)] text-[var(--input-text)] transition-colors"
                                 value={filters.gender}
                                 onChange={(e) => setFilters({ ...filters, gender: e.target.value })}
                             >
@@ -76,7 +76,7 @@ const People: React.FC = () => {
                                 <MapPin size={10} className="absolute left-1.5 top-2 text-gray-500" />
                                 <input
                                     type="text"
-                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] py-1 pl-5 pr-1 text-[11px] transition-colors"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg py-1 pl-5 pr-1 text-[11px] transition-colors"
                                     placeholder="Ej: Madrid"
                                     value={filters.location}
                                     onChange={(e) => setFilters({ ...filters, location: e.target.value })}
@@ -91,7 +91,7 @@ const People: React.FC = () => {
                                 <input
                                     type="number"
                                     placeholder="Min"
-                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1 text-[11px] transition-colors"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg p-1 text-[11px] transition-colors"
                                     value={filters.ageMin}
                                     onChange={(e) => setFilters({ ...filters, ageMin: e.target.value })}
                                 />
@@ -99,7 +99,7 @@ const People: React.FC = () => {
                                 <input
                                     type="number"
                                     placeholder="Max"
-                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1 text-[11px] transition-colors"
+                                    className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg p-1 text-[11px] transition-colors"
                                     value={filters.ageMax}
                                     onChange={(e) => setFilters({ ...filters, ageMax: e.target.value })}
                                 />
@@ -111,7 +111,7 @@ const People: React.FC = () => {
                                 setFilters({ gender: '', location: '', ageMin: '', ageMax: '' });
                                 setSearchQ('');
                             }}
-                            className="bg-[var(--card-bg)] text-[#cc0000] border border-[#ffcccc] py-1 rounded-[2px] text-[10px] font-bold hover:bg-red-500/10 transition-colors"
+                            className="bg-[var(--card-bg)] text-[#cc0000] border border-[#ffcccc] py-1 rounded-lg text-[10px] font-bold hover:bg-red-500/10 transition-colors"
                         >
                             Limpiar filtros
                         </button>
@@ -121,15 +121,15 @@ const People: React.FC = () => {
 
             {/* Main Column: Results */}
             <main className="flex-1 min-w-0">
-                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[4px] shadow-sm transition-colors duration-200">
+                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl shadow-sm transition-colors duration-200">
                     <div className="p-3 border-b border-[var(--border-soft)] flex items-center justify-between gap-4 transition-colors duration-200">
-                        <h2 className="text-[#59B200] font-bold text-[14px] flex items-center gap-1 shrink-0">
-                            Gente en Twentty
+                        <h2 className="text-[var(--accent)] font-bold text-[14px] flex items-center gap-1 shrink-0">
+                            Gente en Fourtty
                         </h2>
                         <div className="relative flex-1 max-w-[300px]">
                             <input
                                 type="text"
-                                className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] py-1 pl-7 pr-2 text-[12px] placeholder-gray-500 transition-colors"
+                                className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg py-1 pl-7 pr-2 text-[12px] placeholder-gray-500 transition-colors"
                                 placeholder="Buscar por nombre..."
                                 value={searchQ}
                                 onChange={(e) => setSearchQ(e.target.value)}
@@ -144,7 +144,7 @@ const People: React.FC = () => {
                         ) : users.length === 0 ? (
                             <div className="p-12 text-center">
                                 <p className="text-[13px] text-gray-500 mb-2">No hemos encontrado a nadie con esos criterios.</p>
-                                <p className="text-[11px] text-[#005599] cursor-pointer hover:underline" onClick={() => { setFilters({ gender: '', location: '', ageMin: '', ageMax: '' }); setSearchQ(''); }}>Mostrar a todo el mundo</p>
+                                <p className="text-[11px] text-[var(--text-secondary)] cursor-pointer hover:underline" onClick={() => { setFilters({ gender: '', location: '', ageMin: '', ageMax: '' }); setSearchQ(''); }}>Mostrar a todo el mundo</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -155,18 +155,18 @@ const People: React.FC = () => {
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: (idx % 20) * 0.03 }}
-                                            className="flex gap-3 p-2 border border-transparent hover:border-[var(--border-color)] hover:bg-[var(--bg-color)] rounded-[3px] cursor-pointer group transition-all"
+                                            className="flex gap-3 p-2 border border-transparent hover:border-[var(--border-color)] hover:bg-[var(--bg-color)] rounded-xl cursor-pointer group transition-all"
                                             onClick={() => handleNavigate(u.id)}
                                         >
                                             <div className="w-[60px] h-[60px] shrink-0 bg-[var(--card-bg)] border border-[var(--border-color)] p-[1px] shadow-sm transition-colors duration-200">
                                                 <img
                                                     src={u.avatar || `/api/proxy/avatar?name=${encodeURIComponent(u.name)}`}
                                                     alt={u.name}
-                                                    className="w-full h-full object-cover rounded-[2px]"
+                                                    className="w-full h-full object-cover rounded-lg"
                                                 />
                                             </div>
                                             <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                                <div className="text-[13px] font-bold text-[#005599] group-hover:underline truncate">{u.name}</div>
+                                                <div className="text-[13px] font-bold text-[var(--text-secondary)] group-hover:underline truncate">{u.name}</div>
                                                 <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
                                                     {u.age && (
                                                         <span className="text-[10px] text-[var(--text-main)] font-bold transition-colors duration-200">{u.age} años</span>
@@ -189,7 +189,7 @@ const People: React.FC = () => {
                                                 )}
                                             </div>
                                             <div className="self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button className="bg-[#59B200] text-white p-1 rounded-full shadow-sm">
+                                                <button className="bg-[var(--accent)] text-white p-1 rounded-full shadow-sm">
                                                     <UserIcon size={12} fill="white" strokeWidth={0} />
                                                 </button>
                                             </div>
