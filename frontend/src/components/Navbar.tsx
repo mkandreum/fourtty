@@ -231,7 +231,9 @@ const Navbar: React.FC = () => {
                                     <div className="relative">
                                         {item.icon}
                                         {item.path === '#' && unreadNotifs > 0 && (
-                                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-[var(--card-bg)] shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
+                                            <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-[16px] bg-red-500 rounded-full border border-[var(--card-bg)] shadow-[0_0_8px_rgba(239,68,68,0.4)] flex items-center justify-center text-[9px] font-bold text-white px-1">
+                                                {unreadNotifs > 99 ? '99+' : unreadNotifs}
+                                            </span>
                                         )}
                                     </div>
                                     {active && (
@@ -265,16 +267,16 @@ const Navbar: React.FC = () => {
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             className="fixed bottom-[100px] left-4 right-4 z-[60] flex justify-center"
                         >
-                            <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 w-full max-w-[400px] overflow-hidden">
-                                <div className="bg-[#0a0a0a]/90 backdrop-blur-xl p-6">
+                            <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-[var(--border-color)] w-full max-w-[400px] overflow-hidden">
+                                <div className="bg-[var(--card-bg)]/95 backdrop-blur-xl p-6">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                        <h3 className="text-xl font-bold text-[var(--text-main)] flex items-center gap-2">
                                             <UserPlus className="text-[var(--accent)]" size={24} />
                                             Invitaciones
                                         </h3>
                                         <button
                                             onClick={() => setShowInvitations(false)}
-                                            className="p-2 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-all"
+                                            className="p-2 hover:bg-[var(--border-soft)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all"
                                         >
                                             <X size={20} />
                                         </button>
@@ -292,16 +294,16 @@ const Navbar: React.FC = () => {
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             className="fixed bottom-[100px] left-4 right-4 z-[60] flex justify-center"
                         >
-                            <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 w-full max-w-[400px] overflow-hidden">
-                                <div className="bg-[#0a0a0a]/90 backdrop-blur-xl p-6 flex flex-col max-h-[70vh]">
+                            <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-[var(--border-color)] w-full max-w-[400px] overflow-hidden">
+                                <div className="bg-[var(--card-bg)]/95 backdrop-blur-xl p-6 flex flex-col max-h-[70vh]">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                        <h3 className="text-xl font-bold text-[var(--text-main)] flex items-center gap-2">
                                             <Bell className="text-[var(--accent)]" size={24} />
                                             Notificaciones
                                         </h3>
                                         <button
                                             onClick={() => setShowNotifs(false)}
-                                            className="p-2 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-all"
+                                            className="p-2 hover:bg-[var(--border-soft)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all"
                                         >
                                             <X size={20} />
                                         </button>
@@ -309,7 +311,7 @@ const Navbar: React.FC = () => {
 
                                     <div className="overflow-y-auto pr-2 custom-scrollbar space-y-3">
                                         {notifications.length === 0 ? (
-                                            <div className="py-10 text-center text-white/30 italic text-sm">
+                                            <div className="py-10 text-center text-[var(--text-muted)] italic text-sm">
                                                 No tienes notificaciones
                                             </div>
                                         ) : (
@@ -317,13 +319,13 @@ const Navbar: React.FC = () => {
                                                 <div
                                                     key={notif.id}
                                                     onClick={() => handleNotificationClick(notif)}
-                                                    className={`p-4 rounded-3xl border border-white/5 cursor-pointer transition-all hover:bg-white/5 group relative overflow-hidden ${!notif.read ? 'bg-white/5' : 'opacity-60'}`}
+                                                    className={`p-4 rounded-3xl border border-[var(--border-color)] cursor-pointer transition-all hover:bg-[var(--border-soft)] group relative overflow-hidden ${!notif.read ? 'bg-[var(--border-soft)]' : 'opacity-60'}`}
                                                 >
                                                     {!notif.read && (
                                                         <div className="absolute top-0 right-0 w-1.5 h-1.5 bg-[var(--accent)] rounded-full m-3 shadow-[0_0_8px_rgba(var(--accent-rgb),0.6)]" />
                                                     )}
                                                     <div className="flex gap-3">
-                                                        <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10 text-[var(--accent)]">
+                                                        <div className="w-10 h-10 rounded-2xl bg-[var(--border-soft)] flex items-center justify-center shrink-0 border border-[var(--border-color)] text-[var(--accent)]">
                                                             {['comment_photo', 'comment_post'].includes(notif.type) && <MessageSquare size={18} />}
                                                             {['tag_photo', 'tag_post'].includes(notif.type) && <Tag size={18} />}
                                                             {['photo_post', 'video_post', 'status_post'].includes(notif.type) && <Bell size={18} />}
@@ -331,10 +333,10 @@ const Navbar: React.FC = () => {
                                                             {notif.type === 'friendship' && <UserPlus size={18} />}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="text-[13px] text-white/90 leading-tight group-hover:text-[var(--accent)] transition-colors">
+                                                            <p className="text-[13px] text-[var(--text-main)] leading-tight group-hover:text-[var(--accent)] transition-colors">
                                                                 {notif.content}
                                                             </p>
-                                                            <p className="text-[10px] text-white/30 font-bold uppercase mt-1 tracking-widest">
+                                                            <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase mt-1 tracking-widest">
                                                                 {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                             </p>
                                                         </div>
@@ -351,7 +353,7 @@ const Navbar: React.FC = () => {
                                                 setNotifications(prev => prev.map(n => ({ ...n, read: true })));
                                                 setUnreadNotifs(0);
                                             }}
-                                            className="mt-4 py-2 text-[11px] font-black text-white/30 hover:text-[var(--accent)] uppercase tracking-widest transition-colors"
+                                            className="mt-4 py-2 text-[11px] font-black text-[var(--text-muted)] hover:text-[var(--accent)] uppercase tracking-widest transition-colors"
                                         >
                                             Marcar todas como leídas
                                         </button>
@@ -368,16 +370,16 @@ const Navbar: React.FC = () => {
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             className="fixed bottom-[100px] left-4 right-4 z-[60] flex justify-center"
                         >
-                            <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 w-full max-w-[500px] overflow-hidden">
-                                <div className="bg-[#0a0a0a]/90 backdrop-blur-xl p-4 sm:p-6 flex flex-col max-h-[70vh]">
+                            <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-[var(--border-color)] w-full max-w-[500px] overflow-hidden">
+                                <div className="bg-[var(--card-bg)]/95 backdrop-blur-xl p-4 sm:p-6 flex flex-col max-h-[70vh]">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                                        <h3 className="text-lg sm:text-xl font-bold text-[var(--text-main)] flex items-center gap-2">
                                             <Mail className="text-[var(--accent)]" size={24} />
                                             Mensajes
                                         </h3>
                                         <button
                                             onClick={() => setShowMessagesModal(false)}
-                                            className="p-2 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-all"
+                                            className="p-2 hover:bg-[var(--border-soft)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all"
                                         >
                                             <X size={20} />
                                         </button>

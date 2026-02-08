@@ -15,6 +15,12 @@ const Sidebar: React.FC = () => {
    const [filterQuery, setFilterQuery] = useState('');
    const [isLoading, setIsLoading] = useState(true);
 
+   const getAvatarUrl = (avatar?: string | null, name?: string) => {
+      if (!avatar) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || '')}&background=random`;
+      if (avatar.startsWith('http')) return avatar;
+      return `${import.meta.env.VITE_API_URL?.replace('/api', '')}${avatar}`;
+   };
+
    useEffect(() => {
       if (user) {
          const fetchFriends = async () => {
@@ -84,7 +90,7 @@ const Sidebar: React.FC = () => {
                      return (
                         <div key={friend.id} className="flex items-center gap-3 p-2 hover:bg-[var(--accent)]/10 cursor-pointer group rounded-xl transition-colors duration-200">
                            <div className="relative">
-                              <img src={`https://ui-avatars.com/api/?name=${friend.name}&background=random`} className="w-8 h-8 rounded-full border border-[var(--border-soft)]" alt="" />
+                              <img src={getAvatarUrl(friend.avatar, friend.name)} className="w-8 h-8 rounded-full border border-[var(--border-soft)] object-cover" alt={friend.name} />
                               <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[var(--card-bg)] ${isOnline ? 'bg-[var(--accent)]' : 'bg-gray-400'}`}></div>
                            </div>
                            <span className={`text-[12px] font-medium ${isOnline ? 'text-[var(--text-main)]' : 'text-[var(--text-muted)]'} group-hover:text-[var(--accent)] truncate transition-colors duration-200`}>{friend.name}</span>

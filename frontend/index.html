@@ -21,30 +21,19 @@
       -moz-osx-font-smoothing: grayscale;
       font-family: Arial, Helvetica, sans-serif;
     }
-
-    /* Custom scrollbar to match the era feel */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #888;
-      border-radius: 5px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #555;
-    }
   </style>
 </head>
 
 <body class="transition-colors duration-200">
-  <script type="module" src="/src/main.tsx"></script>
+  <script>
+    // Sync theme before React renders to prevent flash
+    (function() {
+      var theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
   <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 
 </html>

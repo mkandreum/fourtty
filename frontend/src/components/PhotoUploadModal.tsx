@@ -199,7 +199,7 @@ const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({ file, onClose, onSu
                      <span className="relative z-10 text-white flex items-center gap-1.5 sm:gap-2">
                         <span className="hidden sm:inline">{isSubmitting ? 'Subiendo...' : 'Publicar Ahora'}</span>
                         <span className="sm:hidden">{isSubmitting ? 'Subiendo...' : 'Publicar'}</span>
-                        <Send className="w-3 h-3 sm:w-3.5 sm:h-3.5" className={isSubmitting ? 'animate-pulse' : ''} />
+                                                 <Send className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isSubmitting ? 'animate-pulse' : ''}`} />
                      </span>
                   </button>
                </div>
