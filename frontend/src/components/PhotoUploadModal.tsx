@@ -57,7 +57,7 @@ const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({ file, onClose, onSu
 
       try {
          await api.post('/photos', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+            headers: { 'Content-Type': undefined }
          });
          showToast('¡Foto subida correctamente!', 'success');
          onSuccess();
