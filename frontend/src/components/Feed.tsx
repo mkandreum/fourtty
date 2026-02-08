@@ -19,6 +19,8 @@ const Feed: React.FC = () => {
    const { openPhoto } = usePhotoModal();
    const { socket } = useSocket();
    const [statusText, setStatusText] = useState('');
+   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
    const [posts, setPosts] = useState<Post[]>([]);
    const [isLoading, setIsLoading] = useState(true);
    const [page, setPage] = useState(1);
@@ -122,36 +124,56 @@ const Feed: React.FC = () => {
 
 
    const [isSubmitting, setIsSubmitting] = useState(false);
+
+   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+         setSelectedFile(file);
+         const url = URL.createObjectURL(file);
+         setPreviewUrl(url);
+      }
+   };
+
+   const removeFile = () => {
+      setSelectedFile(null);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+   };
+
    const handleUpdateStatus = async () => {
-      if (!statusText.trim() || !user) return;
+      if ((!statusText.trim() && !selectedFile) || !user) return;
       setIsSubmitting(true);
 
       try {
-         // Update profile status
-         await api.put(`/users/${user.id}`, { status: statusText });
+         // Update profile status if text is provided
+         if (statusText.trim()) {
+            await api.put(`/users/${user.id}`, { status: statusText });
+            updateUser({ ...user, status: statusText });
+         }
 
          // Create a new post
          const formData = new FormData();
-         formData.append('content', statusText);
-         formData.append('type', 'status');
+         formData.append('content', statusText || (selectedFile ? 'compartió una foto' : ''));
+         formData.append('type', selectedFile ? 'photo' : 'status');
+         if (selectedFile) {
+            formData.append('image', selectedFile);
+         }
 
          await api.post('/posts', formData);
 
-         // Refresh user data in context
-         updateUser({ ...user, status: statusText });
-
          // Clear input after success
          setStatusText('');
+         removeFile();
 
          // Refresh feed (reset to page 1)
          setPage(1);
          await fetchFeed(1, true);
          setHasMore(true);
-         showToast("Estado actualizado correctamente", "success");
+         showToast("Publicado correctamente", "success");
 
       } catch (error) {
          console.error("Error updating status:", error);
-         showToast("Error al actualizar el estado", "error");
+         showToast("Error al publicar", "error");
       } finally {
          setIsSubmitting(false);
       }
@@ -275,54 +297,101 @@ const Feed: React.FC = () => {
    return (
       <div className="bg-[var(--bg-color)] md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4 transition-colors duration-200">
 
-         {/* Status Box - Modern Card Style */}
+         {/* Status Box - Bocadillo Style */}
          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
          >
-            <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl p-4 shadow-sm transition-all duration-200">
-               <div className="flex gap-4 items-start">
-                  <div className="w-12 h-12 shrink-0">
-                     <img src={user?.avatar} alt={user?.name} className="w-full h-full object-cover rounded-full ring-2 ring-[var(--accent)]/10" />
-                  </div>
-                  <div className="flex-1 relative">
+            <div className="flex gap-4 items-start relative">
+               {/* Avatar */}
+               <div className="w-12 h-12 shrink-0 z-10">
+                  <img src={getAvatarUrl(user?.avatar, user?.name, user?.lastName)} alt={user?.name} className="w-full h-full object-cover rounded-full ring-2 ring-[var(--accent)]/10 shadow-sm" />
+               </div>
+
+               {/* The Bocadillo (Speech Bubble) */}
+               <div className="flex-1 relative">
+                  {/* Bubble Arrow */}
+                  <div className="absolute left-[-8px] top-4 w-4 h-4 bg-[var(--card-bg)] border-l border-t border-[var(--border-color)] rotate-[-45deg] z-0 hidden md:block" />
+
+                  <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl md:rounded-tr-2xl md:rounded-br-2xl md:rounded-bl-2xl p-4 shadow-sm transition-all duration-200 relative z-10">
                      <textarea
-                        className="w-full border-none p-2 text-[16px] md:text-[18px] text-[var(--text-main)] placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200 min-h-[60px] resize-none"
+                        className="w-full border-none p-0 text-[16px] md:text-[18px] text-[var(--text-main)] placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200 min-h-[60px] resize-none"
                         value={statusText}
                         onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                         placeholder={`¿Qué pasa, ${user?.name}?`}
                      />
+
                      <AnimatePresence>
                         {statusText.length > 0 && (
                            <motion.div
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.8 }}
-                              className="absolute top-[-30px] right-0 bg-[var(--accent)] text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-md z-10"
+                              className="absolute top-2 right-2 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] px-2 py-0.5 rounded-full font-bold z-10"
                            >
                               {140 - statusText.length}
                            </motion.div>
                         )}
                      </AnimatePresence>
-                  </div>
-               </div>
 
-               <div className="flex justify-between items-center mt-3 pt-3 border-t border-[var(--border-soft)] gap-2">
-                  <div className="text-[12px] md:text-[14px] text-[var(--text-muted)] italic truncate max-w-[65%]">
-                     <span className="text-[var(--accent)] font-semibold not-italic">Estado:</span> "{user?.status || 'Sin estado'}"
+                     {/* Photo Preview inside Bubble */}
+                     <AnimatePresence>
+                        {previewUrl && (
+                           <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="mt-3 relative inline-block group"
+                           >
+                              <img src={previewUrl} alt="Preview" className="max-h-[200px] rounded-lg border border-[var(--border-color)] shadow-sm" />
+                              <button
+                                 onClick={removeFile}
+                                 className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                 <X size={14} />
+                              </button>
+                           </motion.div>
+                        )}
+                     </AnimatePresence>
+
+                     <div className="flex justify-between items-center mt-3 pt-3 border-t border-[var(--border-soft)] gap-2">
+                        <div className="flex items-center gap-3">
+                           {/* Add Photo Button */}
+                           <input
+                              type="file"
+                              id="status-photo-upload"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={handleFileChange}
+                           />
+                           <button
+                              onClick={() => document.getElementById('status-photo-upload')?.click()}
+                              className="flex items-center gap-1.5 text-[var(--accent)] hover:bg-[var(--accent)]/10 px-2 py-1 rounded-lg transition-all"
+                              title="Añadir foto"
+                           >
+                              <Camera size={18} />
+                              <span className="text-[12px] font-bold hidden sm:inline">Foto</span>
+                           </button>
+
+                           <div className="text-[12px] text-[var(--text-muted)] italic truncate max-w-[150px] hidden md:block">
+                              "{user?.status || 'Sin estado'}"
+                           </div>
+                        </div>
+
+                        <motion.button
+                           whileHover={!isSubmitting && (statusText.trim() || selectedFile) ? { scale: 1.05 } : {}}
+                           whileTap={!isSubmitting && (statusText.trim() || selectedFile) ? { scale: 0.95 } : {}}
+                           onClick={handleUpdateStatus}
+                           disabled={isSubmitting || (!statusText.trim() && !selectedFile)}
+                           className={`px-5 py-2 rounded-full font-bold text-[13px] shadow-lg transition-all ${isSubmitting || (!statusText.trim() && !selectedFile)
+                              ? 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
+                              : 'bg-gradient-to-r from-[var(--accent)] to-[var(--text-secondary)] text-white'}`}
+                        >
+                           {isSubmitting ? '...' : (selectedFile ? 'Publicar foto' : 'Publicar')}
+                        </motion.button>
+                     </div>
                   </div>
-                  <motion.button
-                     whileHover={!isSubmitting && statusText.trim() ? { scale: 1.05 } : {}}
-                     whileTap={!isSubmitting && statusText.trim() ? { scale: 0.95 } : {}}
-                     onClick={handleUpdateStatus}
-                     disabled={isSubmitting || !statusText.trim()}
-                     className={`px-5 py-2 rounded-full font-bold text-[13px] shadow-lg transition-all ${isSubmitting || !statusText.trim()
-                        ? 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-[var(--accent)] to-[var(--text-secondary)] text-white'}`}
-                  >
-                     {isSubmitting ? '...' : 'Publicar'}
-                  </motion.button>
                </div>
             </div>
          </motion.div>
