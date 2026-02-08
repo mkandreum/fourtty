@@ -103,9 +103,7 @@ const Navbar: React.FC = () => {
         <>
             {/* TOP BAR - Compact Utilities */}
             <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
-                <motion.nav
-                    initial={{ y: -100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
+                <nav
                     className="glass flex items-center justify-between gap-2 px-3 py-1.5 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.3)] ring-1 ring-white/20 w-auto min-w-[200px] relative overflow-hidden"
                 >
                     <div className="flex items-center gap-1">
@@ -157,14 +155,12 @@ const Navbar: React.FC = () => {
                             <span className="text-[12px] font-bold hidden md:inline group-hover:block transition-all">Salir</span>
                         </button>
                     </div>
-                </motion.nav>
+                </nav>
             </div>
 
             {/* BOTTOM NAV - Balanced Core Navigation (3 + Logo + 3) */}
             <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-2 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] md:pb-8">
-                <motion.nav
-                    initial={{ y: 100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
+                <nav
                     className="glass flex items-center gap-1 md:gap-3 p-1.5 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/40 max-w-[95vw] md:max-w-full relative overflow-hidden backdrop-blur-3xl bg-black/20 dark:bg-white/5"
                 >
                     {/* LEFT SECTION (3 icons) */}
@@ -257,7 +253,7 @@ const Navbar: React.FC = () => {
                             <MessageSquare size={20} />
                         </button>
                     </div>
-                </motion.nav>
+                </nav>
 
                 {/* Invitations Dropdown (Portal-like) */}
                 {/* Dropdowns (Invitations & Notifications) */}
