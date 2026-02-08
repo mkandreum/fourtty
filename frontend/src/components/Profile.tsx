@@ -769,7 +769,7 @@ const Profile: React.FC = () => {
                                  >
                                     <img
                                        src={wallPreviewUrl}
-                                       className="max-h-[120px] sm:max-h-[150px] max-w-full object-contain rounded-lg sm:rounded-xl border border-white/10 shadow-lg"
+                                       className="max-h-[120px] sm:max-h-[150px] max-w-full object-contain rounded-lg sm:rounded-xl border-2 border-[var(--border-color)] shadow-lg"
                                        alt=""
                                        onError={(e) => {
                                           console.error('Image failed to load:', wallPreviewUrl);
@@ -814,9 +814,9 @@ const Profile: React.FC = () => {
                               animate={{ opacity: 1, y: 0 }}
                               className="capsule-card group relative mb-6"
                            >
-                              <div className="flex gap-5 p-4">
+                              <div className="flex gap-3 sm:gap-5">
                                  {/* Avatar Section */}
-                                 <div className="w-12 h-12 shrink-0 relative">
+                                 <div className="w-10 sm:w-12 h-10 sm:h-12 shrink-0 relative">
                                     <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-500" />
                                     <img
                                        src={getAvatarUrl(post.user.avatar, post.user.name)}

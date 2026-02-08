@@ -347,7 +347,7 @@ const Feed: React.FC = () => {
                               <img
                                  src={previewUrl}
                                  alt=""
-                                 className="w-full h-auto max-h-[250px] sm:max-h-[300px] object-contain rounded-[1.5rem] border border-white/10 shadow-2xl"
+                                 className="w-full h-auto max-h-[250px] sm:max-h-[300px] object-contain rounded-[1.5rem] border-2 border-[var(--border-color)] shadow-2xl"
                                  onError={(e) => {
                                     console.error('Image failed to load:', previewUrl);
                                     e.currentTarget.style.display = 'none';
