@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Tag, Send, Image as ImageIcon, Search } from 'lucide-react';
+import { X, Tag, Send, Image as ImageIcon, Search, MessageSquare } from 'lucide-react';
+import { motion } from 'framer-motion';
 import api from '../api';
 import { useToast } from '../contexts/ToastContext';
 
@@ -74,122 +75,135 @@ const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({ file, onClose, onSu
    );
 
    return (
-      <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
-         <div className="bg-[var(--card-bg)] w-full max-w-[700px] rounded-[4px] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-[var(--border-color)] transition-colors duration-200">
+      <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md animate-in fade-in duration-300">
+         <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            className="glass w-full max-w-[800px] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-white/20 ring-1 ring-white/10"
+         >
             {/* Image Preview Area */}
-            <div className="md:w-1/2 bg-[var(--bg-color)] p-1 flex items-center justify-center border-b md:border-b-0 md:border-r border-[var(--border-color)] transition-colors duration-200">
+            <div className="md:w-1/2 bg-black/20 p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10 relative">
+               <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/5 to-violet-500/5 pointer-events-none" />
                {preview ? (
-                  <div className="relative group p-2 bg-[var(--card-bg)] border border-[var(--border-color)] shadow-sm transition-colors duration-200">
-                     <img src={preview} alt="Preview" className="max-w-full max-h-[300px] md:max-h-[450px] object-contain" />
+                  <div className="relative group p-2 bg-white/5 rounded-3xl border border-white/10 shadow-2xl overflow-hidden transition-transform duration-500 hover:scale-[1.02]">
+                     <img src={preview} alt="Preview" className="max-w-full max-h-[300px] md:max-h-[500px] object-contain rounded-2xl" />
                   </div>
                ) : (
-                  <div className="p-20 text-gray-400">
-                     <ImageIcon size={48} className="mx-auto opacity-20" />
+                  <div className="p-20 text-white/10">
+                     <ImageIcon size={64} className="mx-auto" />
                   </div>
                )}
+               <p className="mt-4 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Vista previa de publicación</p>
             </div>
 
             {/* Info Area */}
-            <div className="md:w-1/2 flex flex-col h-[400px] md:h-[500px]">
-               <div className="p-3 bg-[var(--bg-color)] border-b border-[var(--border-color)] flex justify-between items-center transition-colors duration-200">
-                  <h3 className="text-[#005599] font-bold text-[13px] flex items-center gap-2">
-                     Subir nueva foto
-                  </h3>
-                  <button onClick={onClose} className="text-gray-400 hover:text-[var(--text-main)]">
-                     <X size={18} />
+            <div className="md:w-1/2 flex flex-col h-[500px] md:h-[600px] bg-white/5 backdrop-blur-sm">
+               <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                  <div className="flex flex-col">
+                     <h3 className="text-white font-black text-[20px] tracking-tight flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] neon-glow" />
+                        Añadir Detalles
+                     </h3>
+                     <span className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-0.5">Publicar en tu galería</span>
+                  </div>
+                  <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-white/30 hover:text-white transition-all">
+                     <X size={24} />
                   </button>
                </div>
 
-               <div className="flex-1 overflow-y-auto p-4 space-y-4">
+               <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
                   {/* Caption */}
-                  <div>
-                     <label className="text-[11px] font-bold text-[var(--text-main)] mb-1 block transition-colors duration-200">Pie de foto (Caption):</label>
+                  <div className="space-y-2">
+                     <label className="text-[11px] font-black text-white/40 uppercase tracking-wider ml-1">Pie de foto</label>
                      <textarea
-                        className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-2 text-[12px] outline-none focus:border-[#5C95C4] min-h-[60px] resize-none transition-colors"
-                        placeholder="Escribe algo sobre esta foto..."
+                        className="w-full bg-white/5 text-white border border-white/10 rounded-2xl p-4 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/20 min-h-[100px] resize-none transition-all placeholder:text-white/10"
+                        placeholder="Cuenta algo sobre este momento..."
                         value={caption}
                         onChange={(e) => setCaption(e.target.value)}
                      />
                   </div>
 
                   {/* Initial Comment */}
-                  <div>
-                     <label className="text-[11px] font-bold text-[var(--text-main)] mb-1 block transition-colors duration-200">Primer comentario (opcional):</label>
+                  <div className="space-y-2">
+                     <label className="text-[11px] font-black text-white/40 uppercase tracking-wider ml-1">Primer comentario (opcional)</label>
                      <textarea
-                        className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-2 text-[12px] outline-none focus:border-[#5C95C4] min-h-[60px] resize-none transition-colors"
-                        placeholder="Añade un comentario extra..."
+                        className="w-full bg-white/5 text-white border border-white/10 rounded-2xl p-4 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/20 min-h-[80px] resize-none transition-all placeholder:text-white/10"
+                        placeholder="Inicia la conversación..."
                         value={initialComment}
                         onChange={(e) => setInitialComment(e.target.value)}
                      />
                   </div>
 
                   {/* Tagging */}
-                  <div>
-                     <label className="text-[11px] font-bold text-[var(--text-main)] mb-1 block flex items-center gap-1 transition-colors duration-200">
-                        <Tag size={12} className="text-[#59B200]" /> ¿Quién sale en esta foto?
-                     </label>
-                     <div className="relative mb-2">
+                  <div className="space-y-3">
+                     <div className="flex items-center justify-between ml-1">
+                        <label className="text-[11px] font-black text-white/40 uppercase tracking-wider flex items-center gap-2">
+                           <Tag size={14} className="text-[var(--accent)]" />
+                           ¿Quién sale aquí?
+                        </label>
+                        {selectedTags.length > 0 && (
+                           <span className="text-[10px] font-black text-[var(--accent)] uppercase">{selectedTags.length} seleccionados</span>
+                        )}
+                     </div>
+                     <div className="relative group">
                         <input
                            type="text"
                            placeholder="Buscar amigos para etiquetar..."
-                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] pl-7 pr-2 py-1 text-[11px] focus:border-[#5C95C4] outline-none transition-colors"
+                           className="w-full bg-white/5 text-white border border-white/10 rounded-full pl-10 pr-4 py-2.5 text-[12px] focus:border-[var(--accent)] outline-none transition-all group-hover:border-white/20"
                            value={tagSearch}
                            onChange={(e) => setTagSearch(e.target.value)}
                         />
-                        <Search size={12} className="absolute left-2 top-1.5 text-gray-500" />
+                        <Search size={16} className="absolute left-4 top-3 text-white/20 group-focus-within:text-[var(--accent)] transition-colors" />
                      </div>
 
-                     <div className="max-h-[120px] overflow-y-auto border border-[var(--border-color)] rounded-[2px] bg-[var(--card-bg)] transition-colors duration-200">
+                     <div className="grid grid-cols-1 gap-2 max-h-[150px] overflow-y-auto pr-2 custom-scrollbar">
                         {filteredFriends.map(friend => (
                            <div
                               key={friend.id}
                               onClick={() => handleToggleTag(friend.id)}
-                              className={`flex items-center gap-2 p-1.5 border-b border-[var(--border-soft)] last:border-0 cursor-pointer hover:bg-[var(--border-soft)] transition-colors ${selectedTags.includes(friend.id) ? 'bg-[#59B200]/10 border-l-2 border-l-[#005599]' : ''}`}
+                              className={`flex items-center gap-3 p-2 rounded-2xl border transition-all cursor-pointer group/item ${selectedTags.includes(friend.id) ? 'bg-[var(--accent)]/10 border-[var(--accent)]/30' : 'bg-white/5 border-white/5 hover:border-white/10'}`}
                            >
-                              <img src={friend.avatar || `/api/proxy/avatar?name=${encodeURIComponent(friend.name)}`} className="w-5 h-5 rounded-full" />
-                              <span className={`text-[11px] flex-1 ${selectedTags.includes(friend.id) ? 'font-bold text-[#005599]' : 'text-gray-400'}`}>{friend.name}</span>
-                              {selectedTags.includes(friend.id) && <div className="w-2 h-2 rounded-full bg-[#59B200]"></div>}
+                              <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10">
+                                 <img
+                                    src={friend.avatar || `/api/proxy/avatar?name=${encodeURIComponent(friend.name)}`}
+                                    className="w-full h-full object-cover"
+                                    alt={friend.name}
+                                 />
+                              </div>
+                              <span className={`text-[12px] flex-1 font-bold ${selectedTags.includes(friend.id) ? 'text-[var(--accent)]' : 'text-white/60 group-hover/item:text-white'}`}>
+                                 {friend.name}
+                              </span>
+                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedTags.includes(friend.id) ? 'bg-[var(--accent)] border-[var(--accent)] shadow-[0_0_10px_rgba(var(--accent-rgb),0.5)]' : 'border-white/10'}`}>
+                                 {selectedTags.includes(friend.id) && <Send size={10} className="text-white" />}
+                              </div>
                            </div>
                         ))}
-                        {filteredFriends.length === 0 && (
-                           <div className="p-3 text-center text-[10px] text-gray-400 italic">No se encontraron amigos</div>
-                        )}
                      </div>
-
-                     {selectedTags.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-1">
-                           <span className="text-[10px] text-gray-400 w-full mb-1">Etiquetados:</span>
-                           {selectedTags.map(id => {
-                              const friend = friends.find(f => f.id === id);
-                              return (
-                                 <span key={id} className="bg-[var(--bg-color)] text-[#005599] text-[9px] font-bold px-2 py-0.5 rounded-full border border-[var(--border-color)] flex items-center gap-1 transition-colors">
-                                    {friend?.name}
-                                    <X size={8} className="cursor-pointer" onClick={() => handleToggleTag(id)} />
-                                 </span>
-                              );
-                           })}
-                        </div>
-                     )}
                   </div>
                </div>
 
-               <div className="p-3 bg-[var(--bg-color)] border-t border-[var(--border-color)] flex justify-end gap-2 transition-colors duration-200">
+               <div className="p-6 bg-white/5 border-t border-white/5 flex items-center justify-between">
                   <button
                      onClick={onClose}
-                     className="px-4 py-1.5 text-[12px] font-bold text-gray-500 hover:underline"
+                     className="text-[12px] font-black text-white/30 hover:text-white uppercase tracking-widest transition-colors"
                   >
                      Cancelar
                   </button>
                   <button
                      disabled={isSubmitting}
                      onClick={handleSubmit}
-                     className={`bg-[#59B200] text-white text-[12px] font-bold px-6 py-1.5 rounded-[3px] border border-[#4a9400] shadow-sm flex items-center gap-2 transition-all ${isSubmitting ? 'opacity-50' : 'hover:bg-[#4d9a00] active:scale-95'}`}
+                     className={`relative group h-12 px-8 rounded-full font-black text-[12px] uppercase tracking-[0.2em] overflow-hidden transition-all active:scale-95 ${isSubmitting ? 'opacity-50 grayscale' : ''}`}
                   >
-                     {isSubmitting ? 'Subiendo...' : 'Subir foto'} <Send size={14} />
+                     <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent)] to-violet-600 group-hover:scale-105 transition-transform duration-500" />
+                     <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                     <span className="relative z-10 text-white flex items-center gap-2">
+                        {isSubmitting ? 'Subiendo...' : 'Publicar Ahora'}
+                        <Send size={14} className={isSubmitting ? 'animate-pulse' : ''} />
+                     </span>
                   </button>
                </div>
             </div>
-         </div>
+         </motion.div>
       </div>
    );
 };

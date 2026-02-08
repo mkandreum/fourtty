@@ -162,7 +162,9 @@ const Feed: React.FC = () => {
             formData.append('image', selectedFile);
          }
 
-         await api.post('/posts', formData);
+         await api.post('/posts', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+         });
          setStatusText('');
          removeFile();
          setPage(1);
@@ -606,12 +608,10 @@ const Feed: React.FC = () => {
                                     )}
                                  </button>
 
-                                 <button
-                                    className="flex items-center gap-2 text-[11px] font-black text-white/30 hover:text-white transition-all uppercase tracking-widest"
-                                 >
-                                    <MessageCircle size={16} />
-                                    <span>Comentar</span>
-                                 </button>
+                                 <div className="flex items-center gap-2 text-[10px] font-black text-white/20 uppercase tracking-widest">
+                                    <MessageCircle size={14} className="opacity-50" />
+                                    <span>{post._count?.comments || 0} comentarios</span>
+                                 </div>
                               </div>
 
                               <button className="text-white/10 hover:text-white transition-colors">

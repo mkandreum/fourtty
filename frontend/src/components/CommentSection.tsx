@@ -12,7 +12,8 @@ interface CommentSectionProps {
 }
 
 import { useNavigate } from 'react-router-dom';
-import { ThumbsUp } from 'lucide-react';
+import { ThumbsUp, Send } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initialCommentsCount, isPhoto }) => {
     const { user } = useAuth();
@@ -92,7 +93,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                 return (
                     <span
                         key={i}
-                        className="text-[#005599] font-bold hover:underline cursor-pointer"
+                        className="text-[var(--accent)] font-bold hover:underline cursor-pointer"
                         onClick={(e) => {
                             e.stopPropagation();
                             // In a real app we'd need the userId for the mention, 
@@ -104,7 +105,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                     </span>
                 );
             }
-            return <span key={i}>{part}</span>;
+            return <span key={i} className="text-white/80">{part}</span>;
         });
     };
 
@@ -115,102 +116,114 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
     };
 
     return (
-        <div className="mt-1">
+        <div className="mt-2">
             {/* Interaction Summary / Toggle */}
-            <div className="flex items-center gap-1 text-[11px] mb-1">
+            <div className="flex items-center gap-4 text-[10px] mb-2 px-1">
                 {commentCount > 0 && (
-                    <div
-                        className="flex items-center gap-1 cursor-pointer group"
+                    <button
+                        className="flex items-center gap-1.5 cursor-pointer group hover:opacity-100 opacity-60 transition-opacity"
                         onClick={handleToggleComments}
                     >
-                        <MessageSquare size={10} className="text-[#59B200] fill-[#59B200]" />
-                        <span className="text-[#59B200] font-bold group-hover:underline">
+                        <MessageSquare size={12} className="text-[var(--accent)]" />
+                        <span className="text-white font-black uppercase tracking-widest group-hover:text-[var(--accent)]">
                             {commentCount} comentarios
                         </span>
-                    </div>
+                    </button>
                 )}
 
-                {commentCount === 0 && (
-                    <div
-                        className="text-[#005599] hover:underline cursor-pointer font-bold"
-                        onClick={() => setIsExpanded(true)}
-                    >
+                <button
+                    className="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity group"
+                    onClick={() => setIsExpanded(true)}
+                >
+                    <div className="text-white font-black uppercase tracking-widest group-hover:text-[var(--accent)] flex items-center gap-1.5">
+                        <Send size={12} className="text-[var(--accent)]" />
                         Comentar
                     </div>
-                )}
+                </button>
             </div>
 
             {/* Comments List & Input */}
-            {isExpanded && (
-                <div className="bg-[var(--bg-color)] p-2 rounded-[2px] mt-1 border border-[var(--border-color)] transition-colors duration-200">
-                    {isLoading && <div className="text-[10px] text-gray-500 mb-2">Cargando...</div>}
+            <AnimatePresence>
+                {isExpanded && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="bg-white/5 p-4 rounded-[1.5rem] mt-2 border border-white/5 backdrop-blur-md"
+                    >
+                        {isLoading && (
+                            <div className="text-[10px] text-white/30 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <div className="w-3 h-3 border border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
+                                Buscando...
+                            </div>
+                        )}
 
-                    <div className="flex flex-col gap-3 mb-2">
-                        {comments.map(comment => (
-                            <div key={comment.id} className="flex gap-2">
-                                <img
-                                    src={getAvatarUrl(comment.user.avatar, comment.user.name)}
-                                    className="w-8 h-8 object-cover border border-[var(--border-color)] rounded-[2px] p-[1px] bg-[var(--card-bg)] shadow-sm cursor-pointer transition-colors duration-200"
-                                    alt={comment.user.name}
-                                    onClick={() => navigate(`/profile/${comment.userId}`)}
-                                />
-                                <div className="flex-1">
-                                    <div className="text-[12px] leading-snug">
-                                        <span
-                                            className="text-[#005599] font-bold cursor-pointer hover:underline"
-                                            onClick={() => navigate(`/profile/${comment.userId}`)}
-                                        >
-                                            {comment.user.name}
-                                        </span>
-                                        <span className="text-[var(--text-main)] transition-colors duration-200"> {renderCommentContent(comment.content)}</span>
-                                    </div>
-                                    <div className="text-[10px] flex items-center gap-2 mt-0.5">
-                                        <span className="text-[var(--text-muted)] transition-colors duration-200">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                        <span className="text-[#999]">·</span>
-                                        <button
-                                            onClick={() => handleToggleCommentLike(comment.id)}
-                                            className={`font-bold hover:underline ${comment.isLiked ? 'text-[#59B200]' : 'text-[#005599]'}`}
-                                        >
-                                            Mola
-                                        </button>
-                                        {comment.likeCount && comment.likeCount > 0 && (
-                                            <div className="flex items-center gap-0.5 text-[#59B200] font-bold">
-                                                <ThumbsUp size={10} fill="#59B200" />
-                                                {comment.likeCount}
+                        <div className="flex flex-col gap-4 mb-6">
+                            {comments.map(comment => (
+                                <div key={comment.id} className="flex gap-3 group/comment">
+                                    <img
+                                        src={getAvatarUrl(comment.user.avatar, comment.user.name)}
+                                        className="w-10 h-10 object-cover rounded-2xl ring-1 ring-white/10 shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                                        alt={comment.user.name}
+                                        onClick={() => navigate(`/profile/${comment.userId}`)}
+                                    />
+                                    <div className="flex-1 min-w-0">
+                                        <div className="bg-white/5 p-3 rounded-[1.2rem] border border-white/5 group-hover/comment:border-white/10 transition-colors">
+                                            <div
+                                                className="text-[14px] font-black text-white/90 cursor-pointer hover:text-[var(--accent)] transition-colors mb-0.5"
+                                                onClick={() => navigate(`/profile/${comment.userId}`)}
+                                            >
+                                                {comment.user.name}
                                             </div>
-                                        )}
+                                            <div className="text-[13px] leading-relaxed"> {renderCommentContent(comment.content)}</div>
+                                        </div>
+                                        <div className="text-[10px] flex items-center gap-3 mt-1.5 ml-1 opacity-40 group-hover/comment:opacity-100 transition-opacity">
+                                            <span className="text-white font-bold uppercase tracking-widest">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                            <button
+                                                onClick={() => handleToggleCommentLike(comment.id)}
+                                                className={`font-black uppercase tracking-widest transition-colors ${comment.isLiked ? 'text-[var(--accent)]' : 'text-white hover:text-[var(--accent)]'}`}
+                                            >
+                                                Mola
+                                            </button>
+                                            {comment.likeCount && comment.likeCount > 0 && (
+                                                <div className="flex items-center gap-1 text-[var(--accent)] font-black">
+                                                    <ThumbsUp size={10} className="neon-glow" fill="currentColor" />
+                                                    {comment.likeCount}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
 
-                    {/* Input */}
-                    <div className="flex gap-2 mt-2 pt-2 border-t border-[var(--border-soft)]">
-                        <img
-                            src={getAvatarUrl(user?.avatar, user?.name)}
-                            className="w-7 h-7 object-cover border border-[var(--border-color)] rounded-[2px] transition-colors duration-200"
-                            alt="Me"
-                        />
-                        <form onSubmit={handleSubmitComment} className="flex-1 flex gap-1">
-                            <input
-                                type="text"
-                                className="flex-1 border border-[var(--border-color)] rounded-[2px] p-1.5 text-[11px] bg-[var(--input-bg)] text-[var(--input-text)] focus:outline-none focus:border-[#5C95C4] shadow-inner transition-colors"
-                                placeholder="Escribe un comentario..."
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
+                        {/* Input */}
+                        <div className="flex gap-3 items-center">
+                            <img
+                                src={getAvatarUrl(user?.avatar, user?.name)}
+                                className="w-10 h-10 object-cover rounded-full ring-1 ring-[var(--accent)]/30 p-0.5"
+                                alt="Me"
                             />
-                            <button
-                                type="submit"
-                                className="bg-[#005599] text-white text-[11px] font-bold px-3 py-1 rounded-[2px] hover:bg-[#00447a] transition-colors"
-                                disabled={!newComment.trim()}
-                            >
-                                Publicar
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            )}
+                            <form onSubmit={handleSubmitComment} className="flex-1 relative group">
+                                <input
+                                    type="text"
+                                    className="w-full bg-black/20 text-white border border-white/10 rounded-full pl-5 pr-12 py-3 text-[13px] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/20 transition-all placeholder:text-white/10"
+                                    placeholder="Añade un comentario..."
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={!newComment.trim()}
+                                    className={`absolute right-2 top-1.5 w-9 h-9 flex items-center justify-center rounded-full transition-all ${newComment.trim() ? 'bg-[var(--accent)] text-white shadow-[0_0_10px_rgba(var(--accent-rgb),0.5)]' : 'bg-white/5 text-white/10'}`}
+                                >
+                                    <Send size={16} />
+                                </button>
+                            </form>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

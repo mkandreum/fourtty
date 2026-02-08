@@ -162,7 +162,7 @@ const Navbar: React.FC = () => {
                 <motion.nav
                     initial={{ y: 100, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="glass flex items-center gap-1 md:gap-3 p-1.5 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/20 max-w-[95vw] md:max-w-full relative overflow-hidden"
+                    className="glass flex items-center gap-1 md:gap-3 p-1.5 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/40 max-w-[95vw] md:max-w-full relative overflow-hidden backdrop-blur-xl"
                 >
                     {/* LEFT SECTION (3 icons) */}
                     <div className="flex items-center gap-0.5 md:gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-full relative">
@@ -172,7 +172,7 @@ const Navbar: React.FC = () => {
                                 <Link
                                     key={item.path}
                                     to={item.path}
-                                    className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'} `}
+                                    className={`relative z-10 p-2.5 md:p-3 rounded-full transition-all duration-300 flex items-center justify-center ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                 >
                                     {item.icon}
                                     {active && (
@@ -222,12 +222,17 @@ const Navbar: React.FC = () => {
                     {/* RIGHT SECTION (3 icons) */}
                     <div className="flex items-center gap-0.5 md:gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-full relative">
                         {bottomNavItemsRight.map((item) => {
-                            const active = currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path));
+                            const isProfilePath = item.path.startsWith('/profile/');
+                            const active = isProfilePath
+                                ? (currentPath.startsWith('/profile/') && !currentPath.startsWith('/profile/photos'))
+                                : currentPath === item.path;
+
                             return (
                                 <Link
                                     key={item.path}
-                                    to={item.path}
-                                    className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'} `}
+                                    to={item.path === '#' ? '#' : item.path}
+                                    onClick={item.path === '#' ? (e) => { e.preventDefault(); setShowNotifs(!showNotifs); } : undefined}
+                                    className={`relative z-10 p-2.5 md:p-3 rounded-full transition-all duration-300 flex items-center justify-center ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                 >
                                     <div className="relative">
                                         {item.icon}
