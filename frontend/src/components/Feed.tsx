@@ -306,7 +306,7 @@ const Feed: React.FC = () => {
                   <div className="flex-1">
                      <div className="flex flex-col gap-1">
                         <textarea
-                           className="w-full border-none p-0 text-[18px] md:text-[20px] font-medium text-[var(--text-main)] placeholder-[var(--text-muted)] outline-none bg-transparent transition-all min-h-[80px] resize-none overflow-hidden"
+                           className="w-full border-none p-0 text-[18px] md:text-[20px] font-medium text-[var(--text-main)] placeholder:text-[var(--accent)] placeholder:opacity-60 placeholder:drop-shadow-[0_0_5px_rgba(244,114,182,0.4)] outline-none bg-transparent transition-all min-h-[80px] resize-none overflow-hidden"
                            value={statusText}
                            onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                            placeholder={`¿Qué tienes en mente, ${user?.name}?`}
