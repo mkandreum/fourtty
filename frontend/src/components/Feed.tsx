@@ -251,7 +251,7 @@ const Feed: React.FC = () => {
 
    const handleNotificationClick = async (notif: any) => {
       try {
-         await api.put(`/notifications/${notif.id}/read`);
+         await api.delete(`/notifications/${notif.id}`);
          setUnreadNotifications(prev => prev.filter(n => n.id !== notif.id));
       } catch (e) {
          console.error(e);
@@ -271,7 +271,7 @@ const Feed: React.FC = () => {
                navigate('/');
             }
          } else if (notif.type === 'message') {
-            navigate('/');
+            navigate('/messages');
          }
       } catch (error) {
          console.error('Error handling notification click:', error);
