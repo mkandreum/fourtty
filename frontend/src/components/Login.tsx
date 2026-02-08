@@ -55,11 +55,11 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col font-sans transition-colors duration-200">
       {/* Optimized Gradient Background */}
-      <div className="flex-1 bg-gradient-to-br from-slate-900 via-violet-900 to-slate-900 relative flex items-center justify-center p-4 overflow-hidden">
+      <div className="flex-1 bg-black relative flex items-center justify-center p-4 overflow-hidden">
 
-        {/* Decorative blobs */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-600/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px]" />
+        {/* Decorative blobs - Pink/Red for modern feel */}
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[var(--accent)]/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-600/10 rounded-full blur-[120px]" />
 
         <div className="max-w-[1100px] w-full flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
 
@@ -70,27 +70,24 @@ const Login: React.FC = () => {
             className="w-full lg:w-1/2 text-left"
           >
             <div className="flex items-center gap-3 mb-8">
-              <div className="glass p-3 rounded-2xl shadow-xl">
-                <ShieldCheck size={48} className="text-violet-400" />
-              </div>
-              <h1 className="brand-font text-6xl md:text-8xl py-2">fourtty</h1>
+              <h1 className="brand-font text-6xl md:text-8xl py-2 text-white">fourtty</h1>
             </div>
 
             <div className="space-y-6 max-w-lg">
               <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
-                Tu mundo social, <span className="text-violet-400">rediseñado.</span>
+                Tu red social de antes, <span className="text-[var(--accent)]">pero moderna!</span>
               </h2>
               <p className="text-slate-300 text-lg leading-relaxed">
                 Fourtty es una plataforma social premium y privada. Conecta de forma segura, comparte momentos y descubre qué está pasando en tu mundo con un estilo moderno.
               </p>
 
               <div className="hidden md:grid grid-cols-2 gap-4 pt-6">
-                <div className="glass p-4 rounded-xl flex items-center gap-3">
-                  <ShieldCheck className="text-violet-400" />
+                <div className="glass p-4 rounded-xl flex items-center gap-3 border border-white/10 bg-white/5">
+                  <ShieldCheck className="text-[var(--accent)]" />
                   <span className="text-sm font-semibold text-slate-200">Seguridad Total</span>
                 </div>
-                <div className="glass p-4 rounded-xl flex items-center gap-3">
-                  <Smartphone className="text-violet-400" />
+                <div className="glass p-4 rounded-xl flex items-center gap-3 border border-white/10 bg-white/5">
+                  <Smartphone className="text-[var(--accent)]" />
                   <span className="text-sm font-semibold text-slate-200">Experiencia PWA</span>
                 </div>
               </div>
@@ -103,7 +100,7 @@ const Login: React.FC = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="w-full max-w-[440px]"
           >
-            <div className="glass p-8 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl">
+            <div className="glass p-8 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl bg-black/40">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={isRegister ? 'register' : 'login'}
@@ -134,7 +131,7 @@ const Login: React.FC = () => {
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full !bg-white/5 !border-white/10 p-3 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                            className="w-full !bg-white/5 !border-white/10 p-3 rounded-xl text-white outline-none focus:!border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/50 transition-all text-sm"
                             placeholder="Nombre"
                             required
                           />
@@ -145,7 +142,7 @@ const Login: React.FC = () => {
                             type="text"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
-                            className="w-full !bg-white/5 !border-white/10 p-3 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                            className="w-full !bg-white/5 !border-white/10 p-3 rounded-xl text-white outline-none focus:!border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/50 transition-all text-sm"
                             placeholder="Apellidos"
                             required
                           />
@@ -161,7 +158,7 @@ const Login: React.FC = () => {
                             type="text"
                             value={inviteCode}
                             onChange={(e) => setInviteCode(e.target.value)}
-                            className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                            className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/50 transition-all text-sm"
                             placeholder="CÓDIGO-INVI"
                             required
                           />
@@ -177,7 +174,7 @@ const Login: React.FC = () => {
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                          className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/50 transition-all text-sm"
                           placeholder="gmail@ejemplo.com"
                           required
                         />
@@ -189,7 +186,7 @@ const Login: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <label className="text-xs font-bold text-slate-400 ml-1">Contraseña</label>
                         {!isRegister && (
-                          <Link to="/forgot-password" className="text-[10px] text-violet-400 hover:text-violet-300 font-bold transition-colors">
+                          <Link to="/forgot-password" className="text-[10px] text-[var(--accent)] hover:text-pink-400 font-bold transition-colors">
                             ¿La olvidaste?
                           </Link>
                         )}
@@ -199,7 +196,7 @@ const Login: React.FC = () => {
                           type="password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-violet-500 focus:ring-4 focus:ring-violet-500/20 transition-all text-sm"
+                          className="w-full !bg-white/5 !border-white/10 p-3 pl-10 rounded-xl text-white outline-none focus:!border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/50 transition-all text-sm"
                           placeholder="••••••••"
                           required
                         />
@@ -210,7 +207,7 @@ const Login: React.FC = () => {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white p-4 rounded-2xl font-bold text-[15px] shadow-lg shadow-violet-500/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+                      className="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white p-4 rounded-2xl font-bold text-[15px] shadow-lg shadow-pink-500/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
                     >
                       {isLoading ? (
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -232,9 +229,9 @@ const Login: React.FC = () => {
                       className="text-slate-400 text-sm hover:text-white transition-colors flex items-center gap-2 justify-center mx-auto"
                     >
                       {isRegister ? (
-                        <>¿Ya tienes cuenta? <span className="text-violet-400 font-bold">Entrar</span></>
+                        <>¿Ya tienes cuenta? <span className="text-[var(--accent)] font-bold">Entrar</span></>
                       ) : (
-                        <>¿No tienes cuenta? <span className="text-violet-400 font-bold">Registrarse</span></>
+                        <>¿No tienes cuenta? <span className="text-[var(--accent)] font-bold">Registrarse</span></>
                       )}
                     </button>
                   </div>
