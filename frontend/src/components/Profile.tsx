@@ -380,7 +380,7 @@ const Profile: React.FC = () => {
                      initial={{ scale: 0.9, opacity: 0 }}
                      animate={{ scale: 1, opacity: 1 }}
                      exit={{ scale: 0.9, opacity: 0 }}
-                     className="bg-[var(--card-bg)] rounded-lg overflow-hidden w-full max-w-[500px] flex flex-col border border-[var(--border-color)] transition-colors duration-200"
+                     className="bg-[var(--card-bg)] rounded-lg overflow-hidden w-[95vw] md:w-full md:max-w-[500px] max-h-[90vh] overflow-y-auto flex flex-col border border-[var(--border-color)] transition-colors duration-200"
                   >
                      <div className="p-4 border-b border-[var(--border-soft)] flex justify-between items-center bg-[var(--card-bg)]">
                         <h3 className="font-bold text-[var(--text-main)]">Ajustar foto de perfil</h3>
