@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
     ];
 
     const bottomNavItemsRight = [
-        { path: '/notifications', icon: <Bell size={20} />, label: 'Notificaciones' },
+        { path: '#', icon: <Bell size={20} />, label: 'Notificaciones' },
         { path: '/profile', icon: <User size={20} />, label: 'Perfil' },
     ];
 
@@ -230,7 +230,7 @@ const Navbar: React.FC = () => {
                                 >
                                     <div className="relative">
                                         {item.icon}
-                                        {item.path === '/notifications' && unreadNotifs > 0 && (
+                                        {item.path === '#' && unreadNotifs > 0 && (
                                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-[var(--card-bg)] shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
                                         )}
                                     </div>
