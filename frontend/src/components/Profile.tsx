@@ -371,7 +371,7 @@ const Profile: React.FC = () => {
    if (!profileUser) return <div className="p-4">Usuario no encontrado</div>;
 
    return (
-      <div className="bg-[var(--bg-color)] md:bg-[var(--card-bg)] md:rounded-2xl md:border border-[var(--border-color)] p-3 md:p-4 min-h-[600px] transition-colors duration-200">
+      <div className="bg-[var(--bg-color)] md:bg-[var(--card-bg)] md:rounded-2xl md:border border-[var(--border-color)] p-3 md:p-4 min-h-[600px] transition-colors duration-200 overflow-x-hidden">
          <AnimatePresence>
             {imageToCrop && (
                <motion.div
