@@ -136,9 +136,7 @@ const Profile: React.FC = () => {
          formData.append('type', postImage ? 'photo' : 'status');
          if (postImage) formData.append('image', postImage);
 
-         const res = await api.post('/posts', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-         });
+         const res = await api.post('/posts', formData);
 
          setWallPosts(prev => [res.data.post, ...prev]);
          setWallInput('');
