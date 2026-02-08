@@ -608,10 +608,7 @@ const Feed: React.FC = () => {
                                     )}
                                  </button>
 
-                                 <div className="flex items-center gap-2 text-[10px] font-black text-white/20 uppercase tracking-widest">
-                                    <MessageCircle size={14} className="opacity-50" />
-                                    <span>{post._count?.comments || 0} comentarios</span>
-                                 </div>
+
                               </div>
 
                               <button className="text-white/10 hover:text-white transition-colors">
