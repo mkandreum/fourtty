@@ -17,7 +17,7 @@ import { ToastProvider } from './contexts/ToastContext';
 import { PhotoModalProvider } from './contexts/PhotoModalContext';
 import ToastContainer from './components/ToastContainer';
 import PhotoModal from './components/PhotoModal';
-import ChatBar from './components/ChatBar';
+import Inbox from './components/Inbox';
 
 // MainLayout is no longer used, AppContent routes directly to children within Layout
 
@@ -74,7 +74,6 @@ const AppContent = () => {
         </div>
       </div>
       <Navbar />
-      <ChatBar />
     </div>
   );
 
@@ -160,6 +159,16 @@ const AppContent = () => {
             <AnimatedPage>
               <Layout view={ViewState.PEOPLE}>
                 <People />
+              </Layout>
+            </AnimatedPage>
+          ) : <Navigate to="/login" />
+        } />
+
+        <Route path="/messages" element={
+          isAuthenticated ? (
+            <AnimatedPage>
+              <Layout view={ViewState.HOME}>
+                <Inbox />
               </Layout>
             </AnimatedPage>
           ) : <Navigate to="/login" />
