@@ -15,6 +15,7 @@ export const getUserProfile = async (req: AuthRequest, res: Response): Promise<v
                 lastName: true,
                 avatar: true,
                 bio: true,
+                status: true,
                 gender: true,
                 age: true,
                 relationshipStatus: true,
@@ -57,7 +58,7 @@ export const updateUserProfile = async (req: AuthRequest, res: Response): Promis
             return;
         }
 
-        const { name, lastName, bio, gender, age, relationshipStatus, location, occupation, privacy } = req.body;
+        const { name, lastName, bio, status, gender, age, relationshipStatus, location, occupation, privacy } = req.body;
 
         const updatedUser = await prisma.user.update({
             where: { id: userId },
@@ -65,6 +66,7 @@ export const updateUserProfile = async (req: AuthRequest, res: Response): Promis
                 ...(name && { name }),
                 ...(lastName !== undefined && { lastName }),
                 ...(bio !== undefined && { bio }),
+                ...(status !== undefined && { status }),
                 ...(gender && { gender }),
                 ...(age && { age: parseInt(age) }),
                 ...(relationshipStatus && { relationshipStatus }),
@@ -79,6 +81,7 @@ export const updateUserProfile = async (req: AuthRequest, res: Response): Promis
                 lastName: true,
                 avatar: true,
                 bio: true,
+                status: true,
                 gender: true,
                 age: true,
                 relationshipStatus: true,
@@ -213,7 +216,8 @@ export const getUserFriends = async (req: AuthRequest, res: Response): Promise<v
                         lastName: true,
                         avatar: true,
                         location: true,
-                        bio: true
+                        bio: true,
+                        status: true
                     }
                 },
                 friend: {
@@ -223,7 +227,8 @@ export const getUserFriends = async (req: AuthRequest, res: Response): Promise<v
                         lastName: true,
                         avatar: true,
                         location: true,
-                        bio: true
+                        bio: true,
+                        status: true
                     }
                 }
             }

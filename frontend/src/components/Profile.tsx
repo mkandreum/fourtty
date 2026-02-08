@@ -429,33 +429,35 @@ const Profile: React.FC = () => {
             <h1 className="text-[18px] md:text-[20px] font-bold text-[var(--text-main)] mb-1 transition-colors duration-200">
                {profileUser.name} {profileUser.lastName}
             </h1>
+            {/* Status (latest thought) */}
+            {profileUser.status && (
+               <div className="bg-[#59B200]/5 border border-[#59B200]/20 rounded-md p-2 mb-3 text-[13px] italic text-[var(--text-main)] transition-colors duration-200">
+                  <span className="font-bold text-[#59B200] not-italic mr-1">Estado:</span>
+                  "{profileUser.status}"
+               </div>
+            )}
+
+            {/* Bio (permanent description) */}
             {profileUser.bio && (
                <div className="text-[var(--text-main)] opacity-80 text-[12px] md:text-[13px] mb-3 border-b border-[var(--border-soft)] pb-3 pr-[80px] md:pr-0 transition-colors duration-200">
                   {profileUser.bio}
-                  {/* Mobile visits counter */}
-                  {isOwnProfile && (
-                     <div className="md:hidden mt-2 flex items-center gap-2">
-                        <div className="flex items-center gap-1.5 bg-[#59B200]/10 px-2 py-0.5 rounded-full border border-[#59B200]/20">
-                           <div className="w-1.5 h-1.5 bg-[#59B200] rounded-full animate-pulse"></div>
-                           <span className="text-[11px] font-bold text-[#59B200]">
-                              {stats.visits} visitas al perfil
-                           </span>
-                        </div>
-                     </div>
-                  )}
                </div>
             )}
+
             {!profileUser.bio && isOwnProfile && (
                <div className="text-gray-400 text-[12px] md:text-[13px] mb-3 border-b border-[var(--border-soft)] pb-3 italic transition-colors duration-200">
-                  Escribe algo sobre ti...
-                  {/* Mobile visits counter even without bio */}
-                  <div className="md:hidden mt-2 flex items-center gap-2">
-                     <div className="flex items-center gap-1.5 bg-[#59B200]/10 px-2 py-0.5 rounded-full border border-[#59B200]/20">
-                        <div className="w-1.5 h-1.5 bg-[#59B200] rounded-full animate-pulse"></div>
-                        <span className="text-[11px] font-bold text-[#59B200]">
-                           {stats.visits} visitas al perfil
-                        </span>
-                     </div>
+                  No has escrito una biografía todavía...
+               </div>
+            )}
+
+            {/* Mobile visits counter */}
+            {isOwnProfile && (
+               <div className="md:hidden mt-2 mb-4 flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 bg-[#59B200]/10 px-2 py-0.5 rounded-full border border-[#59B200]/20">
+                     <div className="w-1.5 h-1.5 bg-[#59B200] rounded-full animate-pulse"></div>
+                     <span className="text-[11px] font-bold text-[#59B200]">
+                        {stats.visits} visitas al perfil
+                     </span>
                   </div>
                </div>
             )}
@@ -515,12 +517,22 @@ const Profile: React.FC = () => {
                         />
                      </div>
                      <div>
-                        <label className="block font-bold text-[#666] mb-1">Estado / Bio</label>
+                        <label className="block font-bold text-gray-400 mb-1">Estado actual</label>
+                        <input
+                           type="text"
+                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1.5 focus:border-[#59B200] outline-none transition-colors"
+                           value={editData.status || ''}
+                           onChange={(e) => setEditData({ ...editData, status: e.target.value })}
+                        />
+                     </div>
+                     <div>
+                        <label className="block font-bold text-gray-400 mb-1">Biografía</label>
                         <textarea
                            className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-[2px] p-1.5 focus:border-[#59B200] outline-none transition-colors"
                            rows={3}
                            value={editData.bio || ''}
                            onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
+                           placeholder="Cuéntanos algo sobre ti..."
                         />
                      </div>
                      <div className="flex gap-2">

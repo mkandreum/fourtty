@@ -19,6 +19,7 @@ model User {
   lastName           String         @default("")
   avatar             String?
   bio                String?        @default("")
+  status             String?        @default("")
   gender             String?        @default("Hombre")
   age                Int?
   relationshipStatus String?        @default("Soltero")

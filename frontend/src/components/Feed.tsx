@@ -127,8 +127,8 @@ const Feed: React.FC = () => {
       setIsSubmitting(true);
 
       try {
-         // Update profile bio (status)
-         await api.put(`/users/${user.id}`, { bio: statusText });
+         // Update profile status
+         await api.put(`/users/${user.id}`, { status: statusText });
 
          // Create a new post
          const formData = new FormData();
@@ -138,7 +138,7 @@ const Feed: React.FC = () => {
          await api.post('/posts', formData);
 
          // Refresh user data in context
-         updateUser({ ...user, bio: statusText });
+         updateUser({ ...user, status: statusText });
 
          // Clear input after success
          setStatusText('');
@@ -309,7 +309,7 @@ const Feed: React.FC = () => {
 
             <div className="flex justify-between items-center mt-2 px-1 gap-2">
                <div className="text-[13px] md:text-[15px] text-[var(--text-muted)] italic truncate max-w-[70%] transition-colors duration-200">
-                  Última: <span className="text-[var(--text-main)] font-bold not-italic">"{user?.bio || 'Sin estado'}"</span>
+                  Última: <span className="text-[var(--text-main)] font-bold not-italic">"{user?.status || 'Sin estado'}"</span>
                </div>
                <motion.button
                   whileHover={!isSubmitting && statusText.trim() ? { scale: 1.02 } : {}}

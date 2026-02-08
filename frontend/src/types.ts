@@ -6,7 +6,8 @@ export interface User {
   name: string;
   lastName: string;
   avatar: string;
-  bio?: string; // status in frontend mapped to bio
+  bio?: string;
+  status?: string;
   gender?: string;
   age?: number;
   relationshipStatus?: string;
