@@ -49,7 +49,7 @@ const Invitations: React.FC<InvitationsProps> = ({ compact = false }) => {
     };
 
     return (
-        <div className={`${compact ? 'p-0' : 'mb-6 p-4 md:p-6'} bg-white/5 border border-white/10 rounded-2xl transition-colors duration-200 backdrop-blur-sm`}>
+        <div className={`${compact ? 'p-0' : 'mb-6 p-4 md:p-6'} border border-white/10 rounded-2xl transition-colors duration-200`}>
             <div
                 className={`flex items-center justify-between ${window.innerWidth < 768 ? 'cursor-pointer' : 'md:cursor-default'}`}
                 onClick={() => { if (window.innerWidth < 768) setIsInvitesExpanded(!isInvitesExpanded); }}
