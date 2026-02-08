@@ -17,6 +17,7 @@ import { ToastProvider } from './contexts/ToastContext';
 import { PhotoModalProvider } from './contexts/PhotoModalContext';
 import ToastContainer from './components/ToastContainer';
 import PhotoModal from './components/PhotoModal';
+import ChatBar from './components/ChatBar';
 
 // MainLayout is no longer used, AppContent routes directly to children within Layout
 
