@@ -69,17 +69,15 @@ const Login: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             className="w-full lg:w-1/2 text-left"
           >
-            <div className="flex items-center gap-3 mb-8">
+            <div className="flex items-center gap-3 mb-2">
               <h1 className="brand-font text-6xl md:text-8xl py-2 text-white">fourtty</h1>
             </div>
 
-            <div className="space-y-6 max-w-lg">
+            <div className="space-y-4 max-w-lg">
               <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
                 Tu red social de antes, <span className="text-[var(--accent)]">pero moderna!</span>
               </h2>
-              <p className="text-slate-300 text-lg leading-relaxed">
-                Fourtty es una plataforma social premium y privada. Conecta de forma segura, comparte momentos y descubre qué está pasando en tu mundo con un estilo moderno.
-              </p>
+
 
               <div className="hidden md:grid grid-cols-2 gap-4 pt-6">
                 <div className="glass p-4 rounded-xl flex items-center gap-3 border border-white/10 bg-white/5">
