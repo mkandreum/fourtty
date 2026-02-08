@@ -363,19 +363,15 @@ const Navbar: React.FC = () => {
 
                     {showMessagesModal && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-                            onClick={() => setShowMessagesModal(false)}
+                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                            className="fixed bottom-[100px] left-4 right-4 z-[60] flex justify-center"
                         >
-                            <motion.div
-                                onClick={e => e.stopPropagation()}
-                                className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 w-full max-w-[500px] overflow-hidden"
-                            >
-                                <div className="bg-[#0a0a0a]/90 backdrop-blur-xl p-6 flex flex-col max-h-[85vh]">
+                            <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 w-full max-w-[500px] overflow-hidden">
+                                <div className="bg-[#0a0a0a]/90 backdrop-blur-xl p-4 sm:p-6 flex flex-col max-h-[70vh]">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                        <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                                             <Mail className="text-[var(--accent)]" size={24} />
                                             Mensajes
                                         </h3>
@@ -383,14 +379,14 @@ const Navbar: React.FC = () => {
                                             onClick={() => setShowMessagesModal(false)}
                                             className="p-2 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-all"
                                         >
-                                            <X size={24} />
+                                            <X size={20} />
                                         </button>
                                     </div>
-                                    <div className="overflow-y-auto no-scrollbar">
+                                    <div className="overflow-y-auto custom-scrollbar pr-2">
                                         <Inbox />
                                     </div>
                                 </div>
-                            </motion.div>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

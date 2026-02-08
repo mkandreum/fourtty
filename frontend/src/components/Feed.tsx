@@ -342,9 +342,17 @@ const Feed: React.FC = () => {
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95 }}
-                              className="mt-4 relative w-full"
+                              className="mt-4 relative w-full max-w-full"
                            >
-                              <img src={previewUrl} alt="Preview" className="w-full h-auto max-h-[300px] object-cover rounded-[1.5rem] border border-white/10 shadow-2xl" />
+                              <img
+                                 src={previewUrl}
+                                 alt=""
+                                 className="w-full h-auto max-h-[250px] sm:max-h-[300px] object-contain rounded-[1.5rem] border border-white/10 shadow-2xl"
+                                 onError={(e) => {
+                                    console.error('Image failed to load:', previewUrl);
+                                    e.currentTarget.style.display = 'none';
+                                 }}
+                              />
                               <button
                                  onClick={removeFile}
                                  className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full hover:bg-red-500 transition-colors shadow-lg"

@@ -163,7 +163,7 @@ const PhotoModal: React.FC = () => {
                     )}
 
                     {/* Image Core */}
-                    <div className="flex-1 flex flex-col items-center justify-center p-8 relative">
+                    <div className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4 md:p-8 relative">
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -173,7 +173,7 @@ const PhotoModal: React.FC = () => {
                                 ref={imgRef}
                                 src={getPhotoUrl(activePhoto.url)}
                                 onClick={handleImageClick}
-                                className={`max-w-full max-h-[50vh] md:max-h-[60vh] object-contain rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] ${isTagging ? 'cursor-crosshair' : ''}`}
+                                className={`max-w-full max-h-[35vh] sm:max-h-[45vh] md:max-h-[60vh] object-contain rounded-2xl sm:rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] ${isTagging ? 'cursor-crosshair' : ''}`}
                                 alt="Selected"
                             />
 
@@ -246,51 +246,52 @@ const PhotoModal: React.FC = () => {
                     <motion.div
                         initial={{ x: 20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        className="w-full md:w-[420px] glass border-l border-white/10 flex flex-col md:h-full overflow-y-auto"
+                        className="w-full md:w-[420px] glass border-l border-white/10 flex flex-col h-auto max-h-[55vh] md:max-h-full overflow-y-auto"
                     >
-                        <div className="p-6 border-b border-white/10">
-                            <div className="flex flex-wrap gap-2 mb-6">
+                        <div className="p-3 sm:p-4 md:p-6 border-b border-white/10">
+                            <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
                                 <button
                                     onClick={handleToggleLike}
-                                    className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all ${activePhoto.likedByMe
+                                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all ${activePhoto.likedByMe
                                         ? 'bg-gradient-to-r from-[var(--accent)] to-violet-500 text-white shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)]'
                                         : 'bg-white/5 text-white/80 border border-white/20 hover:bg-white/10'
                                         }`}
                                 >
                                     <ThumbsUp size={16} fill={activePhoto.likedByMe ? 'white' : 'transparent'} />
-                                    {activePhoto.likedByMe ? '¡Me mola!' : 'Me mola'}
+                                    <span className="hidden sm:inline">{activePhoto.likedByMe ? '¡Me mola!' : 'Me mola'}</span>
+                                    <span className="sm:hidden">Mola</span>
                                 </button>
                                 {user?.id === activePhoto.userId && (
                                     <button
                                         onClick={() => setIsTagging(!isTagging)}
-                                        className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all ${isTagging
+                                        className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all ${isTagging
                                             ? 'bg-gradient-to-r from-[var(--accent)] to-violet-500 text-white shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)]'
                                             : 'bg-white/5 text-white/80 border border-white/20 hover:bg-white/10'
                                             }`}
                                     >
                                         <Tag size={16} />
-                                        {isTagging ? 'Haz clic en la foto' : 'Etiquetar'}
+                                        {isTagging ? 'Clic en foto' : 'Etiquetar'}
                                     </button>
                                 )}
                             </div>
 
                             {activePhoto._count?.likes! > 0 && (
-                                <div className="mb-4 text-sm text-white/90 font-medium bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/10 flex items-center gap-2">
-                                    <ThumbsUp size={16} className="text-[var(--accent)]" />
-                                    <span>A {activePhoto._count?.likes} {activePhoto._count?.likes === 1 ? 'persona le mola' : 'personas les mola'}</span>
+                                <div className="mb-3 sm:mb-4 text-xs sm:text-sm text-white/90 font-medium bg-white/5 backdrop-blur-md p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-white/10 flex items-center gap-2">
+                                    <ThumbsUp size={16} className="text-[var(--accent)] shrink-0" />
+                                    <span className="truncate">A {activePhoto._count?.likes} {activePhoto._count?.likes === 1 ? 'persona le mola' : 'personas les mola'}</span>
                                 </div>
                             )}
 
                             {activePhoto.photoTags?.length! > 0 && (
                                 <div>
-                                    <h5 className="text-xs font-bold text-white/40 uppercase mb-3 tracking-wider">En esta foto:</h5>
-                                    <div className="flex flex-wrap gap-2">
+                                    <h5 className="text-xs font-bold text-white/40 uppercase mb-2 sm:mb-3 tracking-wider">En esta foto:</h5>
+                                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                         {activePhoto.photoTags?.map((tag: any) => (
                                             <Link
                                                 to={`/profile/${tag.userId}`}
                                                 key={tag.id}
                                                 onClick={closePhoto}
-                                                className="bg-white/5 border border-white/20 text-white/90 text-sm px-3 py-1.5 rounded-full hover:bg-[var(--accent)] hover:border-[var(--accent)] hover:text-white transition-all"
+                                                className="bg-white/5 border border-white/20 text-white/90 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-[var(--accent)] hover:border-[var(--accent)] hover:text-white transition-all"
                                             >
                                                 {tag.user.name}
                                             </Link>
@@ -300,12 +301,12 @@ const PhotoModal: React.FC = () => {
                             )}
                         </div>
 
-                        <div className="p-6 flex-1">
-                            <h5 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                        <div className="p-3 sm:p-4 md:p-6 flex-1 min-h-0">
+                            <h5 className="text-xs sm:text-sm font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
                                 <MessageSquare size={18} className="text-[var(--accent)]" />
                                 Comentarios
                             </h5>
-                            <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-4">
+                            <div className="bg-white/5 backdrop-blur-md rounded-xl sm:rounded-2xl border border-white/10 p-2 sm:p-3 md:p-4">
                                 <CommentSection photoId={activePhoto.id} isPhoto={true} initialCommentsCount={activePhoto._count?.comments || 0} />
                             </div>
                         </div>

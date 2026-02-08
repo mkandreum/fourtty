@@ -104,9 +104,22 @@ body {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 2.5rem;
-    padding: 1.5rem;
+    padding: 1rem;
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Responsive padding for larger screens */
+@media (min-width: 640px) {
+    .capsule-card {
+        padding: 1.25rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .capsule-card {
+        padding: 1.5rem;
+    }
 }
 
 [data-theme='dark'] .capsule-card {

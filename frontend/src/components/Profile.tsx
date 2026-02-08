@@ -131,6 +131,7 @@ const Profile: React.FC = () => {
       if (!wallInput.trim() && !postImage) return;
 
       try {
+         const formData = new FormData();
          let res;
          if (postImage) {
             formData.append('image', postImage);
@@ -730,15 +731,15 @@ const Profile: React.FC = () => {
 
             <div className="flex-1">
                {isOwnProfile && (
-                  <div className="bg-[var(--border-soft)] p-3 rounded-2xl border border-[var(--border-color)] mb-4 shadow-sm animate-in slide-in-from-right-2 duration-300 transition-colors duration-200">
-                     <div className="text-[var(--text-secondary)] font-bold text-[12px] mb-1">Escribe algo en tu tablón...</div>
+                  <div className="bg-[var(--border-soft)] p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-[var(--border-color)] mb-4 shadow-sm animate-in slide-in-from-right-2 duration-300 transition-colors duration-200">
+                     <div className="text-[var(--text-secondary)] font-bold text-[11px] sm:text-[12px] mb-1">Escribe algo en tu tablón...</div>
                      <textarea
-                        className="w-full h-16 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-2 text-[12px] resize-none focus:border-[var(--text-secondary)] outline-none transition-colors box-border block"
+                        className="w-full h-14 sm:h-16 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg sm:rounded-xl p-2 text-[11px] sm:text-[12px] resize-none focus:border-[var(--text-secondary)] outline-none transition-colors box-border block"
                         value={wallInput}
                         onChange={(e) => setWallInput(e.target.value)}
                      ></textarea>
-                     <div className="flex justify-between items-center mt-2">
-                        <div className="flex flex-col gap-2 w-full">
+                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 mt-2">
+                        <div className="flex flex-col gap-2 w-full sm:flex-1">
                            <div className="flex items-center gap-2">
                               <input
                                  type="file"
@@ -749,7 +750,7 @@ const Profile: React.FC = () => {
                               />
                               <button
                                  onClick={() => document.getElementById('post-image')?.click()}
-                                 className={`flex items-center gap-1 text-[11px] font-bold ${postImage ? 'text-[var(--accent)]' : 'text-[#888]'} hover:text-[#555] transition-colors`}
+                                 className={`flex items-center gap-1 text-[10px] sm:text-[11px] font-bold ${postImage ? 'text-[var(--accent)]' : 'text-[#888]'} hover:text-[#555] transition-colors`}
                               >
                                  <Camera size={14} /> {postImage ? 'Imagen lista' : 'Adjuntar foto'}
                                  {postImage && (
@@ -764,12 +765,20 @@ const Profile: React.FC = () => {
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    className="relative inline-block mt-1"
+                                    className="relative inline-block mt-1 max-w-full"
                                  >
-                                    <img src={wallPreviewUrl} className="max-h-[150px] rounded-xl border border-white/10 shadow-lg" alt="Preview" />
+                                    <img
+                                       src={wallPreviewUrl}
+                                       className="max-h-[120px] sm:max-h-[150px] max-w-full object-contain rounded-lg sm:rounded-xl border border-white/10 shadow-lg"
+                                       alt=""
+                                       onError={(e) => {
+                                          console.error('Image failed to load:', wallPreviewUrl);
+                                          e.currentTarget.style.display = 'none';
+                                       }}
+                                    />
                                     <button
                                        onClick={removeWallFile}
-                                       className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white p-1.5 rounded-full hover:bg-red-500 transition-colors shadow-lg"
+                                       className="absolute top-1 sm:top-2 right-1 sm:right-2 bg-black/60 backdrop-blur-md text-white p-1 sm:p-1.5 rounded-full hover:bg-red-500 transition-colors shadow-lg"
                                     >
                                        <X size={14} />
                                     </button>
@@ -781,7 +790,7 @@ const Profile: React.FC = () => {
                         <button
                            onClick={handlePostToWall}
                            disabled={!wallInput.trim() && !postImage}
-                           className={`bg-[var(--text-secondary)] text-white text-[11px] font-bold px-3 py-1 rounded-lg transition-colors shadow-sm ${(!wallInput.trim() && !postImage) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#00447a]'}`}
+                           className={`w-full sm:w-auto bg-[var(--text-secondary)] text-white text-[10px] sm:text-[11px] font-bold px-4 sm:px-3 py-2 sm:py-1 rounded-lg transition-colors shadow-sm sm:shrink-0 ${(!wallInput.trim() && !postImage) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#00447a]'}`}
                         >
                            Publicar
                         </button>
