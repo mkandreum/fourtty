@@ -61,9 +61,9 @@ const Navbar: React.FC = () => {
                     animate={{ y: 0, opacity: 1 }}
                     className="glass flex items-center gap-0.5 md:gap-1 p-1.5 md:p-2 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.15)] ring-1 ring-white/10 max-w-full overflow-hidden"
                 >
-                    {/* Brand Logo - hidden on small mobile */}
-                    <div className="hidden sm:flex pl-4 pr-3 items-center">
-                        <span className="brand-font text-[18px] md:text-[20px]">fourtty</span>
+                    {/* Brand Logo */}
+                    <div className="flex pl-4 pr-2 md:pr-3 items-center">
+                        <span className="brand-font text-[16px] md:text-[20px]">fourtty</span>
                     </div>
 
                     {/* Desktop/Mobile Nav Items */}
