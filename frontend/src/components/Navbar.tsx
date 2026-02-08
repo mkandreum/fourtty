@@ -55,14 +55,14 @@ const Navbar: React.FC = () => {
 
     return (
         <>
-            <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4">
+            <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-2 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-6">
                 <motion.nav
                     initial={{ y: 100, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="glass flex items-center gap-1 p-2 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.15)] ring-1 ring-white/10"
+                    className="glass flex items-center gap-0.5 md:gap-1 p-1.5 md:p-2 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.15)] ring-1 ring-white/10 max-w-full overflow-hidden"
                 >
-                    {/* Brand Logo */}
-                    <div className="pl-4 pr-3 flex items-center">
+                    {/* Brand Logo - hidden on small mobile */}
+                    <div className="hidden sm:flex pl-4 pr-3 items-center">
                         <span className="brand-font text-[18px] md:text-[20px]">fourtty</span>
                     </div>
 
@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
                                 <Link
                                     key={item.path}
                                     to={item.path}
-                                    className={`relative z-10 p-2.5 rounded-full transition-all duration-300 flex items-center justify-center ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+                                    className={`relative z-10 p-2 md:p-2.5 rounded-full transition-all duration-300 flex items-center justify-center ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                 >
                                     {item.icon}
                                     {active && (
@@ -126,7 +126,7 @@ const Navbar: React.FC = () => {
                         <div className="relative">
                             <button
                                 onClick={() => navigate('/notifications')}
-                                className="p-2.5 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+                                className="p-2 md:p-2.5 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
                             >
                                 <Bell size={20} />
                                 {unreadNotifs > 0 && (
@@ -135,10 +135,10 @@ const Navbar: React.FC = () => {
                             </button>
                         </div>
 
-                        {/* Logout */}
+                        {/* Logout - hidden on small phone mobile to save space, available in drawer/profile if needed, but keeping for now with reduced padding */}
                         <button
                             onClick={logout}
-                            className="p-2.5 text-red-400 hover:text-red-500 transition-colors"
+                            className="p-2 md:p-2.5 text-red-400 hover:text-red-500 transition-colors"
                         >
                             <LogOut size={20} />
                         </button>
