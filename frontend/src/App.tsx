@@ -53,7 +53,7 @@ const AppContent = () => {
     <div className="min-h-screen bg-[var(--bg-color)] transition-colors duration-200">
       <ToastContainer />
       <div className="main-content-container max-w-[1120px] mx-auto px-0 sm:px-4 pb-32">
-        <div className={`flex flex-col md:flex-row md:gap-8 items-start ${view === ViewState.HOME || view === ViewState.PEOPLE ? 'md:bg-[var(--card-bg)] md:border md:border-[var(--border-color)] md:rounded-3xl md:shadow-2xl md:mt-10 transition-colors duration-200 overflow-hidden' : ''}`}>
+        <div className={`flex flex-col md:flex-row md:gap-8 items-start ${view === ViewState.HOME || view === ViewState.PEOPLE ? 'md:bg-[var(--card-bg)] md:border md:border-[var(--border-color)] md:rounded-3xl md:shadow-2xl md:mt-4 transition-colors duration-200 overflow-hidden' : ''}`}>
           {view === ViewState.HOME && (
             <aside className="hidden md:block w-[260px] shrink-0 sticky top-10 border-r border-[var(--border-soft)] min-h-[calc(100vh-100px)]">
               <div className="p-4">

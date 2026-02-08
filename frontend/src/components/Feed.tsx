@@ -282,7 +282,7 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <div className="bg-[var(--bg-color)] min-h-screen px-3 pb-24 pt-1 md:px-4 transition-colors duration-200">
+      <div className="bg-[var(--bg-color)] min-h-screen px-3 pb-24 pt-24 md:pt-4 md:px-4 transition-colors duration-200">
 
          {/* Status Box - Capsule Style */}
          <motion.div
