@@ -53,7 +53,7 @@ app.use(helmet({
             defaultSrc: ["'self'"],
             scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
-            imgSrc: ["'self'", "data:", "https://ui-avatars.com", "*"], // Allow all images for now to fix user issues
+            imgSrc: ["'self'", "data:", "blob:", "https://ui-avatars.com", "*"], // Allow blob: for image previews
             connectSrc: ["'self'", (process.env.FRONTEND_URL || 'http://localhost:5173'), "ws:", "wss:"],
             fontSrc: ["'self'", "https:", "data:"],
             objectSrc: ["'none'"],
