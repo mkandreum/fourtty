@@ -48,13 +48,13 @@ const People: React.FC = () => {
     return (
         <div className="flex flex-col md:flex-row gap-4 p-3 md:p-0">
             {/* Left Column: Filters */}
-            <aside className="w-full md:w-[200px] shrink-0">
-                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl shadow-sm overflow-hidden transition-colors duration-200">
-                    <div className="bg-[var(--bg-color)] border-b border-[var(--border-color)] p-2 flex items-center gap-2 transition-colors duration-200">
-                        <Filter size={14} className="text-[var(--text-main)] transition-colors duration-200" />
-                        <span className="text-[11px] font-bold text-[var(--text-main)] transition-colors duration-200">Filtros de búsqueda</span>
+            <aside className="w-full md:w-[240px] shrink-0">
+                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[2rem] shadow-xl overflow-hidden transition-colors duration-200 ring-1 ring-black/5 dark:ring-white/5">
+                    <div className="bg-[var(--accent)]/10 border-b border-[var(--border-soft)] p-4 flex items-center gap-2 transition-colors duration-200">
+                        <Filter size={16} className="text-[var(--accent)]" />
+                        <span className="text-[13px] font-extrabold text-[var(--accent)] uppercase tracking-wider">Filtros</span>
                     </div>
-                    <div className="p-3 flex flex-col gap-4">
+                    <div className="p-4 flex flex-col gap-6">
                         {/* Gender */}
                         <div>
                             <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Sexo</label>
@@ -121,24 +121,24 @@ const People: React.FC = () => {
 
             {/* Main Column: Results */}
             <main className="flex-1 min-w-0">
-                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl shadow-sm transition-colors duration-200">
-                    <div className="p-3 border-b border-[var(--border-soft)] flex items-center justify-between gap-4 transition-colors duration-200">
-                        <h2 className="text-[var(--accent)] font-bold text-[14px] flex items-center gap-1 shrink-0">
-                            Gente en Fourtty
+                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[2.5rem] shadow-2xl transition-colors duration-200 ring-1 ring-black/5 dark:ring-white/5 overflow-hidden">
+                    <div className="p-6 border-b border-[var(--border-soft)] flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors duration-200">
+                        <h2 className="text-[var(--accent)] font-extrabold text-[18px] flex items-center gap-2 shrink-0">
+                            <UserPlus size={20} /> Gente en {import.meta.env.VITE_APP_NAME || 'Fourtty'}
                         </h2>
-                        <div className="relative flex-1 max-w-[300px]">
+                        <div className="relative w-full sm:max-w-[320px]">
                             <input
                                 type="text"
-                                className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg py-1 pl-7 pr-2 text-[12px] placeholder-gray-500 transition-colors"
+                                className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-2xl py-2.5 pl-10 pr-4 text-[13px] placeholder-gray-500 focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
                                 placeholder="Buscar por nombre..."
                                 value={searchQ}
                                 onChange={(e) => setSearchQ(e.target.value)}
                             />
-                            <Search size={14} className="absolute left-2 top-1.5 text-gray-500" />
+                            <Search size={16} className="absolute left-3.5 top-3 text-gray-400" />
                         </div>
                     </div>
 
-                    <div className="p-3">
+                    <div className="p-6">
                         {isLoading ? (
                             <div className="p-8 text-center text-[12px] text-gray-400">Buscando personas...</div>
                         ) : users.length === 0 ? (

@@ -58,26 +58,28 @@ const Sidebar: React.FC = () => {
          animate={{ opacity: 1, x: 0 }}
          className="flex flex-col gap-4"
       >
-         <Invitations compact />
+         <div className="bg-[var(--card-bg)]/50 p-3 rounded-2xl border border-[var(--border-soft)] shadow-sm">
+            <Invitations compact />
+         </div>
 
          {/* Chat Widget */}
          <div className="">
-            <h4 className="text-[var(--text-main)] font-bold text-[11px] mb-2 flex items-center justify-between border-b border-[var(--border-soft)] pb-1 transition-colors duration-200">
-               <div className="flex items-center gap-1">
-                  <span className={`w-2 h-2 rounded-full ${onlineFriendsCount > 0 ? 'bg-[var(--accent)]' : 'bg-gray-400'}`}></span>
+            <h4 className="text-[var(--text-main)] font-extrabold text-[13px] mb-3 flex items-center justify-between border-b border-[var(--border-soft)] pb-2 transition-colors duration-200">
+               <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${onlineFriendsCount > 0 ? 'bg-[var(--accent)]' : 'bg-gray-400'} shadow-[0_0_8px_rgba(240,45,141,0.5)]`}></span>
                   Chat ({onlineFriendsCount})
                </div>
-               <span className="text-[var(--text-secondary)] hover:underline cursor-pointer text-[10px]">Ajustes</span>
+               <span className="text-[var(--text-secondary)] hover:underline cursor-pointer text-[10px] font-bold">Ajustes</span>
             </h4>
-            <div className="relative mb-2">
+            <div className="relative mb-3">
                <input
                   type="text"
-                  placeholder="Buscar amigo"
-                  className="w-full bg-[var(--input-bg)] border border-[var(--border-color)] text-[var(--input-text)] rounded-xl py-0.5 px-1 text-[11px] pl-5 focus:outline-none transition-colors"
+                  placeholder="Buscar amigo..."
+                  className="w-full bg-[var(--input-bg)] border border-[var(--border-color)] text-[var(--input-text)] rounded-2xl py-2 px-3 text-[12px] pl-9 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20 transition-all"
                   value={filterQuery}
                   onChange={(e) => setFilterQuery(e.target.value)}
                />
-               <Search size={10} className="absolute left-1 top-1.5 text-gray-400" />
+               <Search size={14} className="absolute left-3 top-2.5 text-gray-400" />
             </div>
             <div className="flex flex-col gap-0.5 max-h-[300px] overflow-y-auto pr-1">
                {isLoading ? (

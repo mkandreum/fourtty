@@ -461,25 +461,25 @@ const Profile: React.FC = () => {
                   </div>
                </div>
             )}
-            <div className="absolute top-0 right-0">
+            <div className="absolute top-0 right-0 z-10">
                {renderActionButtons()}
             </div>
          </div>
 
          <div className="flex flex-col md:flex-row gap-8 items-start">
             <div className="w-full md:w-[280px] shrink-0">
-               <div className="bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-[2.5rem] p-4 shadow-xl transition-all duration-300 group relative">
+               <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[2.5rem] p-3 shadow-2xl transition-all duration-300 group relative ring-1 ring-black/5 dark:ring-white/5">
                   <div className="aspect-square rounded-[2rem] overflow-hidden border border-[var(--border-soft)] shadow-inner">
                      <img
                         src={getAvatarUrl(profileUser.avatar)}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                         alt="Profile"
                      />
                   </div>
                   {isOwnProfile && (
-                     <label className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                        <Camera className="text-white mb-1" />
-                        <span className="text-white text-xs font-bold">Cambiar foto</span>
+                     <label className="absolute inset-2 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer rounded-[2rem]">
+                        <Camera className="text-white mb-2" size={24} />
+                        <span className="text-white text-[10px] font-extrabold uppercase tracking-widest">Cambiar foto</span>
                         <input
                            type="file"
                            accept="image/*"
