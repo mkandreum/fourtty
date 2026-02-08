@@ -5,10 +5,10 @@ services:
     build: .
     restart: always
     ports:
-      - "5050:5000"
+      - "5051:5000"
     volumes:
-      - twenty_uploads:/app/uploads
-      - twenty_data:/app/data
+      - fourtty_uploads:/app/uploads
+      - fourtty_data:/app/data
     environment:
       - DATABASE_URL=file:/app/data/dev.db
       - JWT_SECRET=${JWT_SECRET:-supersecretkey}
@@ -23,7 +23,7 @@ services:
       - SMTP_FROM=${SMTP_FROM}
 
 volumes:
-  twenty_uploads:
-  twenty_data:
+  fourtty_uploads:
+  fourtty_data:
 
     # Removed separate frontend service as it is now served by app
