@@ -10,7 +10,6 @@ import LeftPanel from './components/LeftPanel';
 import Profile from './components/Profile';
 import Gallery from './components/Gallery';
 import People from './components/People';
-import ChatBar from './components/ChatBar';
 import { ViewState } from './types';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';

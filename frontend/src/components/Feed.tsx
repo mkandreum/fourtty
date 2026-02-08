@@ -476,12 +476,7 @@ const Feed: React.FC = () => {
             </div>
          )}
 
-         {/* Invitations Panel - Shown only on mobile */}
-         <div className="md:hidden">
-            <Invitations />
-         </div>
-
-         {/* Novedades Header */}
+         {/* Infinite Scroll Sentinel */}
          <div className="flex items-center justify-between mb-6 px-1">
             <h3 className="text-white/40 font-black text-[12px] uppercase tracking-[0.2em] flex items-center gap-3">
                <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] neon-glow" />
@@ -579,9 +574,10 @@ const Feed: React.FC = () => {
                                     className="w-full h-auto max-h-[600px] object-contain rounded-[1.8rem] cursor-pointer hover:scale-[1.01] transition-transform duration-700"
                                     onClick={() => {
                                        if (post.image) {
+                                          const photoUrl = post.image.startsWith('http') || post.image.startsWith('data:') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image.startsWith('/') ? '' : '/'}${post.image}`;
                                           const photoObj = {
                                              id: post.id,
-                                             url: post.image,
+                                             url: photoUrl,
                                              userId: post.userId,
                                              createdAt: post.createdAt,
                                              user: post.user,

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag, Trash2, UserX } from 'lucide-react';
+import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag, Trash2, UserX, ThumbsUp, MessageCircle, Share2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { usePhotoModal } from '../contexts/PhotoModalContext';
@@ -29,8 +28,23 @@ const Profile: React.FC = () => {
    const [editData, setEditData] = useState<Partial<User>>({});
    const [stats, setStats] = useState({ visits: 0 });
    const [recentVisitors, setRecentVisitors] = useState<User[]>([]);
+   const [postImage, setPostImage] = useState<File | null>(null);
+   const [wallPreviewUrl, setWallPreviewUrl] = useState<string | null>(null);
 
-   // Cropping states
+   const handleWallFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+         setPostImage(file);
+         const url = URL.createObjectURL(file);
+         setWallPreviewUrl(url);
+      }
+   };
+
+   const removeWallFile = () => {
+      setPostImage(null);
+      if (wallPreviewUrl) URL.revokeObjectURL(wallPreviewUrl);
+      setWallPreviewUrl(null);
+   };
    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
    const [crop, setCrop] = useState({ x: 0, y: 0 });
    const [zoom, setZoom] = useState(1);
@@ -111,7 +125,6 @@ const Profile: React.FC = () => {
       }
    };
 
-   const [postImage, setPostImage] = useState<File | null>(null);
 
    const handlePostToWall = async () => {
       if (!wallInput.trim() && !postImage) return;
@@ -122,16 +135,14 @@ const Profile: React.FC = () => {
          formData.append('type', postImage ? 'photo' : 'status');
          if (postImage) formData.append('image', postImage);
 
-         const response = await api.post('/posts', formData, {
-            headers: {
-               'Content-Type': 'multipart/form-data'
-            }
+         const res = await api.post('/posts', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
          });
 
-         setWallPosts([response.data.post, ...wallPosts]);
+         setWallPosts(prev => [res.data.post, ...prev]);
          setWallInput('');
-         setPostImage(null);
-         showToast("Publicado correctamente", "success");
+         removeWallFile();
+         showToast('Publicado con éxito', 'success');
       } catch (error) {
          console.error("Error posting to wall:", error);
          showToast("Error al publicar", "error");
@@ -720,24 +731,50 @@ const Profile: React.FC = () => {
                         onChange={(e) => setWallInput(e.target.value)}
                      ></textarea>
                      <div className="flex justify-between items-center mt-2">
-                        <div className="flex items-center gap-2">
-                           <input
-                              type="file"
-                              id="post-image"
-                              className="hidden"
-                              accept="image/*"
-                              onChange={(e) => setPostImage(e.target.files?.[0] || null)}
-                           />
-                           <button
-                              onClick={() => document.getElementById('post-image')?.click()}
-                              className={`flex items-center gap-1 text-[11px] font-bold ${postImage ? 'text-[var(--accent)]' : 'text-[#888]'} hover:text-[#555] transition-colors`}
-                           >
-                              <Camera size={14} /> {postImage ? 'Imagen lista' : 'Adjuntar foto'}
-                           </button>
+                        <div className="flex flex-col gap-2 w-full">
+                           <div className="flex items-center gap-2">
+                              <input
+                                 type="file"
+                                 id="post-image"
+                                 className="hidden"
+                                 accept="image/*"
+                                 onChange={handleWallFileChange}
+                              />
+                              <button
+                                 onClick={() => document.getElementById('post-image')?.click()}
+                                 className={`flex items-center gap-1 text-[11px] font-bold ${postImage ? 'text-[var(--accent)]' : 'text-[#888]'} hover:text-[#555] transition-colors`}
+                              >
+                                 <Camera size={14} /> {postImage ? 'Imagen lista' : 'Adjuntar foto'}
+                                 {postImage && (
+                                    <span className="text-[10px] text-white/30 ml-2">({(postImage.size / 1024).toFixed(0)} KB)</span>
+                                 )}
+                              </button>
+                           </div>
+
+                           <AnimatePresence>
+                              {wallPreviewUrl && (
+                                 <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="relative inline-block mt-1"
+                                 >
+                                    <img src={wallPreviewUrl} className="max-h-[150px] rounded-xl border border-white/10 shadow-lg" alt="Preview" />
+                                    <button
+                                       onClick={removeWallFile}
+                                       className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white p-1.5 rounded-full hover:bg-red-500 transition-colors shadow-lg"
+                                    >
+                                       <X size={14} />
+                                    </button>
+                                 </motion.div>
+                              )}
+                           </AnimatePresence>
                         </div>
+
                         <button
                            onClick={handlePostToWall}
-                           className="bg-[var(--text-secondary)] text-white text-[11px] font-bold px-3 py-1 rounded-lg hover:bg-[#00447a] transition-colors shadow-sm"
+                           disabled={!wallInput.trim() && !postImage}
+                           className={`bg-[var(--text-secondary)] text-white text-[11px] font-bold px-3 py-1 rounded-lg transition-colors shadow-sm ${(!wallInput.trim() && !postImage) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#00447a]'}`}
                         >
                            Publicar
                         </button>

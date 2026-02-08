@@ -110,8 +110,7 @@ body {
 }
 
 [data-theme='dark'] .capsule-card {
-    background: rgba(15, 15, 15, 0.6);
-    backdrop-filter: blur(12px);
+    background: #000000;
     border-color: rgba(255, 255, 255, 0.05);
     box-shadow:
         0 20px 40px -15px rgba(0, 0, 0, 0.8),
@@ -132,7 +131,7 @@ body {
 
 /* Neon Effects */
 .neon-glow {
-    filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.5));
+    filter: drop-shadow(0 0 4px rgba(var(--accent-rgb), 0.3));
 }
 
 .neon-border {
@@ -146,8 +145,8 @@ body {
     background: linear-gradient(135deg, var(--accent), var(--text-secondary));
     border-radius: inherit;
     z-index: -1;
-    opacity: 0.3;
-    filter: blur(4px);
+    opacity: 0.15;
+    filter: blur(2px);
 }
 
 /* Hover-lift effect */
