@@ -282,13 +282,13 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <div className="bg-[var(--bg-color)] md:bg-transparent min-h-screen px-3 pb-24 pt-2 md:px-4 transition-colors duration-200">
+      <div className="bg-[var(--bg-color)] md:bg-transparent min-h-screen px-3 pb-24 pt-1 md:px-4 transition-colors duration-200">
 
          {/* Status Box - Capsule Style */}
          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4"
+            className="mb-8"
          >
             <div className="capsule-card neon-glow group">
                <div className="flex gap-4 items-start">
