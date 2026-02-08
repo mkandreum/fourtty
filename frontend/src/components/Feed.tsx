@@ -282,7 +282,7 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <div className="bg-[var(--bg-color)] md:bg-transparent min-h-screen px-3 pb-24 pt-1 md:px-4 transition-colors duration-200">
+      <div className="bg-[var(--bg-color)] min-h-screen px-3 pb-24 pt-1 md:px-4 transition-colors duration-200">
 
          {/* Status Box - Capsule Style */}
          <motion.div
@@ -306,7 +306,7 @@ const Feed: React.FC = () => {
                   <div className="flex-1">
                      <div className="flex flex-col gap-1">
                         <textarea
-                           className="w-full border-none p-0 text-[18px] md:text-[20px] font-medium text-[var(--text-main)] placeholder-white/20 outline-none bg-transparent transition-all min-h-[80px] resize-none overflow-hidden"
+                           className="w-full border-none p-0 text-[18px] md:text-[20px] font-medium text-[var(--text-main)] placeholder-[var(--text-muted)] outline-none bg-transparent transition-all min-h-[80px] resize-none overflow-hidden"
                            value={statusText}
                            onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                            placeholder={`¿Qué tienes en mente, ${user?.name}?`}
@@ -319,7 +319,7 @@ const Feed: React.FC = () => {
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
-                                    className="text-[10px] font-bold tracking-widest text-white/30 uppercase"
+                                    className="text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase"
                                  >
                                     {140 - statusText.length} caracteres
                                  </motion.span>
@@ -347,7 +347,7 @@ const Feed: React.FC = () => {
                         )}
                      </AnimatePresence>
 
-                     <div className="flex justify-between items-center mt-6 pt-4 border-t border-white/5">
+                     <div className="flex justify-between items-center mt-6 pt-4 border-t border-[var(--border-color)]">
                         <div className="flex items-center gap-4">
                            <input
                               type="file"
@@ -499,8 +499,8 @@ const Feed: React.FC = () => {
          ) : (
             <div className="flex flex-col gap-6">
                {posts.length === 0 && (
-                  <div className="p-12 text-center capsule-card bg-white/5 border-dashed border-white/10">
-                     <p className="text-white/20 text-[13px] font-bold">No hay novedades recientes. ¡Agrega amigos para ver sus publicaciones!</p>
+                  <div className="p-12 text-center capsule-card bg-[var(--card-bg)] border-dashed border-[var(--border-color)]">
+                     <p className="text-[var(--text-muted)] text-[13px] font-bold">No hay novedades recientes. ¡Agrega amigos para ver sus publicaciones!</p>
                   </div>
                )}
 
@@ -528,11 +528,11 @@ const Feed: React.FC = () => {
                               <div>
                                  <button
                                     onClick={() => navigate(`/profile/${post.user.id}`)}
-                                    className="text-[16px] font-black text-white hover:text-[var(--accent)] transition-colors tracking-tight text-left block"
+                                    className="text-[16px] font-black text-[var(--text-main)] hover:text-[var(--accent)] transition-colors tracking-tight text-left block"
                                  >
                                     {post.user.name} {post.user.lastName}
                                  </button>
-                                 <div className="text-[10px] text-white/20 font-black uppercase tracking-widest mt-0.5">
+                                 <div className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-0.5">
                                     {new Date(post.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} • {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                  </div>
                               </div>
@@ -548,7 +548,7 @@ const Feed: React.FC = () => {
                               )}
                            </div>
 
-                           <div className="text-[15px] md:text-[16px] text-white/80 leading-relaxed mb-4 font-medium">
+                           <div className="text-[15px] md:text-[16px] text-[var(--text-main)] leading-relaxed mb-4 font-medium">
                               {post.content}
                            </div>
 
@@ -569,7 +569,7 @@ const Feed: React.FC = () => {
 
                            {/* Media: Photo */}
                            {post.type === 'photo' && post.image && (
-                              <div className="mt-4 rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl bg-white/5 p-1">
+                              <div className="mt-4 rounded-[2rem] overflow-hidden border border-[var(--border-color)] shadow-2xl bg-[var(--card-bg)] p-1">
                                  <img
                                     src={post.image.startsWith('http') || post.image.startsWith('data:') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image.startsWith('/') ? '' : '/'}${post.image}`}
                                     loading="lazy"
@@ -595,11 +595,11 @@ const Feed: React.FC = () => {
                            )}
 
                            {/* Post Actions */}
-                           <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4">
+                           <div className="mt-6 flex items-center justify-between border-t border-[var(--border-color)] pt-4">
                               <div className="flex items-center gap-6">
                                  <button
                                     onClick={() => handleToggleLike(post.id)}
-                                    className={`flex items-center gap-2 text-[11px] font-black uppercase tracking-widest transition-all ${post.likedByMe ? 'text-[var(--accent)]' : 'text-white/30 hover:text-white'}`}
+                                    className={`flex items-center gap-2 text-[11px] font-black uppercase tracking-widest transition-all ${post.likedByMe ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                  >
                                     <ThumbsUp size={16} className={post.likedByMe ? 'neon-glow' : ''} fill={post.likedByMe ? 'currentColor' : 'none'} />
                                     <span>{post.likedByMe ? 'Mola' : 'Mola'}</span>
@@ -611,7 +611,7 @@ const Feed: React.FC = () => {
 
                               </div>
 
-                              <button className="text-white/10 hover:text-white transition-colors">
+                              <button className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors">
                                  <Share2 size={16} />
                               </button>
                            </div>

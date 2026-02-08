@@ -104,7 +104,7 @@ const Navbar: React.FC = () => {
             {/* TOP BAR - Compact Utilities */}
             <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
                 <nav
-                    className="glass flex items-center justify-between gap-2 px-3 py-1.5 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.3)] ring-1 ring-white/20 w-auto min-w-[200px] relative overflow-hidden"
+                    className="glass flex items-center justify-between gap-2 px-3 py-1.5 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.1)] ring-1 ring-[var(--border-color)] w-auto min-w-[200px] relative overflow-hidden"
                 >
                     <div className="flex items-center gap-1">
                         {/* Search moved to top utility bar */}

@@ -300,8 +300,8 @@ const Profile: React.FC = () => {
       }
    };
 
-   const getAvatarUrl = (avatar?: string) => {
-      if (!avatar) return `/api/proxy/avatar?name=${encodeURIComponent(profileUser?.name || 'User')}`;
+   const getAvatarUrl = (avatar?: string, name?: string, lastName?: string) => {
+      if (!avatar) return `/api/proxy/avatar?name=${encodeURIComponent(name || profileUser?.name || 'User')}`;
       if (avatar.startsWith('http')) return avatar;
       return `${import.meta.env.VITE_API_URL?.replace('/api', '')}${avatar}`;
    };
@@ -697,10 +697,10 @@ const Profile: React.FC = () => {
                            >
                               <img
                                  src={getAvatarUrl(visitor.avatar)}
-                                 className="w-full aspect-square object-cover border border-[#eee] group-hover:border-[var(--text-secondary)] transition-colors"
+                                 className="w-full aspect-square object-cover border border-[var(--border-color)] group-hover:border-[var(--text-secondary)] transition-colors"
                                  alt={visitor.name}
                               />
-                              <div className="text-[8px] text-center mt-0.5 truncate text-[#666]">
+                              <div className="text-[8px] text-center mt-0.5 truncate text-[var(--text-muted)]">
                                  {visitor.name}
                               </div>
                            </div>
@@ -806,7 +806,7 @@ const Profile: React.FC = () => {
                                     <img
                                        src={getAvatarUrl(post.user.avatar, post.user.name)}
                                        alt={post.user.name}
-                                       className="w-full h-full object-cover rounded-full ring-2 ring-white/5 shadow-xl relative z-10 cursor-pointer transition-transform duration-500 group-hover:scale-105"
+                                       className="w-full h-full object-cover rounded-full ring-2 ring-[var(--border-color)] shadow-xl relative z-10 cursor-pointer transition-transform duration-500 group-hover:scale-105"
                                        onClick={() => navigate(`/profile/${post.user.id}`)}
                                     />
                                  </div>
@@ -817,11 +817,11 @@ const Profile: React.FC = () => {
                                        <div>
                                           <button
                                              onClick={() => navigate(`/profile/${post.user.id}`)}
-                                             className="text-[16px] font-black text-white hover:text-[var(--accent)] transition-colors tracking-tight text-left block"
+                                             className="text-[16px] font-black text-[var(--text-main)] hover:text-[var(--accent)] transition-colors tracking-tight text-left block"
                                           >
                                              {post.user.name} {post.user.lastName}
                                           </button>
-                                          <div className="text-[10px] text-white/20 font-black uppercase tracking-widest mt-0.5">
+                                          <div className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-0.5">
                                              {new Date(post.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} • {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                           </div>
                                        </div>
@@ -832,7 +832,7 @@ const Profile: React.FC = () => {
                                                 e.stopPropagation();
                                                 handleDeletePost(post.id);
                                              }}
-                                             className="text-white/10 hover:text-red-500 transition-colors p-1"
+                                             className="text-[var(--text-muted)] hover:text-red-500 transition-colors p-1"
                                              title="Borrar"
                                           >
                                              <Trash2 size={16} />
@@ -840,12 +840,12 @@ const Profile: React.FC = () => {
                                        )}
                                     </div>
 
-                                    <div className="text-[15px] md:text-[16px] text-white/80 leading-relaxed mb-4 font-medium">
+                                    <div className="text-[15px] md:text-[16px] text-[var(--text-main)] leading-relaxed mb-4 font-medium">
                                        {post.content}
                                     </div>
 
                                     {post.image && (
-                                       <div className="mt-4 rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl bg-white/5 p-1">
+                                       <div className="mt-4 rounded-[2rem] overflow-hidden border border-[var(--border-color)] shadow-2xl bg-[var(--card-bg)] p-1">
                                           <img
                                              src={post.image.startsWith('http') || post.image.startsWith('data:') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image.startsWith('/') ? '' : '/'}${post.image}`}
                                              className="w-full h-auto max-h-[600px] object-contain rounded-[1.8rem] cursor-pointer hover:scale-[1.01] transition-transform duration-700"
@@ -867,16 +867,16 @@ const Profile: React.FC = () => {
                                     )}
 
                                     {/* Post Actions */}
-                                    <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4">
+                                    <div className="mt-6 flex items-center justify-between border-t border-[var(--border-color)] pt-4">
                                        <div className="flex items-center gap-6">
-                                          <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white/30 hover:text-[var(--accent)] transition-all">
+                                          <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-all">
                                              <ThumbsUp size={16} />
                                              <span>Mola</span>
                                              {post._count && post._count.likes > 0 && (
                                                 <span className="bg-white/5 px-2 py-0.5 rounded-full text-[10px] ml-1">{post._count.likes}</span>
                                              )}
                                           </button>
-                                          <button className="flex items-center gap-2 text-[11px] font-black text-white/30 hover:text-white transition-all uppercase tracking-widest">
+                                          <button className="flex items-center gap-2 text-[11px] font-black text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all uppercase tracking-widest">
                                              <MessageCircle size={16} />
                                              <span>Comentar</span>
                                              {post._count && post._count.comments > 0 && (
@@ -884,7 +884,7 @@ const Profile: React.FC = () => {
                                              )}
                                           </button>
                                        </div>
-                                       <button className="text-white/10 hover:text-white transition-colors">
+                                       <button className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors">
                                           <Share2 size={16} />
                                        </button>
                                     </div>

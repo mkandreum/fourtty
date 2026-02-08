@@ -149,10 +149,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="bg-white/5 p-4 rounded-[1.5rem] mt-2 border border-white/5 backdrop-blur-md"
+                        className="bg-[var(--card-bg)] p-4 rounded-[1.5rem] mt-2 border border-[var(--border-color)] backdrop-blur-md shadow-sm"
                     >
                         {isLoading && (
-                            <div className="text-[10px] text-white/30 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <div className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <div className="w-3 h-3 border border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
                                 Buscando...
                             </div>
@@ -163,25 +163,25 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                                 <div key={comment.id} className="flex gap-3 group/comment">
                                     <img
                                         src={getAvatarUrl(comment.user.avatar, comment.user.name)}
-                                        className="w-10 h-10 object-cover rounded-2xl ring-1 ring-white/10 shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                                        className="w-10 h-10 object-cover rounded-2xl ring-1 ring-[var(--border-color)] shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
                                         alt={comment.user.name}
                                         onClick={() => navigate(`/profile/${comment.userId}`)}
                                     />
                                     <div className="flex-1 min-w-0">
-                                        <div className="bg-white/5 p-3 rounded-[1.2rem] border border-white/5 group-hover/comment:border-white/10 transition-colors">
+                                        <div className="bg-[var(--bg-color)] p-3 rounded-[1.2rem] border border-[var(--border-color)] group-hover/comment:border-[var(--border-color)] transition-colors">
                                             <div
-                                                className="text-[14px] font-black text-white/90 cursor-pointer hover:text-[var(--accent)] transition-colors mb-0.5"
+                                                className="text-[14px] font-black text-[var(--text-main)] cursor-pointer hover:text-[var(--accent)] transition-colors mb-0.5"
                                                 onClick={() => navigate(`/profile/${comment.userId}`)}
                                             >
                                                 {comment.user.name}
                                             </div>
-                                            <div className="text-[13px] leading-relaxed"> {renderCommentContent(comment.content)}</div>
+                                            <div className="text-[13px] leading-relaxed text-[var(--text-main)]"> {renderCommentContent(comment.content)}</div>
                                         </div>
                                         <div className="text-[10px] flex items-center gap-3 mt-1.5 ml-1 opacity-40 group-hover/comment:opacity-100 transition-opacity">
-                                            <span className="text-white font-bold uppercase tracking-widest">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                            <span className="text-[var(--text-muted)] font-bold uppercase tracking-widest">{new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                             <button
                                                 onClick={() => handleToggleCommentLike(comment.id)}
-                                                className={`font-black uppercase tracking-widest transition-colors ${comment.isLiked ? 'text-[var(--accent)]' : 'text-white hover:text-[var(--accent)]'}`}
+                                                className={`font-black uppercase tracking-widest transition-colors ${comment.isLiked ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                             >
                                                 Mola
                                             </button>
@@ -207,7 +207,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                             <form onSubmit={handleSubmitComment} className="flex-1 relative group">
                                 <input
                                     type="text"
-                                    className="w-full bg-black/20 text-white border border-white/10 rounded-full pl-5 pr-12 py-3 text-[13px] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/20 transition-all placeholder:text-white/10"
+                                    className="w-full bg-[var(--bg-color)] text-[var(--text-main)] border border-[var(--border-color)] rounded-full pl-5 pr-12 py-3 text-[13px] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]/20 transition-all placeholder-[var(--text-muted)]"
                                     placeholder="Añade un comentario..."
                                     value={newComment}
                                     onChange={(e) => setNewComment(e.target.value)}
@@ -215,7 +215,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, photoId, initia
                                 <button
                                     type="submit"
                                     disabled={!newComment.trim()}
-                                    className={`absolute right-2 top-1.5 w-9 h-9 flex items-center justify-center rounded-full transition-all ${newComment.trim() ? 'bg-[var(--accent)] text-white shadow-[0_0_10px_rgba(var(--accent-rgb),0.5)]' : 'bg-white/5 text-white/10'}`}
+                                    className={`absolute right-2 top-1.5 w-9 h-9 flex items-center justify-center rounded-full transition-all ${newComment.trim() ? 'bg-[var(--accent)] text-white shadow-[0_0_10px_rgba(var(--accent-rgb),0.5)]' : 'bg-[var(--card-bg)] text-[var(--text-muted)]'}`}
                                 >
                                     <Send size={16} />
                                 </button>
