@@ -753,74 +753,115 @@ const Profile: React.FC = () => {
                   ) : wallPosts.length === 0 ? (
                      <div className="p-4 text-center text-xs text-gray-500">No hay publicaciones en el tablón.</div>
                   ) : (
-                     <>
-                        {wallPosts.map((post, idx) => (
-                           <div
+                     <div className="flex flex-col gap-6 p-4">
+                        {wallPosts.map((post) => (
+                           <motion.div
                               key={post.id}
-                              className={`flex gap-3 p-3 border-b border-[var(--border-soft)] ${idx % 2 === 0 ? 'bg-[var(--card-bg)]' : 'bg-[var(--border-soft)]'} hover:opacity-90 transition-all cursor-default group`}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="capsule-card group relative mb-6"
                            >
-                              <div className="w-10 flex-shrink-0">
-                                 <img
-                                    src={getAvatarUrl(post.user.avatar)}
-                                    className="w-10 h-10 object-cover border border-[#ddd] cursor-pointer"
-                                    onClick={() => navigate(`/profile/${post.user.id}`)}
-                                    alt={post.user.name}
-                                 />
-                              </div>
-                              <div className="flex-1">
-                                 <div className="mb-1">
-                                    <span
-                                       className="text-[var(--text-secondary)] font-bold text-[13px] md:text-[14px] hover:underline cursor-pointer transition-colors duration-200"
+                              <div className="flex gap-5 p-4">
+                                 {/* Avatar Section */}
+                                 <div className="w-12 h-12 shrink-0 relative">
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-500" />
+                                    <img
+                                       src={getAvatarUrl(post.user.avatar, post.user.name, post.user.lastName)}
+                                       alt={post.user.name}
+                                       className="w-full h-full object-cover rounded-full ring-2 ring-white/5 shadow-xl relative z-10 cursor-pointer transition-transform duration-500 group-hover:scale-105"
                                        onClick={() => navigate(`/profile/${post.user.id}`)}
-                                    >
-                                       {post.user.name} {post.user.lastName}
-                                    </span>
-                                    {isOwnProfile && (
-                                       <button
-                                          onClick={(e) => {
-                                             e.stopPropagation();
-                                             handleDeletePost(post.id);
-                                          }}
-                                          className="ml-2 text-gray-500 hover:text-[#cc0000] inline-flex align-middle"
-                                          title="Borrar publicación"
-                                       >
-                                          <Trash2 size={12} />
-                                       </button>
-                                    )}
-                                    <div className="text-[var(--text-main)] text-[13px] md:text-[14px] font-bold mt-1 transition-colors duration-200"> {post.content}</div>
+                                    />
                                  </div>
-                                 {post.image && (
-                                    <div className="mb-2 mt-1">
-                                       <img
-                                          src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
-                                          className="max-w-full max-h-[300px] rounded-xl border border-[#eee] cursor-pointer hover:scale-[1.01] transition-transform"
-                                          onClick={() => {
-                                             const photoObj = {
-                                                id: post.id,
-                                                url: post.image!,
-                                                userId: post.userId,
-                                                createdAt: post.createdAt,
-                                                user: post.user,
-                                                _count: post._count,
-                                                photoTags: []
-                                             } as any;
-                                             openPhoto(photoObj, [photoObj]);
-                                          }}
-                                          alt="Post"
+
+                                 {/* Content Section */}
+                                 <div className="flex-1 min-w-0 text-left">
+                                    <div className="flex justify-between items-start mb-2">
+                                       <div>
+                                          <button
+                                             onClick={() => navigate(`/profile/${post.user.id}`)}
+                                             className="text-[16px] font-black text-white hover:text-[var(--accent)] transition-colors tracking-tight text-left block"
+                                          >
+                                             {post.user.name} {post.user.lastName}
+                                          </button>
+                                          <div className="text-[10px] text-white/20 font-black uppercase tracking-widest mt-0.5">
+                                             {new Date(post.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} • {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                          </div>
+                                       </div>
+
+                                       {isOwnProfile && (
+                                          <button
+                                             onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeletePost(post.id);
+                                             }}
+                                             className="text-white/10 hover:text-red-500 transition-colors p-1"
+                                             title="Borrar"
+                                          >
+                                             <Trash2 size={16} />
+                                          </button>
+                                       )}
+                                    </div>
+
+                                    <div className="text-[15px] md:text-[16px] text-white/80 leading-relaxed mb-4 font-medium">
+                                       {post.content}
+                                    </div>
+
+                                    {post.image && (
+                                       <div className="mt-4 rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl bg-white/5 p-1">
+                                          <img
+                                             src={post.image.startsWith('http') || post.image.startsWith('data:') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image.startsWith('/') ? '' : '/'}${post.image}`}
+                                             className="w-full h-auto max-h-[600px] object-contain rounded-[1.8rem] cursor-pointer hover:scale-[1.01] transition-transform duration-700"
+                                             onClick={() => {
+                                                const photoObj = {
+                                                   id: post.id,
+                                                   url: post.image!,
+                                                   userId: post.userId,
+                                                   createdAt: post.createdAt,
+                                                   user: post.user,
+                                                   _count: post._count,
+                                                   photoTags: []
+                                                } as any;
+                                                openPhoto(photoObj, [photoObj]);
+                                             }}
+                                             alt="Post"
+                                          />
+                                       </div>
+                                    )}
+
+                                    {/* Post Actions */}
+                                    <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4">
+                                       <div className="flex items-center gap-6">
+                                          <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white/30 hover:text-[var(--accent)] transition-all">
+                                             <ThumbsUp size={16} />
+                                             <span>Mola</span>
+                                             {post._count && post._count.likes > 0 && (
+                                                <span className="bg-white/5 px-2 py-0.5 rounded-full text-[10px] ml-1">{post._count.likes}</span>
+                                             )}
+                                          </button>
+                                          <button className="flex items-center gap-2 text-[11px] font-black text-white/30 hover:text-white transition-all uppercase tracking-widest">
+                                             <MessageCircle size={16} />
+                                             <span>Comentar</span>
+                                             {post._count && post._count.comments > 0 && (
+                                                <span className="bg-white/5 px-2 py-0.5 rounded-full text-[10px] ml-1">{post._count.comments}</span>
+                                             )}
+                                          </button>
+                                       </div>
+                                       <button className="text-white/10 hover:text-white transition-colors">
+                                          <Share2 size={16} />
+                                       </button>
+                                    </div>
+
+                                    <div className="mt-4">
+                                       <CommentSection
+                                          postId={post.id}
+                                          initialCommentsCount={post._count?.comments || 0}
                                        />
                                     </div>
-                                 )}
-                                 <div className="text-[var(--text-muted)] text-[10px] mb-1 transition-colors duration-200">
-                                    {new Date(post.createdAt).toLocaleDateString()}
                                  </div>
-                                 <CommentSection
-                                    postId={post.id}
-                                    initialCommentsCount={post._count?.comments || 0}
-                                 />
                               </div>
-                           </div>
+                           </motion.div>
                         ))}
-                     </>
+                     </div>
                   )}
                </div>
             </div>

@@ -58,18 +58,12 @@ const Sidebar: React.FC = () => {
          animate={{ opacity: 1, x: 0 }}
          className="flex flex-col gap-4"
       >
-         <div className="bg-[var(--card-bg)]/50 p-3 rounded-2xl border border-[var(--border-soft)] shadow-sm">
-            <Invitations compact />
-         </div>
-
-         {/* Chat Widget */}
-         <div className="">
-            <h4 className="text-[var(--text-main)] font-extrabold text-[13px] mb-3 flex items-center justify-between border-b border-[var(--border-soft)] pb-2 transition-colors duration-200">
+         <div className="bg-[var(--card-bg)]/50 p-4 rounded-2xl border border-[var(--border-soft)] shadow-sm">
+            <h4 className="text-[var(--text-main)] font-extrabold text-[13px] mb-4 flex items-center justify-between border-b border-[var(--border-soft)] pb-2 transition-colors duration-200">
                <div className="flex items-center gap-2">
                   <span className={`w-2.5 h-2.5 rounded-full ${onlineFriendsCount > 0 ? 'bg-[var(--accent)]' : 'bg-gray-400'} shadow-[0_0_8px_rgba(240,45,141,0.5)]`}></span>
-                  Chat ({onlineFriendsCount})
+                  Amigos Online ({onlineFriendsCount})
                </div>
-               <span className="text-[var(--text-secondary)] hover:underline cursor-pointer text-[10px] font-bold">Ajustes</span>
             </h4>
             <div className="relative mb-3">
                <input
@@ -81,21 +75,24 @@ const Sidebar: React.FC = () => {
                />
                <Search size={14} className="absolute left-3 top-2.5 text-gray-400" />
             </div>
-            <div className="flex flex-col gap-0.5 max-h-[300px] overflow-y-auto pr-1">
+            <div className="flex flex-col gap-0.5 max-h-[300px] overflow-y-auto pr-1 no-scrollbar">
                {isLoading ? (
                   <div className="text-[10px] text-[var(--text-muted)] p-2">Cargando amigos...</div>
                ) : filteredFriends.length > 0 ? (
                   filteredFriends.map(friend => {
                      const isOnline = onlineUserIds.includes(friend.id);
                      return (
-                        <div key={friend.id} className="flex items-center gap-2 p-1 hover:bg-[var(--accent)]/10 cursor-pointer group rounded-lg transition-colors duration-200">
-                           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[var(--accent)]' : 'bg-gray-400'}`}></div>
-                           <span className={`text-[11px] ${isOnline ? 'text-[var(--text-main)]' : 'text-[var(--text-muted)]'} group-hover:text-[var(--accent)] truncate transition-colors duration-200`}>{friend.name}</span>
+                        <div key={friend.id} className="flex items-center gap-3 p-2 hover:bg-[var(--accent)]/10 cursor-pointer group rounded-xl transition-colors duration-200">
+                           <div className="relative">
+                              <img src={`https://ui-avatars.com/api/?name=${friend.name}&background=random`} className="w-8 h-8 rounded-full border border-[var(--border-soft)]" alt="" />
+                              <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[var(--card-bg)] ${isOnline ? 'bg-[var(--accent)]' : 'bg-gray-400'}`}></div>
+                           </div>
+                           <span className={`text-[12px] font-medium ${isOnline ? 'text-[var(--text-main)]' : 'text-[var(--text-muted)]'} group-hover:text-[var(--accent)] truncate transition-colors duration-200`}>{friend.name}</span>
                         </div>
                      );
                   })
                ) : (
-                  <div className="text-[10px] text-[var(--text-muted)] p-2">
+                  <div className="text-[12px] text-[var(--text-muted)] p-4 text-center italic">
                      {filterQuery ? 'No se encontraron amigos' : 'No tienes amigos todavía'}
                   </div>
                )}

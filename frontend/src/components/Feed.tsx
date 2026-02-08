@@ -80,14 +80,12 @@ const Feed: React.FC = () => {
       }
    }, [socket]);
 
-   // Initial fetch for metadata only
    useEffect(() => {
       fetchUnreadNotifications();
       fetchStats();
       fetchRecentVisitors();
    }, []);
 
-   // Feed fetching logic
    useEffect(() => {
       const getPosts = async () => {
          if (page === 1) {
@@ -102,7 +100,6 @@ const Feed: React.FC = () => {
       };
       getPosts();
    }, [page]);
-
 
    const fetchUnreadNotifications = async () => {
       try {
@@ -122,6 +119,14 @@ const Feed: React.FC = () => {
       }
    };
 
+   const fetchRecentVisitors = async () => {
+      try {
+         const res = await api.get('/visitors');
+         setRecentVisitors(res.data.visitors);
+      } catch (error) {
+         console.error("Error fetching visitors:", error);
+      }
+   };
 
    const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -145,13 +150,11 @@ const Feed: React.FC = () => {
       setIsSubmitting(true);
 
       try {
-         // Update profile status if text is provided
          if (statusText.trim()) {
             await api.put(`/users/${user.id}`, { status: statusText });
             updateUser({ ...user, status: statusText });
          }
 
-         // Create a new post
          const formData = new FormData();
          formData.append('content', statusText || (selectedFile ? 'compartió una foto' : ''));
          formData.append('type', selectedFile ? 'photo' : 'status');
@@ -160,17 +163,12 @@ const Feed: React.FC = () => {
          }
 
          await api.post('/posts', formData);
-
-         // Clear input after success
          setStatusText('');
          removeFile();
-
-         // Refresh feed (reset to page 1)
          setPage(1);
          await fetchFeed(1, true);
          setHasMore(true);
          showToast("Publicado correctamente", "success");
-
       } catch (error) {
          console.error("Error updating status:", error);
          showToast("Error al publicar", "error");
@@ -218,14 +216,6 @@ const Feed: React.FC = () => {
          showToast("No se pudo borrar la publicación", "error");
       }
    };
-   const fetchRecentVisitors = async () => {
-      try {
-         const res = await api.get('/visitors');
-         setRecentVisitors(res.data.visitors);
-      } catch (error) {
-         console.error("Error fetching visitors:", error);
-      }
-   };
 
    const handleAcceptFriend = async (friendshipId: number, notificationId: number) => {
       try {
@@ -235,7 +225,6 @@ const Feed: React.FC = () => {
          fetchStats();
       } catch (error: any) {
          console.error("Error accepting friend:", error);
-         // If already accepted/deleted elsewhere (404), just clear it
          if (error.response?.status === 404) {
             setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
          } else {
@@ -252,7 +241,6 @@ const Feed: React.FC = () => {
          fetchStats();
       } catch (error: any) {
          console.error("Error rejecting friend:", error);
-         // If already rejected/deleted elsewhere (404), just clear it
          if (error.response?.status === 404) {
             setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
          } else {
@@ -262,7 +250,6 @@ const Feed: React.FC = () => {
    };
 
    const handleNotificationClick = async (notif: any) => {
-      // Mark as read
       try {
          await api.put(`/notifications/${notif.id}/read`);
          setUnreadNotifications(prev => prev.filter(n => n.id !== notif.id));
@@ -270,7 +257,6 @@ const Feed: React.FC = () => {
          console.error(e);
       }
 
-      // Navigation logic
       try {
          if (['comment_photo', 'tag_photo'].includes(notif.type)) {
             const photoRes = await api.get(`/photos/user/${notif.userId}`);
@@ -279,7 +265,6 @@ const Feed: React.FC = () => {
             if (targetPhoto) openPhoto(targetPhoto, photos);
             else navigate(`/profile/${notif.userId}`);
          } else if (['comment_post', 'tag_post', 'status_post', 'video_post', 'photo_post'].includes(notif.type)) {
-            // If we are already on home, we might want to scroll to post, but for now just stay/refresh
             if (location.pathname === '/') {
                window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
@@ -295,69 +280,73 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <div className="bg-[var(--bg-color)] md:bg-transparent min-h-[500px] px-3 pb-3 pt-4 md:px-4 transition-colors duration-200">
+      <div className="bg-[var(--bg-color)] md:bg-transparent min-h-screen px-3 pb-24 pt-4 md:px-4 transition-colors duration-200">
 
-         {/* Status Box - Bocadillo Style */}
+         {/* Status Box - Capsule Style */}
          <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            className="mb-10"
          >
-            <div className="flex gap-4 items-start relative">
-               {/* Avatar */}
-               <div className="w-12 h-12 shrink-0 z-10">
-                  <img src={getAvatarUrl(user?.avatar, user?.name, user?.lastName)} alt={user?.name} className="w-full h-full object-cover rounded-full ring-2 ring-[var(--accent)]/10 shadow-sm" />
-               </div>
-
-               {/* The Bocadillo (Speech Bubble) */}
-               <div className="flex-1 relative">
-                  {/* Bubble Arrow */}
-                  <div className="absolute left-[-8px] top-4 w-4 h-4 bg-[var(--card-bg)] border-l border-t border-[var(--border-color)] rotate-[-45deg] z-0 hidden md:block" />
-
-                  <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl md:rounded-tr-2xl md:rounded-br-2xl md:rounded-bl-2xl p-4 shadow-sm transition-all duration-200 relative z-10">
-                     <textarea
-                        className="w-full border-none p-0 text-[16px] md:text-[18px] text-[var(--text-main)] placeholder-gray-400 outline-none !bg-transparent transition-colors duration-200 min-h-[60px] resize-none"
-                        value={statusText}
-                        onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
-                        placeholder={`¿Qué pasa, ${user?.name}?`}
+            <div className="capsule-card neon-glow group">
+               <div className="flex gap-4 items-start">
+                  {/* Avatar with Neon Ring */}
+                  <div className="w-14 h-14 shrink-0 relative">
+                     <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full animate-pulse opacity-20 blur-md group-hover:opacity-40 transition-opacity" />
+                     <img
+                        src={getAvatarUrl(user?.avatar, user?.name, user?.lastName)}
+                        alt={user?.name}
+                        className="w-full h-full object-cover rounded-full ring-2 ring-white/10 shadow-xl relative z-10"
                      />
+                     <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--card-bg)] shadow-[0_0_10px_rgba(34,197,94,0.4)] z-20" />
+                  </div>
 
-                     <AnimatePresence>
-                        {statusText.length > 0 && (
-                           <motion.div
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.8 }}
-                              className="absolute top-2 right-2 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] px-2 py-0.5 rounded-full font-bold z-10"
-                           >
-                              {140 - statusText.length}
-                           </motion.div>
-                        )}
-                     </AnimatePresence>
+                  <div className="flex-1">
+                     <div className="flex flex-col gap-1">
+                        <textarea
+                           className="w-full border-none p-0 text-[18px] md:text-[20px] font-medium text-[var(--text-main)] placeholder-white/20 outline-none bg-transparent transition-all min-h-[80px] resize-none overflow-hidden"
+                           value={statusText}
+                           onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
+                           placeholder={`¿Qué tienes en mente, ${user?.name}?`}
+                        />
 
-                     {/* Photo Preview inside Bubble */}
+                        <AnimatePresence>
+                           {statusText.length > 0 && (
+                              <div className="flex justify-end pr-2">
+                                 <motion.span
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    className="text-[10px] font-bold tracking-widest text-white/30 uppercase"
+                                 >
+                                    {140 - statusText.length} caracteres
+                                 </motion.span>
+                              </div>
+                           )}
+                        </AnimatePresence>
+                     </div>
+
                      <AnimatePresence>
                         {previewUrl && (
                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              className="mt-3 relative inline-block group"
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95 }}
+                              className="mt-4 relative inline-block"
                            >
-                              <img src={previewUrl} alt="Preview" className="max-h-[200px] rounded-lg border border-[var(--border-color)] shadow-sm" />
+                              <img src={previewUrl} alt="Preview" className="max-h-[250px] rounded-[1.5rem] border border-white/10 shadow-2xl" />
                               <button
                                  onClick={removeFile}
-                                 className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                 className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full hover:bg-red-500 transition-colors shadow-lg"
                               >
-                                 <X size={14} />
+                                 <X size={16} />
                               </button>
                            </motion.div>
                         )}
                      </AnimatePresence>
 
-                     <div className="flex justify-between items-center mt-3 pt-3 border-t border-[var(--border-soft)] gap-2">
-                        <div className="flex items-center gap-3">
-                           {/* Add Photo Button */}
+                     <div className="flex justify-between items-center mt-6 pt-4 border-t border-white/5">
+                        <div className="flex items-center gap-4">
                            <input
                               type="file"
                               id="status-photo-upload"
@@ -367,28 +356,30 @@ const Feed: React.FC = () => {
                            />
                            <button
                               onClick={() => document.getElementById('status-photo-upload')?.click()}
-                              className="flex items-center gap-1.5 text-[var(--accent)] hover:bg-[var(--accent)]/10 px-2 py-1 rounded-lg transition-all"
-                              title="Añadir foto"
+                              className="flex items-center gap-2 text-white/50 hover:text-[var(--accent)] hover:bg-white/5 px-3 py-2 rounded-xl transition-all font-bold text-sm"
                            >
-                              <Camera size={18} />
-                              <span className="text-[12px] font-bold hidden sm:inline">Foto</span>
+                              <Camera size={20} className="neon-glow" />
+                              <span>Añadir recuerdo</span>
                            </button>
 
-                           <div className="text-[12px] text-[var(--text-muted)] italic truncate max-w-[150px] hidden md:block">
-                              "{user?.status || 'Sin estado'}"
-                           </div>
+                           {user?.status && (
+                              <div className="hidden lg:flex items-center gap-2 text-[11px] text-white/30 font-medium italic overflow-hidden">
+                                 <div className="w-1 h-1 bg-white/20 rounded-full" />
+                                 <span className="truncate max-w-[200px]">{user.status}</span>
+                              </div>
+                           )}
                         </div>
 
                         <motion.button
-                           whileHover={!isSubmitting && (statusText.trim() || selectedFile) ? { scale: 1.05 } : {}}
+                           whileHover={!isSubmitting && (statusText.trim() || selectedFile) ? { scale: 1.05, boxShadow: "0 0 20px rgba(var(--accent-rgb), 0.4)" } : {}}
                            whileTap={!isSubmitting && (statusText.trim() || selectedFile) ? { scale: 0.95 } : {}}
                            onClick={handleUpdateStatus}
                            disabled={isSubmitting || (!statusText.trim() && !selectedFile)}
-                           className={`px-5 py-2 rounded-full font-bold text-[13px] shadow-lg transition-all ${isSubmitting || (!statusText.trim() && !selectedFile)
-                              ? 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
-                              : 'bg-gradient-to-r from-[var(--accent)] to-[var(--text-secondary)] text-white'}`}
+                           className={`px-8 py-3 rounded-full font-black text-[12px] uppercase tracking-widest transition-all ${isSubmitting || (!statusText.trim() && !selectedFile)
+                              ? 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
+                              : 'bg-gradient-to-tr from-[var(--accent)] to-violet-500 text-white shadow-[0_10px_20px_rgba(var(--accent-rgb),0.3)]'}`}
                         >
-                           {isSubmitting ? '...' : (selectedFile ? 'Publicar foto' : 'Publicar')}
+                           {isSubmitting ? '...' : 'Publicar'}
                         </motion.button>
                      </div>
                   </div>
@@ -396,185 +387,177 @@ const Feed: React.FC = () => {
             </div>
          </motion.div>
 
-         {/* Unread Notifications & Visits - Shown below status box */}
+         {/* Unread Notifications & Visits */}
          {(unreadNotifications.length > 0 || stats.visits > 0) && (
-            <div className="mb-4">
-               <div className="flex flex-col gap-2">
-                  {/* Visits - Mobile only - Clean style */}
-                  {stats.visits > 0 && (
-                     <div
-                        className="md:hidden flex items-center gap-3 group cursor-pointer hover:bg-gray-50/80 p-1.5 rounded-md transition-all active:scale-[0.98]"
-                        onClick={() => navigate('/profile')}
-                     >
-                        <div className="text-[var(--accent)] bg-[var(--accent)]/10 p-1.5 rounded-sm">
-                           <BarChart2 size={16} />
-                        </div>
-                        <div className="flex flex-col flex-1">
-                           <span className="text-[14px] md:text-[16px] font-bold text-[var(--accent)] group-hover:underline leading-tight">
-                              {stats.visits} visitas al perfil
-                           </span>
-                           {recentVisitors.length > 0 && (
-                              <div className="flex -space-x-1 overflow-hidden mt-1">
-                                 {recentVisitors.slice(0, 6).map((visitor, idx) => (
-                                    <img
-                                       key={visitor.id}
-                                       src={getAvatarUrl(visitor.avatar, visitor.name, visitor.lastName)}
-                                       className="inline-block h-6 w-6 rounded-full ring-1 ring-[var(--bg-color)] object-cover shadow-sm"
-                                       alt={visitor.name}
-                                       style={{ zIndex: 10 - idx }}
-                                    />
-                                 ))}
-                                 {recentVisitors.length > 6 && (
-                                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 ring-1 ring-[var(--bg-color)] text-[8px] font-bold text-gray-500 z-0 shadow-sm">
-                                       +{recentVisitors.length - 6}
-                                    </div>
-                                 )}
-                              </div>
-                           )}
-                        </div>
+            <div className="mb-6 flex flex-col gap-2">
+               {stats.visits > 0 && (
+                  <div
+                     className="md:hidden flex items-center gap-3 group cursor-pointer hover:bg-white/5 p-3 rounded-2xl transition-all active:scale-[0.98] border border-white/5 bg-white/5 backdrop-blur-md"
+                     onClick={() => navigate('/profile')}
+                  >
+                     <div className="text-[var(--accent)] bg-[var(--accent)]/10 p-2 rounded-xl">
+                        <BarChart2 size={18} />
                      </div>
-                  )}
-
-                  {unreadNotifications.map(notif => (
-                     <div key={notif.id} className="flex flex-col gap-1 w-full animate-in fade-in slide-in-from-top-1 duration-300">
-                        <div
-                           className="flex items-center gap-2 group cursor-pointer hover:bg-[var(--border-soft)] p-1.5 rounded-sm transition-colors border-l-2 border-[var(--accent)] bg-[var(--card-bg)] shadow-sm"
-                           onClick={() => {
-                              if (notif.type === 'friendship') return; // Handled below
-                              handleNotificationClick(notif);
-                           }}
-                        >
-                           <div className="text-[var(--accent)] bg-[var(--accent)]/10 p-1.5 rounded-sm">
-                              {['comment_photo', 'comment_post'].includes(notif.type) && <MessageCircle size={16} />}
-                              {['tag_photo', 'tag_post'].includes(notif.type) && <Tag size={16} />}
-                              {['photo_post', 'video_post', 'status_post'].includes(notif.type) && <Bell size={16} />}
-                              {notif.type === 'message' && <Mail size={16} />}
-                              {notif.type === 'friendship' && <UserPlus size={16} />}
-                           </div>
-                           <div className="flex flex-col flex-1">
-                              <span className="text-[14px] md:text-[16px] font-bold text-[var(--accent)] group-hover:underline leading-tight">
-                                 {notif.content}
-                              </span>
-                              <span className="text-[10px] text-[var(--text-muted)] transition-colors duration-200">
-                                 {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                              </span>
-                           </div>
-                        </div>
-
-                        {/* Quick actions for Friendships remains expanded */}
-                        {notif.type === 'friendship' && (
-                           <div className="ml-8 flex flex-col gap-2 mt-1 mb-2">
-                              <div className="bg-[var(--bg-color)] border border-[var(--border-color)] p-2 rounded-[4px] flex flex-col gap-2 shadow-sm transition-colors duration-200">
-                                 <div className="flex gap-2">
-                                    <button
-                                       onClick={() => handleAcceptFriend(notif.relatedId, notif.id)}
-                                       className="flex-1 bg-[var(--accent)] text-white text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-[#4a9600] active:scale-95 transition-all"
-                                    >
-                                       Aceptar
-                                    </button>
-                                    <button
-                                       onClick={() => handleRejectFriend(notif.relatedId, notif.id)}
-                                       className="flex-1 bg-[var(--card-bg)] text-[#cc0000] border border-[#ffcccc] text-[10px] font-bold py-1.5 rounded-[2px] hover:bg-red-50 active:scale-95 transition-all"
-                                    >
-                                       Rechazar
-                                    </button>
+                     <div className="flex flex-col flex-1">
+                        <span className="text-[14px] font-black text-white/90 group-hover:text-[var(--accent)] leading-tight">
+                           {stats.visits} visitas al perfil
+                        </span>
+                        {recentVisitors.length > 0 && (
+                           <div className="flex -space-x-1.5 overflow-hidden mt-1.5">
+                              {recentVisitors.slice(0, 6).map((visitor, idx) => (
+                                 <img
+                                    key={visitor.id}
+                                    src={getAvatarUrl(visitor.avatar, visitor.name, visitor.lastName)}
+                                    className="inline-block h-6 w-6 rounded-full ring-2 ring-[var(--card-bg)] object-cover shadow-lg"
+                                    alt={visitor.name}
+                                    style={{ zIndex: 10 - idx }}
+                                 />
+                              ))}
+                              {recentVisitors.length > 6 && (
+                                 <div className="flex items-center justify-center h-6 w-6 rounded-full bg-white/5 ring-2 ring-[var(--card-bg)] text-[8px] font-black text-white/40 z-0 shadow-lg backdrop-blur-md">
+                                    +{recentVisitors.length - 6}
                                  </div>
-                              </div>
+                              )}
                            </div>
                         )}
                      </div>
-                  ))}
-               </div>
+                  </div>
+               )}
+
+               {unreadNotifications.map(notif => (
+                  <div key={notif.id} className="flex flex-col gap-1 w-full animate-in fade-in slide-in-from-top-1 duration-300">
+                     <div
+                        className="flex items-center gap-3 group cursor-pointer hover:bg-white/5 p-3 rounded-2xl transition-all border border-white/5 bg-white/5 shadow-lg backdrop-blur-md"
+                        onClick={() => {
+                           if (notif.type === 'friendship') return;
+                           handleNotificationClick(notif);
+                        }}
+                     >
+                        <div className="w-10 h-10 flex items-center justify-center text-[var(--accent)] bg-[var(--accent)]/10 rounded-xl shadow-inner shrink-0 ring-1 ring-white/5">
+                           {['comment_photo', 'comment_post'].includes(notif.type) && <MessageCircle size={20} />}
+                           {['tag_photo', 'tag_post'].includes(notif.type) && <Tag size={20} />}
+                           {['photo_post', 'video_post', 'status_post'].includes(notif.type) && <Bell size={20} />}
+                           {notif.type === 'message' && <Mail size={20} />}
+                           {notif.type === 'friendship' && <UserPlus size={20} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                           <p className="text-[13px] text-white/90 font-bold leading-tight truncate group-hover:text-[var(--accent)] transition-colors">
+                              {notif.content}
+                           </p>
+                           <span className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-0.5 block">
+                              {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                           </span>
+                        </div>
+                        <div className="w-2 h-2 bg-[var(--accent)] rounded-full shadow-[0_0_8px_rgba(var(--accent-rgb),0.5)] shrink-0 neon-glow" />
+                     </div>
+
+                     {notif.type === 'friendship' && (
+                        <div className="ml-8 flex flex-col gap-2 mt-1 mb-2">
+                           <div className="bg-white/5 border border-white/10 p-2 rounded-xl flex flex-col gap-2 shadow-sm backdrop-blur-sm">
+                              <div className="flex gap-2">
+                                 <button
+                                    onClick={() => handleAcceptFriend(notif.relatedId, notif.id)}
+                                    className="flex-1 bg-[var(--accent)] text-white text-[11px] font-black uppercase tracking-wider py-2 rounded-lg hover:shadow-[0_0_15px_rgba(var(--accent-rgb),0.5)] active:scale-95 transition-all"
+                                 >
+                                    Aceptar
+                                 </button>
+                                 <button
+                                    onClick={() => handleRejectFriend(notif.relatedId, notif.id)}
+                                    className="flex-1 bg-white/5 text-white/40 border border-white/10 text-[11px] font-black uppercase tracking-wider py-2 rounded-lg hover:bg-red-500/10 hover:text-red-400 active:scale-95 transition-all"
+                                 >
+                                    Rechazar
+                                 </button>
+                              </div>
+                           </div>
+                        </div>
+                     )}
+                  </div>
+               ))}
             </div>
          )}
 
-         {/* Invitations Panel - Shown only on mobile in Feed */}
+         {/* Invitations Panel - Shown only on mobile */}
          <div className="md:hidden">
             <Invitations />
          </div>
 
-
-         <div className="flex items-center justify-between mb-2 border-b border-[var(--border-soft)] pb-1 transition-colors duration-200">
-            <h3 className="text-[var(--accent)] font-bold text-[14px] flex items-center gap-1">
-               <div className="bg-[var(--accent)] text-white p-0.5 rounded-[3px] shadow-sm">
-                  <MessageSquare size={14} fill="white" strokeWidth={0} />
-               </div>
+         {/* Novedades Header */}
+         <div className="flex items-center justify-between mb-6 px-1">
+            <h3 className="text-white/40 font-black text-[12px] uppercase tracking-[0.2em] flex items-center gap-3">
+               <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] neon-glow" />
                Novedades
             </h3>
-            <div className="text-[11px] flex gap-2">
-               <span className="font-bold text-[var(--text-main)] hover:text-[var(--text-secondary)] cursor-pointer transition-colors">Amigos</span>
+            <div className="flex gap-4">
+               <span className="text-[11px] font-black text-[var(--accent)] cursor-pointer hover:underline uppercase tracking-widest">Recientes</span>
+               <span className="text-[11px] font-bold text-white/20 cursor-pointer hover:text-white transition-colors uppercase tracking-widest">Amigos</span>
             </div>
          </div>
 
+         {/* Posts Feed */}
          {isLoading ? (
-            <div className="p-4 text-center text-[var(--text-muted)] text-xs transition-colors duration-200">Cargando novedades...</div>
+            <div className="flex flex-col items-center justify-center p-12 text-white/20">
+               <div className="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin mb-4" />
+               <span className="text-[11px] font-black uppercase tracking-[0.2em]">Cargando novedades...</span>
+            </div>
          ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-6">
                {posts.length === 0 && (
-                  <div className="p-4 text-center text-gray-500 text-xs">
-                     No hay novedades recientes. ¡Agrega amigos para ver sus posts!
+                  <div className="p-12 text-center capsule-card bg-white/5 border-dashed border-white/10">
+                     <p className="text-white/20 text-[13px] font-bold">No hay novedades recientes. ¡Agrega amigos para ver sus publicaciones!</p>
                   </div>
                )}
 
                {posts.map((post) => (
                   <div
                      key={post.id}
-                     className="flex gap-2 hover:bg-[var(--border-soft)] p-1 rounded-sm transition-colors duration-200"
+                     className="capsule-card group relative"
                   >
-                     {/* Avatar */}
-                     <div className="w-[50px] shrink-0">
-                        {post.user.avatar ? (
+                     <div className="flex gap-5">
+                        {/* Avatar Section */}
+                        <div className="w-12 h-12 shrink-0 relative">
+                           <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-500" />
                            <img
-                              src={post.user.avatar.startsWith('http') ? post.user.avatar : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.user.avatar}`}
+                              src={getAvatarUrl(post.user.avatar, post.user.name, post.user.lastName)}
                               alt={post.user.name}
                               loading="lazy"
-                              className="w-[50px] h-[50px] object-cover border border-[var(--border-color)] rounded-[2px] p-[1px] bg-[var(--card-bg)] shadow-sm cursor-pointer hover:scale-105 transition-transform"
+                              className="w-full h-full object-cover rounded-full ring-2 ring-white/5 shadow-xl relative z-10 cursor-pointer transition-transform duration-500 group-hover:scale-105"
+                              onClick={() => navigate(`/profile/${post.user.id}`)}
                            />
-                        ) : (
-                           <div className="w-[50px] h-[50px] bg-[var(--bg-color)] border border-[var(--border-color)] rounded-[2px] flex items-center justify-center text-gray-400">
-                              No img
-                           </div>
-                        )}
-                     </div>
-
-                     {/* Content */}
-                     <div className="flex-1 border-b border-[#f5f5f5] pb-3 relative">
-                        {post.userId === user?.id && (
-                           <button
-                              onClick={() => handleDeletePost(post.id)}
-                              className="absolute top-0 right-0 text-gray-300 hover:text-red-500 transition-colors p-1"
-                              title="Borrar"
-                           >
-                              <X size={14} />
-                           </button>
-                        )}
-                        <div className="text-[13px] md:text-[14px] leading-snug mb-1">
-                           <a href="#" className="text-[var(--text-secondary)] font-bold hover:underline transition-colors duration-200">{post.user.name} {post.user.lastName}</a>
-                           <div className="text-[var(--text-main)] text-[13px] md:text-[14px] font-bold mt-1 transition-colors duration-200"> {post.content}</div>
                         </div>
 
-                        <div className="text-[10px] text-[var(--text-muted)] mb-1 flex items-center gap-2 transition-colors duration-200">
-                           {new Date(post.createdAt).toLocaleString()}
-                           <span className="mx-1">·</span>
-                           <button
-                              onClick={() => handleToggleLike(post.id)}
-                              className={`font-bold hover:underline ${post.likedByMe ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}
-                           >
-                              {post.likedByMe ? 'Ya no me mola' : '¡Me mola!'}
-                           </button>
-                        </div>
+                        {/* Content Section */}
+                        <div className="flex-1 min-w-0">
+                           <div className="flex justify-between items-start mb-2">
+                              <div>
+                                 <button
+                                    onClick={() => navigate(`/profile/${post.user.id}`)}
+                                    className="text-[16px] font-black text-white hover:text-[var(--accent)] transition-colors tracking-tight text-left block"
+                                 >
+                                    {post.user.name} {post.user.lastName}
+                                 </button>
+                                 <div className="text-[10px] text-white/20 font-black uppercase tracking-widest mt-0.5">
+                                    {new Date(post.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} • {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                 </div>
+                              </div>
 
-                        {post._count && post._count.likes > 0 && (
-                           <div className="flex items-center gap-1 text-[10px] text-[var(--accent)] font-bold mt-1 mb-1">
-                              <ThumbsUp size={10} fill="var(--accent)" /> {post._count.likes} {post._count.likes === 1 ? 'persona le mola esto' : 'personas les mola esto'}
+                              {post.userId === user?.id && (
+                                 <button
+                                    onClick={() => handleDeletePost(post.id)}
+                                    className="text-white/10 hover:text-red-500 transition-colors p-1"
+                                    title="Borrar"
+                                 >
+                                    <X size={16} />
+                                 </button>
+                              )}
                            </div>
-                        )}
 
+                           <div className="text-[15px] md:text-[16px] text-white/80 leading-relaxed mb-4 font-medium">
+                              {post.content}
+                           </div>
 
-                        {/* Video specific */}
-                        {post.type === 'video' && post.videoUrl && (
-                           <div className="mt-2 w-full max-w-[400px]">
-                              <div className="aspect-video bg-black rounded-sm overflow-hidden border border-[#ccc]">
+                           {/* Media: Video */}
+                           {post.type === 'video' && post.videoUrl && (
+                              <div className="mt-4 rounded-[1.5rem] overflow-hidden border border-white/5 shadow-2xl aspect-video bg-black/40">
                                  <iframe
                                     width="100%"
                                     height="100%"
@@ -585,60 +568,67 @@ const Feed: React.FC = () => {
                                     allowFullScreen
                                  ></iframe>
                               </div>
-                              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[var(--accent)] font-bold">
-                                 <Youtube size={14} /> Vídeo de YouTube
-                              </div>
-                           </div>
-                        )}
+                           )}
 
-                        {/* Photo specific */}
-                        {post.type === 'photo' && post.image && (
-                           <div className="mt-2 flex flex-col gap-2">
-                              <div className="border border-[var(--border-color)] p-1 bg-[var(--card-bg)] inline-block shadow-sm hover:border-[var(--text-secondary)] cursor-pointer transition-all hover:scale-[1.01] self-start">
+                           {/* Media: Photo */}
+                           {post.type === 'photo' && post.image && (
+                              <div className="mt-4 rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl bg-white/5 p-1">
                                  <img
-                                    src={post.image.startsWith('http') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image}`}
+                                    src={post.image.startsWith('http') || post.image.startsWith('data:') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image.startsWith('/') ? '' : '/'}${post.image}`}
                                     loading="lazy"
-                                    className="h-[250px] md:h-[450px] w-auto max-w-full object-contain"
+                                    className="w-full h-auto max-h-[600px] object-contain rounded-[1.8rem] cursor-pointer hover:scale-[1.01] transition-transform duration-700"
                                     onClick={() => {
-                                       const photoObj = {
-                                          id: post.id,
-                                          url: post.image!,
-                                          userId: post.userId,
-                                          createdAt: post.createdAt,
-                                          user: post.user,
-                                          _count: post._count,
-                                          photoTags: []
-                                       } as any;
-                                       openPhoto(photoObj, [photoObj]);
+                                       if (post.image) {
+                                          const photoObj = {
+                                             id: post.id,
+                                             url: post.image,
+                                             userId: post.userId,
+                                             createdAt: post.createdAt,
+                                             user: post.user,
+                                             _count: post._count,
+                                             photoTags: []
+                                          } as any;
+                                          openPhoto(photoObj, [photoObj]);
+                                       }
                                     }}
-                                    alt="attachment"
+                                    alt="post attachment"
                                  />
                               </div>
-                              <div className="flex justify-start">
+                           )}
+
+                           {/* Post Actions */}
+                           <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4">
+                              <div className="flex items-center gap-6">
                                  <button
                                     onClick={() => handleToggleLike(post.id)}
-                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-bold transition-all ${post.likedByMe ? 'bg-[var(--accent)] text-white' : 'bg-[#f2f6f9] text-[#555] border border-[#ccc] hover:bg-[#e1e9f0]'}`}
+                                    className={`flex items-center gap-2 text-[11px] font-black uppercase tracking-widest transition-all ${post.likedByMe ? 'text-[var(--accent)]' : 'text-white/30 hover:text-white'}`}
                                  >
-                                    <ThumbsUp size={12} fill={post.likedByMe ? 'white' : 'transparent'} />
-                                    {post.likedByMe ? '¡Me mola!' : 'Me mola'}
+                                    <ThumbsUp size={16} className={post.likedByMe ? 'neon-glow' : ''} fill={post.likedByMe ? 'currentColor' : 'none'} />
+                                    <span>{post.likedByMe ? 'Mola' : 'Mola'}</span>
+                                    {post._count && post._count.likes > 0 && (
+                                       <span className="bg-white/5 px-2 py-0.5 rounded-full text-[10px] ml-1">{post._count.likes}</span>
+                                    )}
+                                 </button>
+
+                                 <button
+                                    className="flex items-center gap-2 text-[11px] font-black text-white/30 hover:text-white transition-all uppercase tracking-widest"
+                                 >
+                                    <MessageCircle size={16} />
+                                    <span>Comentar</span>
                                  </button>
                               </div>
+
+                              <button className="text-white/10 hover:text-white transition-colors">
+                                 <Share2 size={16} />
+                              </button>
                            </div>
-                        )}
 
-                        {/* Interaction Summary */}
-                        <div className="mt-1 flex flex-col gap-0.5">
-                           <CommentSection
-                              postId={post.id}
-                              initialCommentsCount={post._count?.comments || 0}
-                           />
-
-                           {post.type === 'photo' && (
-                              <div className="flex items-center gap-1 text-[11px]">
-                                 <Tag size={10} className="text-[var(--accent)] fill-[var(--accent)]" />
-                                 <span className="text-[var(--accent)] font-bold">Etiquetas</span>
-                              </div>
-                           )}
+                           <div className="mt-4">
+                              <CommentSection
+                                 postId={post.id}
+                                 initialCommentsCount={post._count?.comments || 0}
+                              />
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -647,20 +637,23 @@ const Feed: React.FC = () => {
          )}
 
          {/* Infinite Scroll Sentinel */}
-         <div ref={lastPostElementRef} className="h-10 flex items-center justify-center">
+         <div ref={lastPostElementRef} className="h-20 flex items-center justify-center mt-8">
             {isLoadingMore && (
-               <div className="flex items-center gap-2 text-[11px] text-[var(--text-secondary)] font-bold">
-                  <div className="w-4 h-4 border-2 border-[var(--text-secondary)] border-t-transparent rounded-full animate-spin"></div>
-                  Cargando más novedades...
+               <div className="flex flex-col items-center gap-2 text-[10px] text-white/20 font-black uppercase tracking-[0.2em]">
+                  <div className="w-5 h-5 border border-[var(--accent)] border-t-transparent rounded-full animate-spin"></div>
+                  <span>Cargando más...</span>
                </div>
             )}
             {!hasMore && posts.length > 0 && (
-               <span className="text-[11px] text-[var(--text-muted)] font-bold uppercase tracking-wider transition-colors duration-200">
-                  No hay más novedades por ahora
-               </span>
+               <div className="flex items-center gap-4 text-white/10">
+                  <div className="h-px w-8 bg-white/5" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
+                     No hay más novedades
+                  </span>
+                  <div className="h-px w-8 bg-white/5" />
+               </div>
             )}
          </div>
-
       </div>
    );
 };

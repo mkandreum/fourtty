@@ -71,7 +71,7 @@ const Login: React.FC = () => {
           >
             <div className="flex items-center gap-3 mb-8">
               <div className="glass p-3 rounded-2xl shadow-xl">
-                <span className="brand-font text-5xl md:text-7xl">;)</span>
+                <ShieldCheck size={48} className="text-violet-400" />
               </div>
               <h1 className="brand-font text-6xl md:text-8xl py-2">fourtty</h1>
             </div>
@@ -189,7 +189,7 @@ const Login: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <label className="text-xs font-bold text-slate-400 ml-1">Contraseña</label>
                         {!isRegister && (
-                          <Link to="/forgot-password"  className="text-[10px] text-violet-400 hover:text-violet-300 font-bold transition-colors">
+                          <Link to="/forgot-password" className="text-[10px] text-violet-400 hover:text-violet-300 font-bold transition-colors">
                             ¿La olvidaste?
                           </Link>
                         )}

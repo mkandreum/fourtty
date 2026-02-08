@@ -52,7 +52,7 @@ const ResetPassword: React.FC = () => {
             <div className="flex-1 flex items-center justify-center p-4">
                 <div className="max-w-md w-full bg-[var(--card-bg)] rounded-xl-[2.5rem] shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl overflow-hidden animate-in fade-in zoom-in duration-300 border border-[var(--border-color)] transition-colors duration-200">
                     <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-6 text-center text-white">
-                        <h1 className="text-3xl font-bold tracking-tighter">;) fourtty</h1>
+                        <h1 className="text-3xl font-bold tracking-tighter">fourtty</h1>
                         <p className="mt-2 opacity-80 text-sm italic">Seguridad primero</p>
                     </div>
 

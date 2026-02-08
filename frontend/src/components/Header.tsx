@@ -192,7 +192,6 @@ const Header: React.FC = () => {
             onClick={() => handleNavigate('/')}
           >
             <span className="text-white text-[18px] md:text-[24px] font-black tracking-tighter drop-shadow-md flex items-center gap-1">
-              <span className="text-lg md:text-2xl">;)</span>
               fourtty
             </span>
           </div>
@@ -204,7 +203,7 @@ const Header: React.FC = () => {
               title="Inicio"
             >
               <div className="w-5 h-5 flex items-center justify-center bg-white/10 rounded">
-                <span className="text-[10px] font-bold">;)</span>
+                <Home size={14} />
               </div>
               <span className="text-[12px] font-bold hidden md:inline">Inicio</span>
             </Link>
