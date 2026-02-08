@@ -73,110 +73,112 @@ const AppContent = () => {
           )}
         </div>
       </div>
-      <Navbar />
     </div>
   );
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <Routes location={location} key={location.pathname}>
-        <Route path="/login" element={
-          isAuthenticated ? <Navigate to="/" /> : (
-            <AnimatedPage>
-              <Login />
-            </AnimatedPage>
-          )
-        } />
+    <>
+      <AnimatePresence mode="wait" initial={false}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/login" element={
+            isAuthenticated ? <Navigate to="/" /> : (
+              <AnimatedPage>
+                <Login />
+              </AnimatedPage>
+            )
+          } />
 
-        <Route path="/forgot-password" element={
-          isAuthenticated ? <Navigate to="/" /> : (
-            <AnimatedPage>
-              <ForgotPassword />
-            </AnimatedPage>
-          )
-        } />
+          <Route path="/forgot-password" element={
+            isAuthenticated ? <Navigate to="/" /> : (
+              <AnimatedPage>
+                <ForgotPassword />
+              </AnimatedPage>
+            )
+          } />
 
-        <Route path="/reset-password/:token" element={
-          isAuthenticated ? <Navigate to="/" /> : (
-            <AnimatedPage>
-              <ResetPassword />
-            </AnimatedPage>
-          )
-        } />
+          <Route path="/reset-password/:token" element={
+            isAuthenticated ? <Navigate to="/" /> : (
+              <AnimatedPage>
+                <ResetPassword />
+              </AnimatedPage>
+            )
+          } />
 
-        <Route path="/" element={
-          isAuthenticated ? (
-            <AnimatedPage>
-              <Layout view={ViewState.HOME}>
-                <Feed />
-              </Layout>
-            </AnimatedPage>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/" element={
+            isAuthenticated ? (
+              <AnimatedPage>
+                <Layout view={ViewState.HOME}>
+                  <Feed />
+                </Layout>
+              </AnimatedPage>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/profile" element={
-          isAuthenticated ? (
-            <AnimatedPage>
-              <Layout view={ViewState.PROFILE}>
-                <Profile />
-              </Layout>
-            </AnimatedPage>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/profile" element={
+            isAuthenticated ? (
+              <AnimatedPage>
+                <Layout view={ViewState.PROFILE}>
+                  <Profile />
+                </Layout>
+              </AnimatedPage>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/profile/:id" element={
-          isAuthenticated ? (
-            <AnimatedPage>
-              <Layout view={ViewState.PROFILE}>
-                <Profile />
-              </Layout>
-            </AnimatedPage>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/profile/:id" element={
+            isAuthenticated ? (
+              <AnimatedPage>
+                <Layout view={ViewState.PROFILE}>
+                  <Profile />
+                </Layout>
+              </AnimatedPage>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/profile/photos/:id" element={
-          isAuthenticated ? (
-            <AnimatedPage>
-              <Layout view={ViewState.PROFILE}>
-                <Gallery />
-              </Layout>
-            </AnimatedPage>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/profile/photos/:id" element={
+            isAuthenticated ? (
+              <AnimatedPage>
+                <Layout view={ViewState.PROFILE}>
+                  <Gallery />
+                </Layout>
+              </AnimatedPage>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/profile/photos" element={
-          isAuthenticated ? (
-            <AnimatedPage>
-              <Layout view={ViewState.PROFILE}>
-                <Gallery />
-              </Layout>
-            </AnimatedPage>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/profile/photos" element={
+            isAuthenticated ? (
+              <AnimatedPage>
+                <Layout view={ViewState.PROFILE}>
+                  <Gallery />
+                </Layout>
+              </AnimatedPage>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/people" element={
-          isAuthenticated ? (
-            <AnimatedPage>
-              <Layout view={ViewState.PEOPLE}>
-                <People />
-              </Layout>
-            </AnimatedPage>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/people" element={
+            isAuthenticated ? (
+              <AnimatedPage>
+                <Layout view={ViewState.PEOPLE}>
+                  <People />
+                </Layout>
+              </AnimatedPage>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/messages" element={
-          isAuthenticated ? (
-            <AnimatedPage>
-              <Layout view={ViewState.HOME}>
-                <Inbox />
-              </Layout>
-            </AnimatedPage>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/messages" element={
+            isAuthenticated ? (
+              <AnimatedPage>
+                <Layout view={ViewState.HOME}>
+                  <Inbox />
+                </Layout>
+              </AnimatedPage>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </AnimatePresence>
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </AnimatePresence>
+      {isAuthenticated && <Navbar />}
+    </>
   );
 }
 
