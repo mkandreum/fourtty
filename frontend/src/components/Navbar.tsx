@@ -102,7 +102,7 @@ const Navbar: React.FC = () => {
     return (
         <>
             {/* TOP BAR - Compact Utilities */}
-            <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
+            <div className="fixed top-2 left-0 right-0 z-50 flex justify-center px-4">
                 <nav
                     className="glass flex items-center justify-between gap-2 px-3 py-1.5 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.1)] ring-1 ring-[var(--border-color)] w-auto min-w-[200px] relative overflow-hidden"
                 >
