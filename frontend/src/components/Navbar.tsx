@@ -162,7 +162,7 @@ const Navbar: React.FC = () => {
                 <motion.nav
                     initial={{ y: 100, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="glass flex items-center gap-1 md:gap-3 p-1.5 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/40 max-w-[95vw] md:max-w-full relative overflow-hidden backdrop-blur-xl"
+                    className="glass flex items-center gap-1 md:gap-3 p-1.5 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/40 max-w-[95vw] md:max-w-full relative overflow-hidden backdrop-blur-3xl bg-black/20 dark:bg-white/5"
                 >
                     {/* LEFT SECTION (3 icons) */}
                     <div className="flex items-center gap-0.5 md:gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-full relative">
@@ -222,9 +222,8 @@ const Navbar: React.FC = () => {
                     {/* RIGHT SECTION (3 icons) */}
                     <div className="flex items-center gap-0.5 md:gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-full relative">
                         {bottomNavItemsRight.map((item) => {
-                            const isProfilePath = item.path.startsWith('/profile/');
-                            const active = isProfilePath
-                                ? (currentPath.startsWith('/profile/') && !currentPath.startsWith('/profile/photos'))
+                            const active = item.path === '/profile'
+                                ? (currentPath.startsWith('/profile') && !currentPath.startsWith('/profile/photos'))
                                 : currentPath === item.path;
 
                             return (
