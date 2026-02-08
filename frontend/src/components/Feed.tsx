@@ -162,7 +162,9 @@ const Feed: React.FC = () => {
             formData.append('image', selectedFile);
          }
 
-         await api.post('/posts', formData);
+         await api.post('/posts', formData, {
+            headers: { 'Content-Type': undefined }
+         });
          setStatusText('');
          removeFile();
          setPage(1);

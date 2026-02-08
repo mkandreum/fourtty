@@ -136,7 +136,9 @@ const Profile: React.FC = () => {
          formData.append('type', postImage ? 'photo' : 'status');
          if (postImage) formData.append('image', postImage);
 
-         const res = await api.post('/posts', formData);
+         const res = await api.post('/posts', formData, {
+            headers: { 'Content-Type': undefined }
+         });
 
          setWallPosts(prev => [res.data.post, ...prev]);
          setWallInput('');
@@ -282,7 +284,9 @@ const Profile: React.FC = () => {
          const formData = new FormData();
          formData.append('avatar', croppedImageBlob, 'avatar.jpg');
 
-         const response = await api.post(`/users/${user!.id}/avatar`, formData);
+         const response = await api.post(`/users/${user!.id}/avatar`, formData, {
+            headers: { 'Content-Type': undefined }
+         });
 
          updateUser(response.data.user);
          setProfileUser(response.data.user);
@@ -380,7 +384,7 @@ const Profile: React.FC = () => {
                      initial={{ scale: 0.9, opacity: 0 }}
                      animate={{ scale: 1, opacity: 1 }}
                      exit={{ scale: 0.9, opacity: 0 }}
-                     className="bg-[var(--card-bg)] rounded-lg overflow-hidden w-[95vw] md:w-full md:max-w-[500px] max-h-[90vh] overflow-y-auto flex flex-col border border-[var(--border-color)] transition-colors duration-200"
+                     className="bg-[var(--card-bg)] rounded-lg overflow-hidden w-full max-w-[95vw] md:max-w-[500px] max-h-[85vh] overflow-y-auto flex flex-col border border-[var(--border-color)] transition-colors duration-200"
                   >
                      <div className="p-4 border-b border-[var(--border-soft)] flex justify-between items-center bg-[var(--card-bg)]">
                         <h3 className="font-bold text-[var(--text-main)]">Ajustar foto de perfil</h3>
