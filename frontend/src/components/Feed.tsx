@@ -155,6 +155,7 @@ const Feed: React.FC = () => {
             updateUser({ ...user, status: statusText });
          }
 
+         const formData = new FormData();
          if (selectedFile) {
             // Use /photos endpoint for images so they go to gallery + feed
             formData.append('image', selectedFile);
