@@ -1,4 +1,3 @@
-```
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Home, Image as ImageIcon, Search, User, Bell, Camera, Sun, Moon, LogOut, Plus, UserPlus, MessageSquare, X, Tag, Mail, BarChart2 } from 'lucide-react';
@@ -71,7 +70,7 @@ const Navbar: React.FC = () => {
 
     const handleNotificationClick = async (notif: any) => {
         try {
-            await api.delete(`/ notifications / ${ notif.id } `);
+            await api.delete(`/notifications/${notif.id}`);
             setNotifications(prev => prev.filter(n => n.id !== notif.id));
             setUnreadNotifs(prev => Math.max(0, prev - (notif.read ? 0 : 1)));
         } catch (e) {
@@ -82,7 +81,7 @@ const Navbar: React.FC = () => {
 
         try {
             if (['comment_photo', 'tag_photo'].includes(notif.type)) {
-                navigate(`/ profile / photos / ${ notif.relatedUserId || '' } `);
+                navigate(`/profile/photos/${notif.relatedUserId || ''}`);
             } else if (['comment_post', 'tag_post', 'status_post', 'video_post', 'photo_post'].includes(notif.type)) {
                 navigate('/');
             } else if (notif.type === 'message') {
@@ -122,7 +121,7 @@ const Navbar: React.FC = () => {
                                 setShowInvitations(!showInvitations);
                                 setShowNotifs(false);
                             }}
-                            className={`p - 2 rounded - full transition - all ${ showInvitations ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-white/5' } `}
+                            className={`p - 2 rounded - full transition - all ${showInvitations ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-white/5'} `}
                             title="Invitaciones"
                         >
                             <UserPlus size={20} />
@@ -173,7 +172,7 @@ const Navbar: React.FC = () => {
                                 <Link
                                     key={item.path}
                                     to={item.path}
-                                    className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${ active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]' } `}
+                                    className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'} `}
                                 >
                                     {item.icon}
                                     {active && (
@@ -228,7 +227,7 @@ const Navbar: React.FC = () => {
                                 <Link
                                     key={item.path}
                                     to={item.path}
-                                    className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${ active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]' } `}
+                                    className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'} `}
                                 >
                                     <div className="relative">
                                         {item.icon}
@@ -254,7 +253,7 @@ const Navbar: React.FC = () => {
                                 setShowNotifs(!showNotifs);
                                 setShowInvitations(false);
                             }}
-                            className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${ showNotifs ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]' } `}
+                            className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${showNotifs ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'} `}
                         >
                             <div className="relative">
                                 <Bell size={20} />
@@ -343,7 +342,7 @@ const Navbar: React.FC = () => {
                                                 <div
                                                     key={notif.id}
                                                     onClick={() => handleNotificationClick(notif)}
-                                                    className={`p - 4 rounded - 3xl border border - white / 5 cursor - pointer transition - all hover: bg - white / 5 group relative overflow - hidden ${ !notif.read ? 'bg-white/5' : 'opacity-60' } `}
+                                                    className={`p - 4 rounded - 3xl border border - white / 5 cursor - pointer transition - all hover: bg - white / 5 group relative overflow - hidden ${!notif.read ? 'bg-white/5' : 'opacity-60'} `}
                                                 >
                                                     {!notif.read && (
                                                         <div className="absolute top-0 right-0 w-1.5 h-1.5 bg-[var(--accent)] rounded-full m-3 shadow-[0_0_8px_rgba(var(--accent-rgb),0.6)]" />
