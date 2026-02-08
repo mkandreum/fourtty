@@ -284,9 +284,7 @@ const Profile: React.FC = () => {
          const formData = new FormData();
          formData.append('avatar', croppedImageBlob, 'avatar.jpg');
 
-         const response = await api.post(`/users/${user!.id}/avatar`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-         });
+         const response = await api.post(`/users/${user!.id}/avatar`, formData);
 
          updateUser(response.data.user);
          setProfileUser(response.data.user);
