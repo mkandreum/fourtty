@@ -131,14 +131,20 @@ const Profile: React.FC = () => {
       if (!wallInput.trim() && !postImage) return;
 
       try {
-         const formData = new FormData();
-         formData.append('content', wallInput);
-         formData.append('type', postImage ? 'photo' : 'status');
-         if (postImage) formData.append('image', postImage);
-
-         const res = await api.post('/posts', formData, {
-            headers: { 'Content-Type': undefined }
-         });
+         let res;
+         if (postImage) {
+            formData.append('image', postImage);
+            formData.append('caption', wallInput);
+            res = await api.post('/photos', formData, {
+               headers: { 'Content-Type': undefined }
+            });
+         } else {
+            formData.append('content', wallInput);
+            formData.append('type', 'status');
+            res = await api.post('/posts', formData, {
+               headers: { 'Content-Type': undefined }
+            });
+         }
 
          setWallPosts(prev => [res.data.post, ...prev]);
          setWallInput('');

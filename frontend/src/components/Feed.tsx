@@ -155,16 +155,23 @@ const Feed: React.FC = () => {
             updateUser({ ...user, status: statusText });
          }
 
-         const formData = new FormData();
-         formData.append('content', statusText || (selectedFile ? 'compartió una foto' : ''));
-         formData.append('type', selectedFile ? 'photo' : 'status');
          if (selectedFile) {
+            // Use /photos endpoint for images so they go to gallery + feed
             formData.append('image', selectedFile);
-         }
+            formData.append('caption', statusText);
 
-         await api.post('/posts', formData, {
-            headers: { 'Content-Type': undefined }
-         });
+            await api.post('/photos', formData, {
+               headers: { 'Content-Type': undefined }
+            });
+         } else {
+            // Use /posts endpoint for text status
+            formData.append('content', statusText);
+            formData.append('type', 'status');
+
+            await api.post('/posts', formData, {
+               headers: { 'Content-Type': undefined }
+            });
+         }
          setStatusText('');
          removeFile();
          setPage(1);

@@ -64,16 +64,36 @@ export const uploadPhoto = async (req: AuthRequest, res: Response): Promise<void
         }
 
         // --- NEW: Create a POST for this photo so it appears in the feed ---
-        await prisma.post.create({
+        // --- NEW: Create a POST for this photo so it appears in the feed ---
+        const post = await prisma.post.create({
             data: {
                 userId,
                 content: caption || 'compartió una foto',
                 type: 'photo',
                 image: photoUrl // Use the same photo URL
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true
+                    }
+                },
+                _count: {
+                    select: {
+                        comments: true,
+                        likes: true
+                    }
+                },
+                likes: {
+                    where: { userId: req.userId! },
+                    select: { id: true }
+                }
             }
         });
 
-        res.status(201).json({ photo });
+        res.status(201).json({ photo, post: { ...post, likedByMe: false } });
     } catch (error: any) {
         console.error('Upload photo error:', error);
         res.status(500).json({
