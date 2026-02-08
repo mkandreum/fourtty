@@ -282,13 +282,13 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <div className="bg-[var(--bg-color)] md:bg-transparent min-h-screen px-3 pb-24 pt-4 md:px-4 transition-colors duration-200">
+      <div className="bg-[var(--bg-color)] md:bg-transparent min-h-screen px-3 pb-24 pt-2 md:px-4 transition-colors duration-200">
 
          {/* Status Box - Capsule Style */}
          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-10"
+            className="mb-4"
          >
             <div className="capsule-card neon-glow group">
                <div className="flex gap-4 items-start">
@@ -296,7 +296,7 @@ const Feed: React.FC = () => {
                   <div className="w-14 h-14 shrink-0 relative">
                      <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full animate-pulse opacity-20 blur-md group-hover:opacity-40 transition-opacity" />
                      <img
-                        src={getAvatarUrl(user?.avatar, user?.name, user?.lastName)}
+                        src={getAvatarUrl(user?.avatar, user?.name)}
                         alt={user?.name}
                         className="w-full h-full object-cover rounded-full ring-2 ring-white/10 shadow-xl relative z-10"
                      />

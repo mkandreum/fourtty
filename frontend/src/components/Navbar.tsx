@@ -7,6 +7,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useSocket } from '../contexts/SocketContext';
 import PhotoUploadModal from './PhotoUploadModal';
 import Invitations from './Invitations';
+import Inbox from './Inbox';
 import api from '../api';
 
 const Navbar: React.FC = () => {
@@ -22,6 +23,7 @@ const Navbar: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [showInvitations, setShowInvitations] = useState(false);
     const [showNotifs, setShowNotifs] = useState(false);
+    const [showMessagesModal, setShowMessagesModal] = useState(false);
     const [stats, setStats] = useState({ visits: 0 });
 
     useEffect(() => {
@@ -120,8 +122,9 @@ const Navbar: React.FC = () => {
                             onClick={() => {
                                 setShowInvitations(!showInvitations);
                                 setShowNotifs(false);
+                                setShowMessagesModal(false);
                             }}
-                            className={`p - 2 rounded - full transition - all ${showInvitations ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-white/5'} `}
+                            className={`p-2 rounded-full transition-all ${showInvitations ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-white/5'}`}
                             title="Invitaciones"
                         >
                             <UserPlus size={20} />
@@ -176,11 +179,7 @@ const Navbar: React.FC = () => {
                                 >
                                     {item.icon}
                                     {active && (
-                                        <motion.div
-                                            layoutId="nav-glow-pill"
-                                            className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full -z-10 shadow-[0_0_15px_rgba(var(--accent-rgb),0.5)]"
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full -z-10 shadow-[0_0_15px_rgba(var(--accent-rgb),0.5)]" />
                                     )}
                                 </Link>
                             );
@@ -240,43 +239,19 @@ const Navbar: React.FC = () => {
                                         )}
                                     </div>
                                     {active && (
-                                        <motion.div
-                                            layoutId="nav-glow-pill"
-                                            className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full -z-10 shadow-[0_0_15px_rgba(var(--accent-rgb),0.5)]"
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full -z-10 shadow-[0_0_15px_rgba(var(--accent-rgb),0.5)]" />
                                     )}
                                 </Link>
                             );
                         })}
 
-                        {/* Notifications (Bell - Toggles Dropdown) */}
+                        {/* Chat Icon (Right Group) - Now opens Modal */}
                         <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setShowNotifs(!showNotifs);
+                            onClick={() => {
+                                setShowMessagesModal(true);
+                                setShowNotifs(false);
                                 setShowInvitations(false);
                             }}
-                            className={`relative z - 10 p - 2.5 md: p - 3 rounded - full transition - all duration - 300 flex items - center justify - center ${showNotifs ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'} `}
-                        >
-                            <div className="relative">
-                                <Bell size={20} />
-                                {unreadNotifs > 0 && (
-                                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[var(--card-bg)] shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
-                                )}
-                            </div>
-                            {showNotifs && (
-                                <motion.div
-                                    layoutId="nav-glow-pill"
-                                    className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full -z-10 shadow-[0_0_15px_rgba(var(--accent-rgb),0.5)]"
-                                    transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                                />
-                            )}
-                        </button>
-
-                        {/* Chat Icon (Right Group) */}
-                        <button
-                            onClick={() => navigate('/messages')}
                             className="relative z-10 p-2.5 md:p-3 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all"
                         >
                             <MessageSquare size={20} />
@@ -295,7 +270,7 @@ const Navbar: React.FC = () => {
                             className="fixed bottom-[100px] left-4 right-4 z-[60] flex justify-center"
                         >
                             <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 w-full max-w-[400px] overflow-hidden">
-                                <div className="bg-gradient-to-br from-violet-600/20 to-indigo-600/20 p-6">
+                                <div className="bg-[#0a0a0a]/90 backdrop-blur-xl p-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xl font-bold text-white flex items-center gap-2">
                                             <UserPlus className="text-[var(--accent)]" size={24} />
@@ -322,7 +297,7 @@ const Navbar: React.FC = () => {
                             className="fixed bottom-[100px] left-4 right-4 z-[60] flex justify-center"
                         >
                             <div className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 w-full max-w-[400px] overflow-hidden">
-                                <div className="bg-gradient-to-br from-[var(--accent)]/20 to-violet-600/20 p-6 flex flex-col max-h-[70vh]">
+                                <div className="bg-[#0a0a0a]/90 backdrop-blur-xl p-6 flex flex-col max-h-[70vh]">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xl font-bold text-white flex items-center gap-2">
                                             <Bell className="text-[var(--accent)]" size={24} />
@@ -346,7 +321,7 @@ const Navbar: React.FC = () => {
                                                 <div
                                                     key={notif.id}
                                                     onClick={() => handleNotificationClick(notif)}
-                                                    className={`p - 4 rounded - 3xl border border - white / 5 cursor - pointer transition - all hover: bg - white / 5 group relative overflow - hidden ${!notif.read ? 'bg-white/5' : 'opacity-60'} `}
+                                                    className={`p-4 rounded-3xl border border-white/5 cursor-pointer transition-all hover:bg-white/5 group relative overflow-hidden ${!notif.read ? 'bg-white/5' : 'opacity-60'}`}
                                                 >
                                                     {!notif.read && (
                                                         <div className="absolute top-0 right-0 w-1.5 h-1.5 bg-[var(--accent)] rounded-full m-3 shadow-[0_0_8px_rgba(var(--accent-rgb),0.6)]" />
@@ -387,6 +362,39 @@ const Navbar: React.FC = () => {
                                     )}
                                 </div>
                             </div>
+                        </motion.div>
+                    )}
+
+                    {showMessagesModal && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                            onClick={() => setShowMessagesModal(false)}
+                        >
+                            <motion.div
+                                onClick={e => e.stopPropagation()}
+                                className="glass p-1 rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 w-full max-w-[500px] overflow-hidden"
+                            >
+                                <div className="bg-[#0a0a0a]/90 backdrop-blur-xl p-6 flex flex-col max-h-[85vh]">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                            <Mail className="text-[var(--accent)]" size={24} />
+                                            Mensajes
+                                        </h3>
+                                        <button
+                                            onClick={() => setShowMessagesModal(false)}
+                                            className="p-2 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-all"
+                                        >
+                                            <X size={24} />
+                                        </button>
+                                    </div>
+                                    <div className="overflow-y-auto no-scrollbar">
+                                        <Inbox />
+                                    </div>
+                                </div>
+                            </motion.div>
                         </motion.div>
                     )}
                 </AnimatePresence>

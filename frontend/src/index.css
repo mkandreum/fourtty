@@ -111,7 +111,7 @@ body {
 
 [data-theme='dark'] .capsule-card {
     background: #000000;
-    border-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
     box-shadow:
         0 20px 40px -15px rgba(0, 0, 0, 0.8),
         inset 0 1px 1px rgba(255, 255, 255, 0.03);

@@ -1,4 +1,5 @@
-import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag, Trash2, UserX, ThumbsUp, MessageCircle, Share2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, Edit3, User as UserIcon, MapPin, Briefcase, Heart, Camera, Flag, Trash2, UserX, ThumbsUp, MessageCircle, Share2, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { usePhotoModal } from '../contexts/PhotoModalContext';
@@ -290,7 +291,7 @@ const Profile: React.FC = () => {
          updateUser(response.data.user);
          setProfileUser(response.data.user);
          setImageToCrop(null);
-         showToast("Foto de perfil actualizada", "success");
+         showToast("Imagen de portada actualizada", "success");
       } catch (error) {
          console.error("Error uploading avatar:", error);
          showToast("Error al subir la foto", "error");
@@ -803,7 +804,7 @@ const Profile: React.FC = () => {
                                  <div className="w-12 h-12 shrink-0 relative">
                                     <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-500" />
                                     <img
-                                       src={getAvatarUrl(post.user.avatar, post.user.name, post.user.lastName)}
+                                       src={getAvatarUrl(post.user.avatar, post.user.name)}
                                        alt={post.user.name}
                                        className="w-full h-full object-cover rounded-full ring-2 ring-white/5 shadow-xl relative z-10 cursor-pointer transition-transform duration-500 group-hover:scale-105"
                                        onClick={() => navigate(`/profile/${post.user.id}`)}
