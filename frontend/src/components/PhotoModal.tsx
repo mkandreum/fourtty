@@ -173,7 +173,7 @@ const PhotoModal: React.FC = () => {
                                 ref={imgRef}
                                 src={getPhotoUrl(activePhoto.url)}
                                 onClick={handleImageClick}
-                                className={`max-w-full max-h-[70vh] md:max-h-[80vh] object-contain rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] ${isTagging ? 'cursor-crosshair' : ''}`}
+                                className={`max-w-full max-h-[50vh] md:max-h-[60vh] object-contain rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] ${isTagging ? 'cursor-crosshair' : ''}`}
                                 alt="Selected"
                             />
 
@@ -253,8 +253,8 @@ const PhotoModal: React.FC = () => {
                                 <button
                                     onClick={handleToggleLike}
                                     className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all ${activePhoto.likedByMe
-                                            ? 'bg-gradient-to-r from-[var(--accent)] to-violet-500 text-white shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)]'
-                                            : 'bg-white/5 text-white/80 border border-white/20 hover:bg-white/10'
+                                        ? 'bg-gradient-to-r from-[var(--accent)] to-violet-500 text-white shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)]'
+                                        : 'bg-white/5 text-white/80 border border-white/20 hover:bg-white/10'
                                         }`}
                                 >
                                     <ThumbsUp size={16} fill={activePhoto.likedByMe ? 'white' : 'transparent'} />
@@ -264,8 +264,8 @@ const PhotoModal: React.FC = () => {
                                     <button
                                         onClick={() => setIsTagging(!isTagging)}
                                         className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold transition-all ${isTagging
-                                                ? 'bg-gradient-to-r from-[var(--accent)] to-violet-500 text-white shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)]'
-                                                : 'bg-white/5 text-white/80 border border-white/20 hover:bg-white/10'
+                                            ? 'bg-gradient-to-r from-[var(--accent)] to-violet-500 text-white shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)]'
+                                            : 'bg-white/5 text-white/80 border border-white/20 hover:bg-white/10'
                                             }`}
                                     >
                                         <Tag size={16} />
