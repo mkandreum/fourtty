@@ -485,7 +485,7 @@ const Profile: React.FC = () => {
          </div>
 
          <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="w-full md:w-[280px] shrink-0">
+            <div className="w-full md:w-[280px] md:shrink-0 flex flex-col gap-6">
                <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[2.5rem] p-3 shadow-2xl transition-all duration-300 group relative ring-1 ring-black/5 dark:ring-white/5">
                   <div className="aspect-square rounded-[2rem] overflow-hidden border border-[var(--border-soft)] shadow-inner">
                      <img
@@ -668,7 +668,7 @@ const Profile: React.FC = () => {
                      <span>Amigos <span className="text-gray-500 font-normal">({friends.length})</span></span>
                      <span className="text-[10px] text-[var(--text-secondary)] hover:underline cursor-pointer font-normal transition-colors">Ver todos</span>
                   </h3>
-                  <div className="grid grid-cols-3 gap-1">
+                  <div className="grid grid-cols-3 gap-2 w-full">
                      {friends.slice(0, 9).map(friend => (
                         <div
                            key={friend.id}
