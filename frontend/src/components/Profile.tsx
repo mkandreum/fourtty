@@ -727,7 +727,7 @@ const Profile: React.FC = () => {
                   <div className="bg-[var(--border-soft)] p-3 rounded-2xl border border-[var(--border-color)] mb-4 shadow-sm animate-in slide-in-from-right-2 duration-300 transition-colors duration-200">
                      <div className="text-[var(--text-secondary)] font-bold text-[12px] mb-1">Escribe algo en tu tablón...</div>
                      <textarea
-                        className="w-full h-16 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1 text-[12px] resize-none focus:border-[var(--text-secondary)] outline-none transition-colors"
+                        className="w-full h-16 bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-2 text-[12px] resize-none focus:border-[var(--text-secondary)] outline-none transition-colors box-border block"
                         value={wallInput}
                         onChange={(e) => setWallInput(e.target.value)}
                      ></textarea>
