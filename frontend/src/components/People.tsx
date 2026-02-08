@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, User as UserIcon, MapPin, Briefcase } from 'lucide-react';
+import { Search, Filter, User as UserIcon, MapPin, Briefcase, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { User } from '../types';
