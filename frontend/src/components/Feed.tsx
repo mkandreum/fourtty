@@ -290,31 +290,32 @@ const Feed: React.FC = () => {
    };
 
    return (
-      <div className="bg-[var(--bg-color)] min-h-screen px-3 pb-24 pt-0 md:pt-4 md:px-4 transition-colors duration-200">
+      <div className="bg-[var(--bg-color)] min-h-screen px-2 sm:px-3 pb-20 sm:pb-24 pt-0 md:pt-4 md:px-4 transition-colors duration-200">
 
          {/* Status Box - Capsule Style */}
          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            transition={{ duration: 0.3 }}
+            className="mb-6 sm:mb-8"
          >
             <div className="capsule-card neon-glow group">
-               <div className="flex gap-4 items-start">
+               <div className="flex gap-2 sm:gap-3 md:gap-4 items-start">
                   {/* Avatar with Neon Ring */}
-                  <div className="w-14 h-14 shrink-0 relative">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 shrink-0 relative">
                      <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full animate-pulse opacity-20 blur-md group-hover:opacity-40 transition-opacity" />
                      <img
                         src={getAvatarUrl(user?.avatar, user?.name)}
                         alt={user?.name}
-                        className="w-full h-full object-cover rounded-full ring-2 ring-white/10 shadow-xl relative z-10"
+                        className="w-full h-full object-cover rounded-full ring-1 sm:ring-2 ring-white/10 shadow-xl relative z-10"
                      />
-                     <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-[var(--card-bg)] shadow-[0_0_10px_rgba(34,197,94,0.4)] z-20" />
+                     <div className="absolute bottom-0 right-0 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-[var(--card-bg)] shadow-[0_0_10px_rgba(34,197,94,0.4)] z-20" />
                   </div>
 
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                      <div className="flex flex-col gap-1">
                         <textarea
-                           className="w-full border-none p-0 text-[18px] md:text-[20px] font-medium text-[var(--text-main)] placeholder:text-[var(--accent)] placeholder:opacity-60 placeholder:drop-shadow-[0_0_5px_rgba(244,114,182,0.4)] outline-none bg-transparent transition-all min-h-[80px] resize-none overflow-hidden"
+                           className="w-full border-none p-0 text-[14px] sm:text-[16px] md:text-[18px] font-medium text-[var(--text-main)] placeholder:text-[var(--accent)] placeholder:opacity-60 placeholder:drop-shadow-[0_0_5px_rgba(244,114,182,0.4)] outline-none bg-transparent transition-all min-h-[60px] sm:min-h-[70px] md:min-h-[80px] resize-none overflow-hidden touch-manipulation"
                            value={statusText}
                            onChange={(e) => setStatusText(e.target.value.slice(0, 140))}
                            placeholder={`¿Qué tienes en mente, ${user?.name}?`}
@@ -322,12 +323,13 @@ const Feed: React.FC = () => {
 
                         <AnimatePresence>
                            {statusText.length > 0 && (
-                              <div className="flex justify-end pr-2">
+                              <div className="flex justify-end pr-1 sm:pr-2">
                                  <motion.span
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
-                                    className="text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase"
+                                    transition={{ duration: 0.2 }}
+                                    className="text-[9px] sm:text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase"
                                  >
                                     {140 - statusText.length} caracteres
                                  </motion.span>
@@ -342,12 +344,13 @@ const Feed: React.FC = () => {
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95 }}
-                              className="mt-4 relative w-full max-w-full"
+                              transition={{ duration: 0.2 }}
+                              className="mt-3 sm:mt-4 relative w-full max-w-full"
                            >
                               <img
                                  src={previewUrl}
                                  alt=""
-                                 className="w-full h-auto max-h-[250px] sm:max-h-[300px] object-contain rounded-[1.5rem] border-2 border-[var(--border-color)] shadow-2xl"
+                                 className="w-full h-auto max-h-[200px] sm:max-h-[250px] md:max-h-[300px] object-contain rounded-[1rem] sm:rounded-[1.5rem] border border-[var(--border-color)] sm:border-2 shadow-2xl"
                                  onError={(e) => {
                                     console.error('Image failed to load:', previewUrl);
                                     e.currentTarget.style.display = 'none';
@@ -355,16 +358,16 @@ const Feed: React.FC = () => {
                               />
                               <button
                                  onClick={removeFile}
-                                 className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white p-2 rounded-full hover:bg-red-500 transition-colors shadow-lg"
+                                 className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-black/60 backdrop-blur-md text-white p-1.5 sm:p-2 rounded-full hover:bg-red-500 active:bg-red-600 transition-colors shadow-lg touch-manipulation"
                               >
-                                 <X size={16} />
+                                 <X size={14} className="sm:w-4 sm:h-4" />
                               </button>
                            </motion.div>
                         )}
                      </AnimatePresence>
 
-                     <div className="flex justify-between items-center mt-6 pt-4 border-t border-[var(--border-color)]">
-                        <div className="flex items-center gap-4">
+                     <div className="flex justify-between items-center mt-4 sm:mt-5 md:mt-6 pt-3 sm:pt-4 border-t border-[var(--border-color)]">
+                        <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
                            <input
                               type="file"
                               id="status-photo-upload"
@@ -374,10 +377,11 @@ const Feed: React.FC = () => {
                            />
                            <button
                               onClick={() => document.getElementById('status-photo-upload')?.click()}
-                              className="flex items-center gap-2 text-white/50 hover:text-[var(--accent)] hover:bg-white/5 px-3 py-2 rounded-xl transition-all font-bold text-sm"
+                              className="flex items-center gap-1.5 sm:gap-2 text-white/50 hover:text-[var(--accent)] active:text-[var(--accent)] hover:bg-white/5 active:bg-white/10 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl transition-all font-bold text-xs sm:text-sm touch-manipulation"
                            >
-                              <Camera size={20} className="neon-glow" />
-                              <span>Añadir recuerdo</span>
+                              <Camera size={18} className="neon-glow sm:w-5 sm:h-5" />
+                              <span className="hidden sm:inline">Añadir recuerdo</span>
+                              <span className="sm:hidden">Foto</span>
                            </button>
 
                            {user?.status && (
@@ -393,7 +397,7 @@ const Feed: React.FC = () => {
                            whileTap={!isSubmitting && (statusText.trim() || selectedFile) ? { scale: 0.95 } : {}}
                            onClick={handleUpdateStatus}
                            disabled={isSubmitting || (!statusText.trim() && !selectedFile)}
-                           className={`px-8 py-3 rounded-full font-black text-[12px] uppercase tracking-widest transition-all ${isSubmitting || (!statusText.trim() && !selectedFile)
+                           className={`px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-full font-black text-[10px] sm:text-[11px] md:text-[12px] uppercase tracking-widest transition-all touch-manipulation ${isSubmitting || (!statusText.trim() && !selectedFile)
                               ? 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
                               : 'bg-gradient-to-tr from-[var(--accent)] to-violet-500 text-white shadow-[0_10px_20px_rgba(var(--accent-rgb),0.3)]'}`}
                         >
@@ -407,14 +411,14 @@ const Feed: React.FC = () => {
 
          {/* Unread Notifications & Visits */}
          {(unreadNotifications.length > 0 || stats.visits > 0) && (
-            <div className="mb-6 flex flex-col gap-2">
+            <div className="mb-4 sm:mb-5 md:mb-6 flex flex-col gap-2">
                {stats.visits > 0 && (
                   <div
-                     className="md:hidden flex items-center gap-3 group cursor-pointer hover:bg-white/5 p-3 rounded-2xl transition-all active:scale-[0.98] border border-white/5 bg-white/5 backdrop-blur-md"
+                     className="md:hidden flex items-center gap-2 sm:gap-3 group cursor-pointer hover:bg-white/5 active:bg-white/10 p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] border border-white/5 bg-white/5 backdrop-blur-md touch-manipulation"
                      onClick={() => navigate('/profile')}
                   >
-                     <div className="text-[var(--accent)] bg-[var(--accent)]/10 p-2 rounded-xl">
-                        <BarChart2 size={18} />
+                     <div className="text-[var(--accent)] bg-[var(--accent)]/10 p-1.5 sm:p-2 rounded-lg sm:rounded-xl">
+                        <BarChart2 size={16} className="sm:w-[18px] sm:h-[18px]" />
                      </div>
                      <div className="flex flex-col flex-1">
                         <span className="text-[14px] font-black text-white/90 group-hover:text-[var(--accent)] leading-tight">
@@ -513,10 +517,10 @@ const Feed: React.FC = () => {
                <span className="text-[11px] font-black uppercase tracking-[0.2em]">Cargando novedades...</span>
             </div>
          ) : (
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
                {posts.length === 0 && (
-                  <div className="p-12 text-center capsule-card bg-[var(--card-bg)] border-dashed border-[var(--border-color)]">
-                     <p className="text-[var(--text-muted)] text-[13px] font-bold">No hay novedades recientes. ¡Agrega amigos para ver sus publicaciones!</p>
+                  <div className="p-8 sm:p-10 md:p-12 text-center capsule-card bg-[var(--card-bg)] border-dashed border-[var(--border-color)]">
+                     <p className="text-[var(--text-muted)] text-[12px] sm:text-[13px] font-bold">No hay novedades recientes. ¡Agrega amigos para ver sus publicaciones!</p>
                   </div>
                )}
 
@@ -525,30 +529,30 @@ const Feed: React.FC = () => {
                      key={post.id}
                      className="capsule-card group relative"
                   >
-                     <div className="flex gap-5">
+                     <div className="flex gap-2 sm:gap-3 md:gap-5">
                         {/* Avatar Section */}
-                        <div className="w-12 h-12 shrink-0 relative">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 shrink-0 relative">
                            <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)] to-violet-500 rounded-full opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-500" />
                            <img
                               src={getAvatarUrl(post.user.avatar, post.user.name, post.user.lastName)}
                               alt={post.user.name}
                               loading="lazy"
-                              className="w-full h-full object-cover rounded-full ring-2 ring-white/5 shadow-xl relative z-10 cursor-pointer transition-transform duration-500 group-hover:scale-105"
+                              className="w-full h-full object-cover rounded-full ring-1 sm:ring-2 ring-white/5 shadow-xl relative z-10 cursor-pointer transition-transform duration-500 hover:scale-105 active:scale-95 touch-manipulation"
                               onClick={() => navigate(`/profile/${post.user.id}`)}
                            />
                         </div>
 
                         {/* Content Section */}
                         <div className="flex-1 min-w-0">
-                           <div className="flex justify-between items-start mb-2">
-                              <div>
+                           <div className="flex justify-between items-start mb-1.5 sm:mb-2">
+                              <div className="min-w-0 flex-1">
                                  <button
                                     onClick={() => navigate(`/profile/${post.user.id}`)}
-                                    className="text-[16px] font-black text-[var(--text-main)] hover:text-[var(--accent)] transition-colors tracking-tight text-left block"
+                                    className="text-[14px] sm:text-[15px] md:text-[16px] font-black text-[var(--text-main)] hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors tracking-tight text-left block truncate touch-manipulation"
                                  >
                                     {post.user.name} {post.user.lastName}
                                  </button>
-                                 <div className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-0.5">
+                                 <div className="text-[9px] sm:text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mt-0.5">
                                     {new Date(post.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} • {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                  </div>
                               </div>
@@ -556,21 +560,21 @@ const Feed: React.FC = () => {
                               {post.userId === user?.id && (
                                  <button
                                     onClick={() => handleDeletePost(post.id)}
-                                    className="text-white/10 hover:text-red-500 transition-colors p-1"
+                                    className="text-white/10 hover:text-red-500 active:text-red-600 transition-colors p-1 ml-2 touch-manipulation"
                                     title="Borrar"
                                  >
-                                    <X size={16} />
+                                    <X size={14} className="sm:w-4 sm:h-4" />
                                  </button>
                               )}
                            </div>
 
-                           <div className="text-[15px] md:text-[16px] text-[var(--text-main)] leading-relaxed mb-4 font-medium">
+                           <div className="text-[13px] sm:text-[14px] md:text-[15px] text-[var(--text-main)] leading-relaxed mb-3 sm:mb-4 font-medium">
                               {post.content}
                            </div>
 
                            {/* Media: Video */}
                            {post.type === 'video' && post.videoUrl && (
-                              <div className="mt-4 rounded-[1.5rem] overflow-hidden border border-white/5 shadow-2xl aspect-video bg-black/40">
+                              <div className="mt-3 sm:mt-4 rounded-[1rem] sm:rounded-[1.5rem] overflow-hidden border border-white/5 shadow-2xl aspect-video bg-black/40">
                                  <iframe
                                     width="100%"
                                     height="100%"
@@ -585,11 +589,11 @@ const Feed: React.FC = () => {
 
                            {/* Media: Photo */}
                            {post.type === 'photo' && post.image && (
-                              <div className="mt-4 rounded-[2rem] overflow-hidden border border-[var(--border-color)] shadow-2xl bg-[var(--card-bg)] p-1">
+                              <div className="mt-3 sm:mt-4 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-[var(--border-color)] shadow-2xl bg-[var(--card-bg)] p-0.5 sm:p-1">
                                  <img
                                     src={post.image.startsWith('http') || post.image.startsWith('data:') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image.startsWith('/') ? '' : '/'}${post.image}`}
                                     loading="lazy"
-                                    className="w-full h-auto max-h-[600px] object-contain rounded-[1.8rem] cursor-pointer hover:scale-[1.01] transition-transform duration-700"
+                                    className="w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px] object-contain rounded-[1.3rem] sm:rounded-[1.8rem] cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-transform duration-700 touch-manipulation"
                                     onClick={() => {
                                        if (post.image) {
                                           const photoUrl = post.image.startsWith('http') || post.image.startsWith('data:') ? post.image : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${post.image.startsWith('/') ? '' : '/'}${post.image}`;
@@ -611,28 +615,28 @@ const Feed: React.FC = () => {
                            )}
 
                            {/* Post Actions */}
-                           <div className="mt-6 flex items-center justify-between border-t border-[var(--border-color)] pt-4">
-                              <div className="flex items-center gap-6">
+                           <div className="mt-4 sm:mt-5 md:mt-6 flex items-center justify-between border-t border-[var(--border-color)] pt-3 sm:pt-4">
+                              <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
                                  <button
                                     onClick={() => handleToggleLike(post.id)}
-                                    className={`flex items-center gap-2 text-[11px] font-black uppercase tracking-widest transition-all ${post.likedByMe ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+                                    className={`flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all touch-manipulation ${post.likedByMe ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)] active:text-[var(--text-main)]'}`}
                                  >
-                                    <ThumbsUp size={16} className={post.likedByMe ? 'neon-glow' : ''} fill={post.likedByMe ? 'currentColor' : 'none'} />
-                                    <span>{post.likedByMe ? 'Mola' : 'Mola'}</span>
+                                    <ThumbsUp size={14} className={`sm:w-4 sm:h-4 ${post.likedByMe ? 'neon-glow' : ''}`} fill={post.likedByMe ? 'currentColor' : 'none'} />
+                                    <span className="hidden sm:inline">{post.likedByMe ? 'Mola' : 'Mola'}</span>
                                     {post._count && post._count.likes > 0 && (
-                                       <span className="bg-white/5 px-2 py-0.5 rounded-full text-[10px] ml-1">{post._count.likes}</span>
+                                       <span className="bg-white/5 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] ml-0.5 sm:ml-1">{post._count.likes}</span>
                                     )}
                                  </button>
 
 
                               </div>
 
-                              <button className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors">
-                                 <Share2 size={16} />
+                              <button className="text-[var(--text-muted)] hover:text-[var(--text-main)] active:text-[var(--text-main)] transition-colors touch-manipulation p-1">
+                                 <Share2 size={14} className="sm:w-4 sm:h-4" />
                               </button>
                            </div>
 
-                           <div className="mt-4">
+                           <div className="mt-3 sm:mt-4">
                               <CommentSection
                                  postId={post.id}
                                  initialCommentsCount={post._count?.comments || 0}
@@ -646,20 +650,20 @@ const Feed: React.FC = () => {
          )}
 
          {/* Infinite Scroll Sentinel */}
-         <div ref={lastPostElementRef} className="h-20 flex items-center justify-center mt-8">
+         <div ref={lastPostElementRef} className="h-16 sm:h-20 flex items-center justify-center mt-6 sm:mt-8">
             {isLoadingMore && (
-               <div className="flex flex-col items-center gap-2 text-[10px] text-white/20 font-black uppercase tracking-[0.2em]">
-                  <div className="w-5 h-5 border border-[var(--accent)] border-t-transparent rounded-full animate-spin"></div>
+               <div className="flex flex-col items-center gap-2 text-[9px] sm:text-[10px] text-white/20 font-black uppercase tracking-[0.2em]">
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 border border-[var(--accent)] border-t-transparent rounded-full animate-spin"></div>
                   <span>Cargando más...</span>
                </div>
             )}
             {!hasMore && posts.length > 0 && (
-               <div className="flex items-center gap-4 text-white/10">
-                  <div className="h-px w-8 bg-white/5" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
+               <div className="flex items-center gap-3 sm:gap-4 text-white/10">
+                  <div className="h-px w-6 sm:w-8 bg-white/5" />
+                  <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
                      No hay más novedades
                   </span>
-                  <div className="h-px w-8 bg-white/5" />
+                  <div className="h-px w-6 sm:w-8 bg-white/5" />
                </div>
             )}
          </div>
