@@ -318,9 +318,9 @@ const Profile: React.FC = () => {
          return (
             <button
                onClick={() => setIsEditing(!isEditing)}
-               className="flex items-center gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-3 py-1.5 rounded-xl text-[12px] text-[var(--text-main)] font-bold hover:bg-[var(--accent)]/10 hover:border-[var(--accent)]/30 transition-all shadow-sm"
+               className="flex items-center gap-1 sm:gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-2 sm:px-2.5 md:px-3 py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] md:text-[12px] text-[var(--text-main)] font-bold hover:bg-[var(--accent)]/10 active:bg-[var(--accent)]/20 hover:border-[var(--accent)]/30 transition-all shadow-sm touch-manipulation"
             >
-               <Edit3 size={14} /> {isEditing ? 'Cancelar' : 'Editar perfil'}
+               <Edit3 size={12} className="sm:w-[14px] sm:h-[14px]" /> <span className="hidden sm:inline">{isEditing ? 'Cancelar' : 'Editar'}</span><span className="sm:hidden">{isEditing ? 'Cancelar' : 'Editar'}</span><span className="hidden md:inline"> perfil</span>
             </button>
          );
       }
@@ -330,40 +330,40 @@ const Profile: React.FC = () => {
             return (
                <button
                   onClick={handleAddFriend}
-                  className="flex items-center gap-1.5 bg-[var(--accent)] border border-[var(--accent)]/20 px-4 py-1.5 rounded-xl text-[12px] text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-[var(--accent)]/20"
+                  className="flex items-center gap-1 sm:gap-1.5 bg-[var(--accent)] border border-[var(--accent)]/20 px-2.5 sm:px-3 md:px-4 py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] md:text-[12px] text-white font-bold hover:opacity-90 active:opacity-80 transition-all shadow-lg shadow-[var(--accent)]/20 touch-manipulation"
                >
-                  <UserIcon size={14} /> Añadir a amigos
+                  <UserIcon size={12} className="sm:w-[14px] sm:h-[14px]" /> <span className="hidden sm:inline">Añadir a</span> amigos
                </button>
             );
          case 'pending_sent':
             return (
-               <button className="flex items-center gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-4 py-1.5 rounded-xl text-[12px] text-[var(--text-muted)] cursor-default transition-all">
+               <button className="flex items-center gap-1 sm:gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-2.5 sm:px-3 md:px-4 py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] md:text-[12px] text-[var(--text-muted)] cursor-default transition-all">
                   Solicitud enviada
                </button>
             );
          case 'pending_received':
             return (
-               <div className="flex gap-2">
+               <div className="flex gap-1.5 sm:gap-2">
                   <button
                      onClick={handleAcceptFriend}
-                     className="flex items-center gap-1.5 bg-[var(--accent)] border border-[var(--accent)]/20 px-4 py-1.5 rounded-xl text-[12px] text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-[var(--accent)]/20"
+                     className="flex items-center gap-1 sm:gap-1.5 bg-[var(--accent)] border border-[var(--accent)]/20 px-2.5 sm:px-3 md:px-4 py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] md:text-[12px] text-white font-bold hover:opacity-90 active:opacity-80 transition-all shadow-lg shadow-[var(--accent)]/20 touch-manipulation"
                   >
-                     Aceptar solicitud
+                     Aceptar<span className="hidden sm:inline"> solicitud</span>
                   </button>
                </div>
             );
          case 'accepted':
             return (
-               <div className="flex gap-2">
-                  <button className="flex items-center gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-3 py-1.5 rounded-xl text-[12px] text-[var(--text-main)] hover:bg-[var(--accent)]/10 transition-all shadow-sm">
-                     <Mail size={14} /> Enviar mensaje
+               <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  <button className="flex items-center gap-1 sm:gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-2 sm:px-2.5 md:px-3 py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] md:text-[12px] text-[var(--text-main)] hover:bg-[var(--accent)]/10 active:bg-[var(--accent)]/20 transition-all shadow-sm touch-manipulation">
+                     <Mail size={12} className="sm:w-[14px] sm:h-[14px]" /> <span className="hidden sm:inline">Enviar </span>mensaje
                   </button>
-                  <button className="flex items-center gap-1.5 bg-[var(--accent)]/10 border border-[var(--accent)]/20 px-3 py-1.5 rounded-xl text-[12px] text-[var(--accent)] font-bold transition-all cursor-default">
+                  <button className="flex items-center gap-1 sm:gap-1.5 bg-[var(--accent)]/10 border border-[var(--accent)]/20 px-2 sm:px-2.5 md:px-3 py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] md:text-[12px] text-[var(--accent)] font-bold transition-all cursor-default">
                      Amigo
                   </button>
                   <button
                      onClick={handleRemoveFriend}
-                     className="text-[10px] text-red-500 hover:text-red-600 hover:underline px-1 font-medium"
+                     className="text-[9px] sm:text-[10px] text-red-500 hover:text-red-600 active:text-red-700 hover:underline px-1 font-medium touch-manipulation"
                   >
                      (Eliminar)
                   </button>
@@ -385,20 +385,22 @@ const Profile: React.FC = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+                  transition={{ duration: 0.2 }}
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 sm:p-4 pt-[calc(env(safe-area-inset-top,0px)+0.5rem)] pb-[calc(env(safe-area-inset-bottom,0px)+0.5rem)]"
                >
                   <motion.div
                      initial={{ scale: 0.9, opacity: 0 }}
                      animate={{ scale: 1, opacity: 1 }}
                      exit={{ scale: 0.9, opacity: 0 }}
-                     className="bg-[var(--card-bg)] rounded-lg overflow-hidden w-full max-w-[95vw] md:max-w-[500px] max-h-[85vh] overflow-y-auto flex flex-col border border-[var(--border-color)] transition-colors duration-200"
+                     transition={{ duration: 0.2 }}
+                     className="bg-[var(--card-bg)] rounded-lg overflow-hidden w-full max-w-[calc(100vw-16px)] sm:max-w-[95vw] md:max-w-[500px] max-h-[90vh] overflow-y-auto flex flex-col border border-[var(--border-color)] transition-colors duration-200"
                   >
-                     <div className="p-4 border-b border-[var(--border-soft)] flex justify-between items-center bg-[var(--card-bg)]">
-                        <h3 className="font-bold text-[var(--text-main)]">Ajustar foto de perfil</h3>
-                        <button onClick={() => setImageToCrop(null)} className="text-gray-400 hover:text-gray-600 transition-colors">×</button>
+                     <div className="p-3 sm:p-4 border-b border-[var(--border-soft)] flex justify-between items-center bg-[var(--card-bg)]">
+                        <h3 className="font-bold text-[var(--text-main)] text-sm sm:text-base">Ajustar foto de perfil</h3>
+                        <button onClick={() => setImageToCrop(null)} className="text-gray-400 hover:text-gray-600 active:text-gray-700 transition-colors text-2xl sm:text-3xl touch-manipulation">×</button>
                      </div>
 
-                     <div className="relative h-[300px] bg-[var(--bg-color)]">
+                     <div className="relative h-[250px] sm:h-[300px] md:h-[350px] bg-[var(--bg-color)]">
                         <Cropper
                            image={imageToCrop}
                            crop={crop}
@@ -410,9 +412,9 @@ const Profile: React.FC = () => {
                         />
                      </div>
 
-                     <div className="p-4 bg-[var(--card-bg)] flex flex-col gap-4">
-                        <div className="flex items-center gap-4">
-                           <span className="text-xs text-gray-500">Zoom</span>
+                     <div className="p-3 sm:p-4 bg-[var(--card-bg)] flex flex-col gap-3 sm:gap-4">
+                        <div className="flex items-center gap-2 sm:gap-4">
+                           <span className="text-xs text-gray-500 whitespace-nowrap">Zoom</span>
                            <input
                               type="range"
                               value={zoom}
@@ -420,20 +422,20 @@ const Profile: React.FC = () => {
                               max={3}
                               step={0.1}
                               onChange={(e) => setZoom(Number(e.target.value))}
-                              className="flex-1"
+                              className="flex-1 touch-manipulation"
                            />
                         </div>
                         <div className="flex justify-end gap-2">
                            <button
                               onClick={() => setImageToCrop(null)}
-                              className="px-4 py-2 text-[12px] font-bold text-gray-500 hover:bg-[var(--bg-color)] rounded transition-colors"
+                              className="px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-[12px] font-bold text-gray-500 hover:bg-[var(--bg-color)] active:bg-[var(--border-soft)] rounded transition-colors touch-manipulation"
                            >
                               Cancelar
                            </button>
                            <button
                               onClick={handleUploadCroppedAvatar}
                               disabled={isUploading}
-                              className="px-6 py-2 bg-[var(--accent)] text-white text-[12px] font-bold rounded shadow-sm hover:bg-[#4a9600] disabled:opacity-50"
+                              className="px-4 sm:px-6 py-1.5 sm:py-2 bg-[var(--accent)] text-white text-[11px] sm:text-[12px] font-bold rounded shadow-sm hover:bg-[#4a9600] active:bg-[#3a7500] disabled:opacity-50 touch-manipulation"
                            >
                               {isUploading ? 'Guardando...' : 'Guardar foto'}
                            </button>
@@ -458,7 +460,7 @@ const Profile: React.FC = () => {
 
             {/* Bio (permanent description) */}
             {profileUser.bio && (
-               <div className="text-[var(--text-main)] opacity-80 text-[12px] md:text-[13px] mb-3 border-b border-[var(--border-soft)] pb-3 pr-[80px] md:pr-0 transition-colors duration-200">
+               <div className="text-[var(--text-main)] opacity-80 text-[12px] md:text-[13px] mb-3 border-b border-[var(--border-soft)] pb-3 transition-colors duration-200">
                   {profileUser.bio}
                </div>
             )}
@@ -468,6 +470,11 @@ const Profile: React.FC = () => {
                   No has escrito una biografía todavía...
                </div>
             )}
+
+            {/* Action buttons - placed after bio on mobile, positioned on desktop */}
+            <div className="mt-3 mb-3 md:absolute md:top-0 md:right-0 md:mt-0 md:mb-0">
+               {renderActionButtons()}
+            </div>
 
             {/* Mobile visits counter */}
             {isOwnProfile && (
@@ -480,15 +487,12 @@ const Profile: React.FC = () => {
                   </div>
                </div>
             )}
-            <div className="absolute top-0 right-0 z-10">
-               {renderActionButtons()}
-            </div>
          </div>
 
-         <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="w-full md:w-[280px] md:shrink-0 flex flex-col gap-6">
-               <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[2.5rem] p-3 shadow-2xl transition-all duration-300 group relative ring-1 ring-black/5 dark:ring-white/5">
-                  <div className="aspect-square rounded-[2rem] overflow-hidden border border-[var(--border-soft)] shadow-inner">
+         <div className="flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8 items-start">
+            <div className="w-full md:w-[240px] lg:w-[280px] md:shrink-0 flex flex-col gap-4 sm:gap-5 md:gap-6">
+               <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-2 sm:p-2.5 md:p-3 shadow-2xl transition-all duration-300 group relative ring-1 ring-black/5 dark:ring-white/5">
+                  <div className="aspect-square rounded-[1.3rem] sm:rounded-[1.7rem] md:rounded-[2rem] overflow-hidden border border-[var(--border-soft)] shadow-inner">
                      <img
                         src={getAvatarUrl(profileUser.avatar)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -496,9 +500,9 @@ const Profile: React.FC = () => {
                      />
                   </div>
                   {isOwnProfile && (
-                     <label className="absolute inset-2 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer rounded-[2rem]">
-                        <Camera className="text-white mb-2" size={24} />
-                        <span className="text-white text-[10px] font-extrabold uppercase tracking-widest">Cambiar foto</span>
+                     <label className="absolute inset-1.5 sm:inset-2 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer rounded-[1.3rem] sm:rounded-[1.7rem] md:rounded-[2rem] touch-manipulation">
+                        <Camera className="text-white mb-1.5 sm:mb-2" size={20} />
+                        <span className="text-white text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest">Cambiar foto</span>
                         <input
                            type="file"
                            accept="image/*"
@@ -518,36 +522,36 @@ const Profile: React.FC = () => {
                )}
 
                {isEditing ? (
-                  <div className="bg-[var(--card-bg)] border border-[var(--border-color)] p-3 text-[11px] flex flex-col gap-2 overflow-hidden animate-in fade-in duration-200">
+                  <div className="bg-[var(--card-bg)] border border-[var(--border-color)] p-2.5 sm:p-3 text-[11px] flex flex-col gap-2 overflow-hidden animate-in fade-in duration-200 rounded-xl sm:rounded-2xl">
                      <div>
-                        <label className="block font-bold text-gray-400 mb-1">Nombre</label>
+                        <label className="block font-bold text-gray-400 mb-1 text-[10px] sm:text-[11px]">Nombre</label>
                         <input
                            type="text"
-                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors"
+                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg sm:rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors text-[12px] sm:text-[13px] touch-manipulation"
                            value={editData.name || ''}
                            onChange={(e) => setEditData({ ...editData, name: e.target.value })}
                         />
                      </div>
                      <div>
-                        <label className="block font-bold text-[#666] mb-1">Apellidos</label>
+                        <label className="block font-bold text-[#666] mb-1 text-[10px] sm:text-[11px]">Apellidos</label>
                         <input
                            type="text"
-                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors"
+                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg sm:rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors text-[12px] sm:text-[13px] touch-manipulation"
                            value={editData.lastName || ''}
                            onChange={(e) => setEditData({ ...editData, lastName: e.target.value })}
                         />
                      </div>
                      <div>
-                        <label className="block font-bold text-gray-400 mb-1">Estado actual</label>
+                        <label className="block font-bold text-gray-400 mb-1 text-[10px] sm:text-[11px]">Estado actual</label>
                         <input
                            type="text"
-                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors"
+                           className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-lg sm:rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors text-[12px] sm:text-[13px] touch-manipulation"
                            value={editData.status || ''}
                            onChange={(e) => setEditData({ ...editData, status: e.target.value })}
                         />
                      </div>
                      <div>
-                        <label className="block font-bold text-gray-400 mb-1">Biografía</label>
+                        <label className="block font-bold text-gray-400 mb-1 text-[10px] sm:text-[11px]">Biografía</label>
                         <textarea
                            className="w-full bg-[var(--input-bg)] text-[var(--input-text)] border border-[var(--border-color)] rounded-xl p-1.5 focus:border-[var(--accent)] outline-none transition-colors"
                            rows={3}
