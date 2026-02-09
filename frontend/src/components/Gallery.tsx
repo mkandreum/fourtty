@@ -59,6 +59,7 @@ const Gallery: React.FC = () => {
                         <button
                             onClick={() => navigate(-1)}
                             className="text-[var(--text-secondary)] text-[11px] sm:text-[12px] font-bold hover:underline active:underline touch-manipulation"
+                            aria-label="Volver al perfil"
                         >
                             « Volver
                         </button>
