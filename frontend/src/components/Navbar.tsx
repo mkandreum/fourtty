@@ -70,6 +70,34 @@ const Navbar: React.FC = () => {
 
     const currentPath = location.pathname;
 
+    const closeAllModals = () => {
+        setShowInvitations(false);
+        setShowNotifs(false);
+        setShowMessagesModal(false);
+    };
+
+    const toggleModal = (modalName: 'invitations' | 'notifications' | 'messages') => {
+        if (modalName === 'invitations') {
+            setShowInvitations(!showInvitations);
+            if (!showInvitations) {
+                setShowNotifs(false);
+                setShowMessagesModal(false);
+            }
+        } else if (modalName === 'notifications') {
+            setShowNotifs(!showNotifs);
+            if (!showNotifs) {
+                setShowInvitations(false);
+                setShowMessagesModal(false);
+            }
+        } else if (modalName === 'messages') {
+            setShowMessagesModal(!showMessagesModal);
+            if (!showMessagesModal) {
+                setShowInvitations(false);
+                setShowNotifs(false);
+            }
+        }
+    };
+
     const handleNotificationClick = async (notif: any) => {
         try {
             await api.delete(`/notifications/${notif.id}`);
@@ -96,28 +124,6 @@ const Navbar: React.FC = () => {
         } catch (error) {
             console.error('Error handling notification click:', error);
             navigate('/');
-        }
-    };
-
-    const closeAllModals = () => {
-        setShowInvitations(false);
-        setShowNotifs(false);
-        setShowMessagesModal(false);
-    };
-
-    const toggleModal = (modalName: 'invitations' | 'notifications' | 'messages') => {
-        if (modalName === 'invitations') {
-            setShowInvitations(!showInvitations);
-            setShowNotifs(false);
-            setShowMessagesModal(false);
-        } else if (modalName === 'notifications') {
-            setShowNotifs(!showNotifs);
-            setShowInvitations(false);
-            setShowMessagesModal(false);
-        } else if (modalName === 'messages') {
-            setShowMessagesModal(!showMessagesModal);
-            setShowNotifs(false);
-            setShowInvitations(false);
         }
     };
 
