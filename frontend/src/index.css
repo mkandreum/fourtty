@@ -63,13 +63,7 @@ body {
 
 /* Custom modern scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
-}
-
-@media (max-width: 768px) {
-    ::-webkit-scrollbar {
-        width: 4px;
-    }
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -97,14 +91,6 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Reduce backdrop blur on mobile for performance */
-@media (max-width: 768px) {
-    .glass {
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-    }
-}
-
 [data-theme='dark'] .glass {
     border-color: rgba(255, 255, 255, 0.05);
     background: rgba(10, 10, 10, 0.85);
@@ -117,8 +103,8 @@ body {
 .capsule-card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 1.5rem;
-    padding: 0.75rem;
+    border-radius: 2.5rem;
+    padding: 1rem;
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -126,19 +112,11 @@ body {
 /* Responsive padding for larger screens */
 @media (min-width: 640px) {
     .capsule-card {
-        border-radius: 2rem;
-        padding: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .capsule-card {
-        border-radius: 2.5rem;
         padding: 1.25rem;
     }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
     .capsule-card {
         padding: 1.5rem;
     }
@@ -155,16 +133,6 @@ body {
 .capsule-card:hover {
     transform: translateY(-4px) scale(1.01);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
-}
-
-/* Disable transform effects on touch devices for performance */
-@media (hover: none) {
-    .capsule-card:hover {
-        transform: none;
-    }
-    .capsule-card:active {
-        transform: scale(0.98);
-    }
 }
 
 [data-theme='dark'] .capsule-card:hover {
@@ -203,55 +171,10 @@ body {
     transform: translateY(-2px);
 }
 
-/* Use active state instead of hover on touch devices */
-@media (hover: none) {
-    .hover-lift:hover {
-        transform: none;
-    }
-    .hover-lift:active {
-        transform: scale(0.95);
-    }
-}
-
-/* Respect user's motion preferences */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
-    
-    .capsule-card:hover,
-    .capsule-card:active,
-    .hover-lift:hover,
-    .hover-lift:active {
-        transform: none !important;
-    }
-}
-
 /* Main content spacing for the dual floating navbars */
 .main-content-container {
-    padding-bottom: 80px !important;
-    padding-top: 80px !important;
-}
-
-@media (min-width: 640px) {
-    .main-content-container {
-        padding-bottom: 90px !important;
-        padding-top: 100px !important;
-    }
-}
-
-/* Touch optimization */
-button,
-a,
-[role="button"],
-.touch-manipulation {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
+    padding-bottom: 90px !important;
+    padding-top: 100px !important;
 }
 
 /* Global input styles */
