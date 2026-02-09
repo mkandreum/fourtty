@@ -182,11 +182,6 @@ const People: React.FC = () => {
                                                         </div>
                                                     )}
                                                 </div>
-                                                {u.occupation && (
-                                                    <div className="text-[10px] text-gray-400 flex items-center gap-0.5 mt-0.5 truncate italic">
-                                                        <Briefcase size={8} /> {u.occupation}
-                                                    </div>
-                                                )}
                                             </div>
                                             <div className="self-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button className="bg-[var(--accent)] text-white p-1 rounded-full shadow-sm">

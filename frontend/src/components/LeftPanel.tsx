@@ -219,7 +219,7 @@ const LeftPanel: React.FC = () => {
                <span>Calendario</span>
                <button
                   className="bg-[var(--accent)]/10 text-[var(--accent)] text-[9px] px-2 py-1 rounded-lg hover:bg-[var(--accent)] hover:text-white transition-all font-bold"
-                  onClick={() => alert("Función de crear evento en desarrollo.")}
+                  onClick={() => showToast("Función de crear evento en desarrollo.", "info")}
                >
                   CREAR
                </button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Bell, Camera, Image as ImageIcon, Search, User, X, MessageCircle, Tag, Mail, UserPlus, Sun, Moon } from 'lucide-react';
+import { Bell, Camera, Home, Image as ImageIcon, Search, User, X, MessageCircle, Tag, Mail, UserPlus, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
