@@ -79,7 +79,7 @@ const Navbar: React.FC = () => {
             console.error(e);
         }
 
-        setShowNotifs(false);
+        closeAllModals();
 
         try {
             if (['comment_photo', 'tag_photo'].includes(notif.type)) {
@@ -96,6 +96,28 @@ const Navbar: React.FC = () => {
         } catch (error) {
             console.error('Error handling notification click:', error);
             navigate('/');
+        }
+    };
+
+    const closeAllModals = () => {
+        setShowInvitations(false);
+        setShowNotifs(false);
+        setShowMessagesModal(false);
+    };
+
+    const toggleModal = (modalName: 'invitations' | 'notifications' | 'messages') => {
+        if (modalName === 'invitations') {
+            setShowInvitations(!showInvitations);
+            setShowNotifs(false);
+            setShowMessagesModal(false);
+        } else if (modalName === 'notifications') {
+            setShowNotifs(!showNotifs);
+            setShowInvitations(false);
+            setShowMessagesModal(false);
+        } else if (modalName === 'messages') {
+            setShowMessagesModal(!showMessagesModal);
+            setShowNotifs(false);
+            setShowInvitations(false);
         }
     };
 
@@ -117,11 +139,7 @@ const Navbar: React.FC = () => {
                         </button>
 
                         <button
-                            onClick={() => {
-                                setShowInvitations(!showInvitations);
-                                setShowNotifs(false);
-                                setShowMessagesModal(false);
-                            }}
+                            onClick={() => toggleModal('invitations')}
                             className={`p-1.5 sm:p-2 rounded-full transition-all touch-manipulation ${showInvitations ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)] active:text-[var(--text-main)] hover:bg-white/5 active:bg-white/10'}`}
                             title="Invitaciones"
                         >
@@ -225,7 +243,7 @@ const Navbar: React.FC = () => {
                                 <Link
                                     key={item.path}
                                     to={item.path === '#' ? '#' : item.path}
-                                    onClick={item.path === '#' ? (e) => { e.preventDefault(); setShowNotifs(!showNotifs); setShowInvitations(false); setShowMessagesModal(false); } : undefined}
+                                    onClick={item.path === '#' ? (e) => { e.preventDefault(); toggleModal('notifications'); } : undefined}
                                     className={`relative z-10 p-2 sm:p-2.5 md:p-3 rounded-full transition-all duration-300 flex items-center justify-center touch-manipulation ${active ? 'text-white' : 'text-[var(--text-muted)] hover:text-[var(--text-main)] active:text-[var(--text-main)]'}`}
                                 >
                                     <div className="relative">
@@ -245,11 +263,7 @@ const Navbar: React.FC = () => {
 
                         {/* Chat Icon (Right Group) - Now opens Modal */}
                         <button
-                            onClick={() => {
-                                setShowMessagesModal(true);
-                                setShowNotifs(false);
-                                setShowInvitations(false);
-                            }}
+                            onClick={() => toggleModal('messages')}
                             className="relative z-10 p-2 sm:p-2.5 md:p-3 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] active:text-[var(--text-main)] transition-all touch-manipulation"
                         >
                             <MessageSquare size={18} className="sm:w-5 sm:h-5" />
@@ -275,7 +289,7 @@ const Navbar: React.FC = () => {
                                             <span className="text-base sm:text-xl">Invitaciones</span>
                                         </h3>
                                         <button
-                                            onClick={() => setShowInvitations(false)}
+                                            onClick={closeAllModals}
                                             className="p-1.5 sm:p-2 hover:bg-[var(--border-soft)] active:bg-[var(--border-color)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all touch-manipulation"
                                         >
                                             <X size={18} className="sm:w-5 sm:h-5" />
@@ -303,7 +317,7 @@ const Navbar: React.FC = () => {
                                             <span className="text-base sm:text-xl">Notificaciones</span>
                                         </h3>
                                         <button
-                                            onClick={() => setShowNotifs(false)}
+                                            onClick={closeAllModals}
                                             className="p-1.5 sm:p-2 hover:bg-[var(--border-soft)] active:bg-[var(--border-color)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all touch-manipulation"
                                         >
                                             <X size={18} className="sm:w-5 sm:h-5" />
@@ -380,7 +394,7 @@ const Navbar: React.FC = () => {
                                             <span className="text-base sm:text-lg md:text-xl">Mensajes</span>
                                         </h3>
                                         <button
-                                            onClick={() => setShowMessagesModal(false)}
+                                            onClick={closeAllModals}
                                             className="p-1.5 sm:p-2 hover:bg-[var(--border-soft)] active:bg-[var(--border-color)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all touch-manipulation"
                                         >
                                             <X size={18} className="sm:w-5 sm:h-5" />

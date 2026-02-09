@@ -320,7 +320,7 @@ const Profile: React.FC = () => {
                onClick={() => setIsEditing(!isEditing)}
                className="flex items-center gap-1 sm:gap-1.5 bg-[var(--border-soft)] border border-[var(--border-color)] px-2 sm:px-2.5 md:px-3 py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] md:text-[12px] text-[var(--text-main)] font-bold hover:bg-[var(--accent)]/10 active:bg-[var(--accent)]/20 hover:border-[var(--accent)]/30 transition-all shadow-sm touch-manipulation"
             >
-               <Edit3 size={12} className="sm:w-[14px] sm:h-[14px]" /> <span className="hidden sm:inline">{isEditing ? 'Cancelar' : 'Editar'}</span><span className="sm:hidden">{isEditing ? 'Cancelar' : 'Editar'}</span><span className="hidden md:inline"> perfil</span>
+               <Edit3 size={12} className="sm:w-[14px] sm:h-[14px]" /> {isEditing ? 'Cancelar' : 'Editar'}<span className="hidden md:inline"> perfil</span>
             </button>
          );
       }
