@@ -49,23 +49,23 @@ const Gallery: React.FC = () => {
 
     return (
         <div className="bg-[var(--bg-color)] min-h-screen transition-colors duration-200">
-            <div className="max-w-[980px] mx-auto p-4 flex flex-col gap-4">
+            <div className="max-w-[980px] mx-auto p-2 sm:p-3 md:p-4 flex flex-col gap-3 sm:gap-4">
 
-                <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--border-color)] p-4 shadow-sm transition-colors duration-200">
-                    <div className="flex justify-between items-center mb-6 border-b border-[var(--border-soft)] pb-4 transition-colors duration-200">
-                        <h1 className="text-[20px] font-bold text-[var(--text-main)] transition-colors duration-200">
-                            Fotos de {userName} <span className="text-gray-400 font-normal text-[14px]">({photos.length})</span>
+                <div className="bg-[var(--card-bg)] rounded-xl sm:rounded-2xl border border-[var(--border-color)] p-3 sm:p-4 shadow-sm transition-colors duration-200">
+                    <div className="flex justify-between items-center mb-4 sm:mb-6 border-b border-[var(--border-soft)] pb-3 sm:pb-4 transition-colors duration-200">
+                        <h1 className="text-[16px] sm:text-[18px] md:text-[20px] font-bold text-[var(--text-main)] transition-colors duration-200">
+                            Fotos de {userName} <span className="text-gray-400 font-normal text-[12px] sm:text-[14px]">({photos.length})</span>
                         </h1>
                         <button
                             onClick={() => navigate(-1)}
-                            className="text-[var(--text-secondary)] text-[12px] font-bold hover:underline"
+                            className="text-[var(--text-secondary)] text-[11px] sm:text-[12px] font-bold hover:underline active:underline touch-manipulation"
                         >
-                            « Volver al perfil
+                            « Volver
                         </button>
                     </div>
 
                     {photos.length === 0 ? (
-                        <div className="p-10 text-center text-gray-400">
+                        <div className="p-8 sm:p-10 text-center text-gray-400 text-sm">
                             Este usuario aún no ha subido ninguna foto a su galería.
                         </div>
                     ) : (
@@ -75,28 +75,30 @@ const Gallery: React.FC = () => {
                                 show: {
                                     opacity: 1,
                                     transition: {
-                                        staggerChildren: 0.05
+                                        staggerChildren: 0.03,
+                                        delayChildren: 0.1
                                     }
                                 }
                             }}
                             initial="hidden"
                             animate="show"
-                            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4"
+                            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4"
                         >
                             {photos.map((photo, index) => (
                                 <motion.div
                                     key={photo.id}
                                     variants={{
                                         hidden: { opacity: 0, scale: 0.9 },
-                                        show: { opacity: 1, scale: 1 }
+                                        show: { opacity: 1, scale: 1, transition: { duration: 0.3 } }
                                     }}
-                                    whileHover={{ y: -5, transition: { type: 'spring', stiffness: 300 } }}
+                                    whileHover={{ y: -3, transition: { type: 'spring', stiffness: 300 } }}
+                                    whileTap={{ scale: 0.95 }}
                                     className="flex flex-col gap-1 group"
                                 >
-                                    <div className="p-1 bg-[var(--card-bg)] border border-[var(--border-color)] shadow-sm hover:shadow-md transition-all cursor-pointer">
+                                    <div className="p-0.5 sm:p-1 bg-[var(--card-bg)] border border-[var(--border-color)] shadow-sm hover:shadow-md active:shadow-lg transition-all cursor-pointer rounded-lg touch-manipulation">
                                         <img
                                             src={getPhotoUrl(photo.url)}
-                                            className="w-full aspect-square object-cover"
+                                            className="w-full aspect-square object-cover rounded-md"
                                             onClick={() => openPhoto(photo, photos)}
                                             alt={photo.caption || 'Foto'}
                                         />
